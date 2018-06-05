@@ -483,8 +483,6 @@ function save_admins(client, input, data, done)
 
       res.on('searchEntry', function(entry) {
         data[entry.object.dn] = entry.object;
-        // debug
-        console.log(entry.object);
       });
 
       res.on('error', function(err) {

@@ -90,10 +90,6 @@ function synchronize_data() {
   ],
   // optional callback
   function(err, results) {
-    // debug
-    //console.log("sync data, before callback");
-
-    // TODO - write to changes file !!!
     save_latest();
 
     client.unbind(function(err) {
@@ -146,9 +142,6 @@ function generic_ldap_check(client, temp_file, object_class, search_base, callba
     latest = '20100214130606Z';
   }
 
-  console.log("generic_ldap_check, latest1:");
-  console.log(latest);
-
   var opts = {
     filter: '(objectClass=' + object_class + ')',
     scope: 'sub',
@@ -199,9 +192,6 @@ function check_ldap_changes(client, done)
   ],
   // optional callback
   function(err, results) {
-    // debug
-    //console.log("check ldap changes, before end");
-
     if(force_sync)
       done();
     else

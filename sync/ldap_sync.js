@@ -485,65 +485,36 @@ function save_admins(client, input, data, done)
     attributes: [ 'dn', 'eduPersonPrincipalNames', 'cn;lang-cs', 'mail', 'uid' ]                // TODO - EPPN
   };
 
-  async.each(input, function(item, callback) {
-    if(typeof(item) === 'object') {              // multiple admins
-      // debug
-      //console.log("multiple admins");
+  var admins = {};
 
-      async.each(item, function(manager, callback2) {
-        // debug
-        //console.log("iterating");
+  // create dict first
+  for(var i in input) {
+    if(typeof(input[i]) === 'object') {
+      for(var j in input[i])
+      admins[input[i][j]] = "a";           // use dummy value here, only the key is usefull
+    }
+    else
+      admins[input[i]] = "a";           // use dummy value here, only the key is usefull
+  }
 
-        client.search(manager, opts, function(err, res) {
-          assert.ifError(err);
+  // do ldap search
+  async.forEachOf(admins, function(value, key, callback) {
+    client.search(key, opts, function(err, res) {
+      assert.ifError(err);
 
-          res.on('searchEntry', function(entry) {
-            data[entry.object.dn] = entry.object;
-          });
+      res.on('searchEntry', function(entry) {
+        data[entry.object.dn] = entry.object;
+      });
 
-          res.on('error', function(err) {
-            console.error('error: ' + err.message);
-          });
+      res.on('error', function(err) {
+        console.error('error: ' + err.message);
+      });
 
-          res.on('end', function(result) {
-            // debug
-            //console.log("item done");
-
-            callback2();         // item done
-          });
-        });
-      }, function(err) {
-        // debug
-        //console.log("all items done");
-
+      res.on('end', function(result) {
         callback();
       });
-    }
-    else  {                                                       // single admin
-      // debug
-      //console.log("single admin");
-
-      client.search(item, opts, function(err, res) {
-        assert.ifError(err);
-
-        res.on('searchEntry', function(entry) {
-          data[entry.object.dn] = entry.object;
-        });
-
-        res.on('error', function(err) {
-          console.error('error: ' + err.message);
-        });
-
-        res.on('end', function(result) {
-          //console.log("single item done");
-          callback();
-        });
-      });
-    }
+    });
   }, function(err) {
-    // debug
-    //console.log("all items processed");
-
     done();
   });
 }

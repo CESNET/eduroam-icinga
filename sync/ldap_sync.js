@@ -51,12 +51,14 @@ function synchronize_data() {
   // TODO - otestovat, ze pokud bude vse synchronizovano, tak to nezustane pri spusteni viset
 
   async.series([
-    //function(callback) {
-    //  if(force_sync == false)
-    //    check_ldap_changes(client, callback);       // everything is skipped if sync is not needed
-    //  else
-    //    callback();
-    //},
+    function(callback) {
+      // ldap check is needed always regardless of force_sync
+      check_ldap_changes(client, callback);       // everything is skipped if sync is not needed
+
+      //if(force_sync == false)
+      //else
+      //  callback();
+    },
 
     // TODO - volani tehle funkce soucasne s adminy zpusobi nejaky divny bug, kdy se to nikdy nedokonci
 
@@ -91,17 +93,77 @@ function synchronize_data() {
     // debug
     //console.log("sync data, before callback");
 
+    // TODO - write to changes file !!!
+    save_latest();
+
     client.unbind(function(err) {
       assert.ifError(err);
     });
   });
 };
 // --------------------------------------------------------------------------------------
+// write specific variable to specific file
+// --------------------------------------------------------------------------------------
+function save_latest_to_file(file, variable)
+{
+  // debug
+  console.log("saving to file");
+  console.log(file);
+  console.log(variable);
+
+  fs.writeFileSync(file, variable);
+}
+// --------------------------------------------------------------------------------------
+// save all latest timestamps
+// --------------------------------------------------------------------------------------
+function save_latest()
+{
+  //save_latest_realm(config.temp_file + 'latest_realm', latest_realm);
+  //save_latest_radius(config.temp_file + 'latest_radius', latest_radius);
+  //save_latest_admin(config.temp_file + 'latest_admin', latest_admin);
+
+  console.log("latest_realm");
+  console.log(latest_realm);
+
+  console.log("latest_radius");
+  console.log(latest_radius);
+
+  console.log("latest_admin");
+  console.log(latest_admin);
+
+  save_latest_to_file(config.temp_file + 'latest_realm', latest_realm);
+  save_latest_to_file(config.temp_file + 'latest_radius', latest_radius);
+  save_latest_to_file(config.temp_file + 'latest_admin', latest_admin);
+}
+// --------------------------------------------------------------------------------------
+// TODO
+// --------------------------------------------------------------------------------------
+function set_latest_output(latest, search_base)
+{
+  // debug
+  console.log("setting latest output");
+  console.log("latest:");
+  console.log(latest);
+
+  if(search_base == config.search_base_admins)
+    latest_admin = latest;
+
+  if(search_base == config.search_base_radius)
+    latest_radius = latest;
+
+  if(search_base == config.search_base_realms)
+    latest_realm = latest;
+}
+// --------------------------------------------------------------------------------------
 // check generic ldap object based on params
 // --------------------------------------------------------------------------------------
 function generic_ldap_check(client, temp_file, object_class, search_base, callback)
 {
   var latest;
+
+  // debug
+  console.log("generic_ldap_check");
+  console.log(search_base);
 
   // read latest realm timestamp from file
   try {
@@ -110,6 +172,9 @@ function generic_ldap_check(client, temp_file, object_class, search_base, callba
   catch(err) {
     latest = '20100214130606Z';
   }
+
+  console.log("generic_ldap_check, latest1:");
+  console.log(latest);
 
   var opts = {
     filter: '(objectClass=' + object_class + ')',
@@ -121,8 +186,10 @@ function generic_ldap_check(client, temp_file, object_class, search_base, callba
     assert.ifError(err);
 
     res.on('searchEntry', function(entry) {
-      if(entry.object.modifyTimeStamp > latest)               // some new item is available
+      if(entry.object.modifyTimeStamp > latest) {                // some new item is available
         force_sync = true;
+        latest = entry.object.modifyTimeStamp;
+      }
     });
 
     res.on('error', function(err) {
@@ -131,10 +198,20 @@ function generic_ldap_check(client, temp_file, object_class, search_base, callba
     });
 
     res.on('end', function(result) {
-      if(force_sync)
-        callback("sync IS required");           // signalize that force sync IS required
-      else
-        callback();
+      // debug
+      console.log("generic_ldap_check, latest:");
+      console.log(latest);
+
+      set_latest_output(latest, search_base);        // save latest to output for next check
+
+      console.log("generic_ldap_check, force_sync:");
+      console.log(force_sync);
+
+      //if(force_sync)
+      //  callback("sync IS required");           // signalize that force sync IS required
+      //else
+
+      callback();       // all other ldap entities need to be checked too, so it is not possible to "end" here with callback forcing sync
     });
   });
 }
@@ -146,17 +223,20 @@ function check_ldap_changes(client, done)
   async.series([
     function(callback) {
       // debug
-      //console.log("check ldap changes, checking realms");
+      console.log("checking ldap for realms");
+
       generic_ldap_check(client, config.temp_file + 'latest_realm', "eduroamRealm", config.search_base_realms, callback);    // realms
     },
     function(callback) {
       // debug
-      //console.log("check ldap changes, checking radius");
-      generic_ldap_check(client, config.temp_file + 'latest_radius', "eduroamRadius", config.search_radius_servers, callback); // radius servers
+      console.log("checking ldap for radius servers");
+
+      generic_ldap_check(client, config.temp_file + 'latest_radius', "eduroamRadius", config.search_base_radius, callback); // radius servers
     },
     function(callback) {
       // debug
-      //console.log("check ldap changes, checking admins");
+      console.log("checking ldap for radius admins");
+
       generic_ldap_check(client, config.temp_file + 'latest_admin', "eduroamAdmin", config.search_base_admins, callback);    // admins
     },
   ],

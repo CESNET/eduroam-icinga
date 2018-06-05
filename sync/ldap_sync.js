@@ -461,7 +461,7 @@ function save_admins(client, input, data, done)
   var opts = {
     filter: '(objectClass=*)',
     scope: 'sub',
-    attributes: [ 'dn', 'eduPersonPrincipalNames', 'cn;lang-cs', 'mail', 'uid' ]                // TODO - EPPN
+    attributes: [ 'dn', 'eduPersonPrincipalNames', 'cn', 'mail', 'uid' ]                // TODO - EPPN
   };
 
   var admins = {};
@@ -483,6 +483,8 @@ function save_admins(client, input, data, done)
 
       res.on('searchEntry', function(entry) {
         data[entry.object.dn] = entry.object;
+        // debug
+        console.log(entry.object);
       });
 
       res.on('error', function(err) {
@@ -511,11 +513,18 @@ function print_admins(data, callback)
 
     // TODO - co kdyz bude mail prazdny?
 
+    // icingaweb2 is not able to correctly handle czech characters, so cn;lang-en is used here
+    // more info:
+    // https://github.com/Icinga/icinga2/issues/5412
+    // https://github.com/Icinga/icingaweb2/issues/2392
+    // https://github.com/Icinga/icinga-web/issues/1346
+    // https://github.com/Icinga/icingaweb2/issues/2788
+
     if(data[item].mail) {               // mail is defined
       if(typeof(data[item].mail) === 'object')
-        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-cs'] + "', '" + data[item].mail[0] + "', '" + data[item].uid + "')";  // first mail
+        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail[0] + "', '" + data[item].uid + "')";  // first mail
       else
-        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-cs'] + "', '" + data[item].mail + "', '" + data[item].uid + "')";  // the only mail
+        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail + "', '" + data[item].uid + "')";  // the only mail
 
       if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item
         out += ";";

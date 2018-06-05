@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
 // --------------------------------------------------------------------------------------
+// run this script as:
+// ./ldap_sync.js > /tmp/ldap_sync
+// mysql ldap_to_icinga < /tmp/ldap_sync
+// rm /tmp/ldap_sync
+// --------------------------------------------------------------------------------------
 const ldap = require('ldapjs');
 const async = require('async');
 const fs = require('fs');
@@ -9,13 +14,13 @@ const secrets = require('./config/secrets.js');
 const config = require('./config/config.js');
 const ldap2date = require('ldap2date');
 // --------------------------------------------------------------------------------------
-var force_sync;         // global variable
+// global variables
+var force_sync;
+var latest_realm;
+var latest_admin;
+var latest_radius;
 // --------------------------------------------------------------------------------------
 // main
-// run this script as:
-// ./ldap_sync.js > /tmp/ldap_sync
-// mysql ldap_to_icinga < /tmp/ldap_sync
-// rm /tmp/ldap_sync
 // --------------------------------------------------------------------------------------
 function main()
 {

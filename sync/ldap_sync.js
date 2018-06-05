@@ -60,15 +60,11 @@ function synchronize_data() {
       create_db_structure(callback);
     },
     function(callback) {
-      // debug
-      //console.log("searching for admins");
       search_admins(client, admins, config.search_base_admins, callback);
 
       // TODO - v tehle funkcni muzu hledat a zaroven nasledne tisknout?
     },
     function(callback) {
-      // debug
-      //console.log("printing admins");
       print_admins(admins, callback);
     },
     function(callback) {
@@ -452,9 +448,6 @@ function search_admins(client, data, search_base, done)
     attributes: [ 'manager' ]
   };
 
-  // debug
-  //console.log("inside search_admins");
-
   client.search(search_base, opts, function(err, res) {
     assert.ifError(err);
 
@@ -467,9 +460,6 @@ function search_admins(client, data, search_base, done)
     });
 
     res.on('end', function(result) {
-      // debug
-      //console.log("searching admins done");
-
       save_admins(client, admins, data, done);
     });
   });

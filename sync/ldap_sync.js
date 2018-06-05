@@ -569,34 +569,6 @@ function print_testing_ids(data, callback)
   callback(null);
 }
 // --------------------------------------------------------------------------------------
-// generate service set table
-// --------------------------------------------------------------------------------------
-function generate_service_set(realms, radius_servers, callback)
-{
-  //var out;
-  //console.log("INSERT INTO testing_id VALUES");             // insert
-
-  for(var i in radius_servers) {
-    console.log(radius_servers[i]);
-    for(var j in realms) {
-      console.log(realms[j]);
-    }
-  }
-
-  //for(var item in data) {
-  //  out = "('" + data[item].id + "', '" + data[item].password + "')";
-
-  //  if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item
-  //    out += ";";
-  //  else                       // not last item
-  //    out += ",";
-
-  //  console.log(out);
-  //}
-
-  callback(null);
-}
-// --------------------------------------------------------------------------------------
 // create mysql database structure to store data
 // --------------------------------------------------------------------------------------
 function create_db_structure(callback)
@@ -606,8 +578,6 @@ function create_db_structure(callback)
   console.log("DROP TABLE IF EXISTS realm;");
   console.log("DROP TABLE IF EXISTS admin;");
   console.log("DROP TABLE IF EXISTS testing_id;");
-
-  console.log("DROP TABLE IF EXISTS service_set;");
 
   //console.log("DROP TABLE IF EXISTS realm_radius;");
   //console.log("DROP TABLE IF EXISTS radius_admin;");

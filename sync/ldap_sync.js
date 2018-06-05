@@ -61,8 +61,6 @@ function synchronize_data() {
     },
     function(callback) {
       search_admins(client, admins, config.search_base_admins, callback);
-
-      // TODO - v tehle funkcni muzu hledat a zaroven nasledne tisknout?
     },
     function(callback) {
       print_admins(admins, callback);
@@ -82,15 +80,6 @@ function synchronize_data() {
     function(callback) {
       print_radius_servers(radius_servers, callback);
     },
-    
-    // TODO - pokusna nova tabulka jako zdroj pro matici
-    function(callback) {
-      generate_service_set(realms, radius_servers, callback);
-    },
-        // TODO - write to file
-        // TODO - pri jedne synchronizaci se toho pravdepodobne zmeni vice - chtelo by to ulozit do souboru vse najednou
-
-
   ],
   // optional callback
   function(err, results) {

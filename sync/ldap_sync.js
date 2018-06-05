@@ -48,21 +48,11 @@ function synchronize_data() {
   var admins = {};
   var testing_ids = {};
 
-  // TODO - otestovat, ze pokud bude vse synchronizovano, tak to nezustane pri spusteni viset
-
   async.series([
     function(callback) {
       // ldap check is needed always regardless of force_sync
       check_ldap_changes(client, callback);       // everything is skipped if sync is not needed
-
-      //if(force_sync == false)
-      //else
-      //  callback();
     },
-
-    // TODO - volani tehle funkce soucasne s adminy zpusobi nejaky divny bug, kdy se to nikdy nedokonci
-
-
     function(callback) {
       create_db_structure(callback);
     },

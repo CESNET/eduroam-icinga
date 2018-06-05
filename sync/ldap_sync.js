@@ -106,11 +106,6 @@ function synchronize_data() {
 // --------------------------------------------------------------------------------------
 function save_latest_to_file(file, variable)
 {
-  // debug
-  console.log("saving to file");
-  console.log(file);
-  console.log(variable);
-
   fs.writeFileSync(file, variable);
 }
 // --------------------------------------------------------------------------------------
@@ -118,33 +113,15 @@ function save_latest_to_file(file, variable)
 // --------------------------------------------------------------------------------------
 function save_latest()
 {
-  //save_latest_realm(config.temp_file + 'latest_realm', latest_realm);
-  //save_latest_radius(config.temp_file + 'latest_radius', latest_radius);
-  //save_latest_admin(config.temp_file + 'latest_admin', latest_admin);
-
-  console.log("latest_realm");
-  console.log(latest_realm);
-
-  console.log("latest_radius");
-  console.log(latest_radius);
-
-  console.log("latest_admin");
-  console.log(latest_admin);
-
   save_latest_to_file(config.temp_file + 'latest_realm', latest_realm);
   save_latest_to_file(config.temp_file + 'latest_radius', latest_radius);
   save_latest_to_file(config.temp_file + 'latest_admin', latest_admin);
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// save latest to global variable based on search base
 // --------------------------------------------------------------------------------------
 function set_latest_output(latest, search_base)
 {
-  // debug
-  console.log("setting latest output");
-  console.log("latest:");
-  console.log(latest);
-
   if(search_base == config.search_base_admins)
     latest_admin = latest;
 
@@ -160,10 +137,6 @@ function set_latest_output(latest, search_base)
 function generic_ldap_check(client, temp_file, object_class, search_base, callback)
 {
   var latest;
-
-  // debug
-  console.log("generic_ldap_check");
-  console.log(search_base);
 
   // read latest realm timestamp from file
   try {
@@ -198,14 +171,7 @@ function generic_ldap_check(client, temp_file, object_class, search_base, callba
     });
 
     res.on('end', function(result) {
-      // debug
-      console.log("generic_ldap_check, latest:");
-      console.log(latest);
-
       set_latest_output(latest, search_base);        // save latest to output for next check
-
-      console.log("generic_ldap_check, force_sync:");
-      console.log(force_sync);
 
       //if(force_sync)
       //  callback("sync IS required");           // signalize that force sync IS required
@@ -222,21 +188,12 @@ function check_ldap_changes(client, done)
 {
   async.series([
     function(callback) {
-      // debug
-      console.log("checking ldap for realms");
-
       generic_ldap_check(client, config.temp_file + 'latest_realm', "eduroamRealm", config.search_base_realms, callback);    // realms
     },
     function(callback) {
-      // debug
-      console.log("checking ldap for radius servers");
-
       generic_ldap_check(client, config.temp_file + 'latest_radius', "eduroamRadius", config.search_base_radius, callback); // radius servers
     },
     function(callback) {
-      // debug
-      console.log("checking ldap for radius admins");
-
       generic_ldap_check(client, config.temp_file + 'latest_admin', "eduroamAdmin", config.search_base_admins, callback);    // admins
     },
   ],

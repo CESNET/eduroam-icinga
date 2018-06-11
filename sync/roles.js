@@ -23,7 +23,7 @@ function init_db()
   return db;
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// get data from database
 // --------------------------------------------------------------------------------------
 function get_data(db, data, callback)
 {
@@ -37,7 +37,7 @@ function get_data(db, data, callback)
   });
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// write user roles to file
 // --------------------------------------------------------------------------------------
 function write_roles(data, callback)
 {
@@ -151,38 +151,28 @@ function write_roles(data, callback)
   
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// main function
 // --------------------------------------------------------------------------------------
 function main()
 {
-  var data = []; // TODO
+  var data = [];
   var db = init_db();
   db.connect(function(err) {
-    if (err) throw err;
+    if (err)
+      throw err;
 
-
-  async.series([
-    function(callback) {
-      get_data(db, data, callback);
-    },
-    function(callback) {
-      //// debug 
-      //console.log(data);
-
-      write_roles(data, callback);
-      //callback();
-      //print_radius_servers(radius_servers, callback);
-    },
-  ],
-  // optional callback
-  function(err, results) {
-    //save_latest();
-
-    //client.unbind(function(err) {
-    //  assert.ifError(err);
-    //});
-    db.end();           // disconnect from db
-  });
+    async.series([
+      function(callback) {
+        get_data(db, data, callback);
+      },
+      function(callback) {
+        write_roles(data, callback);
+      },
+    ],
+    // optional callback
+    function(err, results) {
+      db.end();           // disconnect from db
+    });
   });
 }
 // --------------------------------------------------------------------------------------

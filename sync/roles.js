@@ -46,8 +46,6 @@ function write_roles(data, callback)
   // TODO - pouzit pouze primarni realm
 
   for(var i in data) {
-    //console.log(data[i].realm);
-
     out = "[" + data[i].realm + "_admins]\n"
     out += "users = \"";
 
@@ -65,21 +63,8 @@ function write_roles(data, callback)
     }
     
     out += "\"\n";
-    //out += "\n";
-
-    // TODO
-    //out += 'permissions = "monitoring/*, module/*\n"'
-    
-    // TODO
-    // tohle asi nebude potreba?
-    //out += 'groups = "Administrators"'
-
-
-
-    // TODO - monitoring/blacklist/properties:  ?
 
     // permissions
-    //out += 'permissions = "monitoring/command/schedule-check, monitoring/command/acknowledge-problem, monitoring/command/remove-acknowledgement, monitoring/command/comment/*, monitoring/command/downtime/*"\n';
     out += 'permissions = "module/monitoring, monitoring/command/schedule-check, monitoring/command/acknowledge-problem, monitoring/command/remove-acknowledgement, monitoring/command/comment/*, monitoring/command/downtime/*"\n';
 
     out += "\n";

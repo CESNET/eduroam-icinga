@@ -41,12 +41,6 @@ function get_data(db, data, callback)
 // --------------------------------------------------------------------------------------
 function write_roles(data, callback)
 {
-
-//#[Realm_admins]
-//#users = "machv@cesnet.cz"
-//#permissions = "monitoring/*, module/*"
-//#groups = "Administrators"
-
   var out = "";
 
   // TODO - pouzit pouze primarni realm
@@ -87,60 +81,6 @@ function write_roles(data, callback)
     // permissions
     //out += 'permissions = "monitoring/command/schedule-check, monitoring/command/acknowledge-problem, monitoring/command/remove-acknowledgement, monitoring/command/comment/*, monitoring/command/downtime/*"\n';
     out += 'permissions = "module/monitoring, monitoring/command/schedule-check, monitoring/command/acknowledge-problem, monitoring/command/remove-acknowledgement, monitoring/command/comment/*, monitoring/command/downtime/*"\n';
-
-
-
-
-
-//monitoring/command/*: Allow all commands
-//monitoring/command/schedule-check: Allow scheduling host and service checks
-//monitoring/command/acknowledge-problem: Allow acknowledging host and service problems
-//monitoring/command/remove-acknowledgement: Allow removing problem acknowledgements
-//monitoring/command/comment/*: Allow adding and deleting host and service comments
-//monitoring/command/comment/add: Allow commenting on hosts and services
-//monitoring/command/comment/delete: Allow deleting host and service comments
-//monitoring/command/downtime/*: Allow scheduling and deleting host and service downtimes
-//monitoring/command/downtime/schedule: Allow scheduling host and service downtimes
-//monitoring/command/downtime/delete: Allow deleting host and service downtimes
-
-
-//monitoring/command/process-check-result: Allow processing host and service check results
-//monitoring/command/feature/instance: Allow processing commands for toggling features on an instance-wide basis
-//monitoring/command/feature/object/*: Allow processing commands for toggling features on host and service objects
-//monitoring/command/feature/object/active-checks: Allow processing commands for toggling active checks on host and service objects
-//monitoring/command/feature/object/passive-checks: Allow processing commands for toggling passive checks on host and service objects
-//monitoring/command/feature/object/notifications: Allow processing commands for toggling notifications on host and service objects
-//monitoring/command/feature/object/event-handler: Allow processing commands for toggling event handlers on host and service objects
-//monitoring/command/feature/object/flap-detection: Allow processing commands for toggling flap detection on host and service objects
-//monitoring/command/send-custom-notification: Allow sending custom notifications for hosts and services
-
-
-// TODO?
-//Restrictions    monitoring/filter/objects: Restrict views to the Icinga objects that match the filter
-//monitoring/blacklist/properties: Hide the properties of monitored objects that match the filter
-
-
-    //// object filters
-    ////out =+ 'monitoring/filter/objects = "host_name=*'
-
-    //if(data[i].realm.indexOf(",") == -1) {       // one realm only
-    //  out += 'monitoring/filter/objects = "hostgroup_name=';
-    //  out += data[i].realm;
-    //  out += '"\n';
-    //}
-    //else {                                      // multiple realms
-    //  out += 'monitoring/filter/objects = "(hostgroup_name=';
-    //  var realms = data[i].realm.split(",");
-
-    //  for(var j in realms) {
-    //    if(j == realms.length - 1)      // last one
-    //      out += realms[j];
-    //    else
-    //      out += realms[j] + "|hostgroup_name=";
-    //  }
-    //  out += ')"\n';
-    //}
-
 
     out += "\n";
 

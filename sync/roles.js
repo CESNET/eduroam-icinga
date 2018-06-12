@@ -43,10 +43,11 @@ function write_roles(data, callback)
 {
   var out = "";
 
-  // TODO - pouzit pouze primarni realm
-
   for(var i in data) {
-    out = "[" + data[i].realm + "_admins]\n"
+    if(data[i].realm.indexOf(",") == -1)
+      out = "[" + data[i].realm + "_admins]\n"
+    else
+      out = "[" + data[i].realm.split(",")[0] + "_admins]\n"
     out += "users = \"";
 
     if(data[i].admins.indexOf(",") == -1)       // one admin only
@@ -73,7 +74,6 @@ function write_roles(data, callback)
   }
 
   callback();
-  
 }
 // --------------------------------------------------------------------------------------
 // main function

@@ -276,7 +276,8 @@ function print_realms(data, callback)
 function search_radius_servers(client, data, search_base, done)
 {
   var opts = {
-    filter: '(&(objectClass=eduRoamRadius)(!(radiusDisabled=*)))',              // only active servers
+    //filter: '(&(objectClass=eduRoamRadius)(!(radiusDisabled=*)))',              // only active servers
+    filter: '(&(objectClass=eduRoamRadius)(!(radiusDisabled=*))(eduroamIcingaEnabled=true))',              // only active servers, temporarily check if icinga enabled flag is present
     scope: 'sub',
     attributes: [ 'cn', 'eduroamInfRadiusSecret1', 'eduroamInfTransport', 'eduroamMonRadiusSecret', 'eduroamMonRealm', 'manager', 'eduroamInfRealm' ]
   };

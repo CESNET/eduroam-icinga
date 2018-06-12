@@ -1,0 +1,18 @@
+#!/bin/bash
+
+TMPF=`mktemp /tmp/check_ping_XXXXXX`
+
+if `ping -I 195.113.187.22 -s 512 -c 3 -q $1 >$TMPF 2>&1`
+then
+  echo -n "PING OK - "
+  cat $TMPF | grep -A 1 'ping statistics' | sed "s/--- //g" |sed "s/ ---/: /" | tr -d \\\n
+  echo ""
+  rm $TMPF >/dev/null 2>&1
+  exit 0;
+else
+  echo -n "PING FAILED - "
+  cat $TMPF | grep -A 1 'ping statistics' | sed "s/--- //g" |sed "s/ ---/: /" | tr -d \\\n
+  echo ""
+  rm $TMPF >/dev/null 2>&1
+  exit 2;
+fi

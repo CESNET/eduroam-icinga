@@ -207,10 +207,14 @@ function search_realms(client, data, testing_ids, search_base, callback)
     assert.ifError(err);
 
     res.on('searchEntry', function(entry) {
-      data[entry.object['dn']] = entry.object;          // save whole object as dn value
+      var key = entry.object['dn'].toLowerCase();
+
+      data[key.toLowerCase()] = entry.object;          // save whole object as normalized dn value
 
       if(entry.object['eduroamTestingId'])
         testing_ids[entry.object['eduroamTestingId']] = { "id" : entry.object['eduroamTestingId'], "password" : entry.object['eduroamTestingPassword'] };
+
+      data[key].dn = data[key].dn.toLowerCase();          // normalize dn
     });
 
     res.on('error', function(err) {
@@ -286,13 +290,35 @@ function search_radius_servers(client, data, search_base, done)
     assert.ifError(err);
 
     res.on('searchEntry', function(entry) {
-      data[entry.object['dn']] = entry.object;
+      var key = entry.object['dn'].toLowerCase();
+      data[key] = entry.object;
+      data[key].dn = data[key].dn.toLowerCase();                 // normalize dn
 
-      if(data[entry.object['dn']].eduroamInfRealm == undefined)              // set realm to NULL if it is undefined
-        data[entry.object['dn']].eduroamInfRealm = 'NULL';
+      // mon realms
+      if(typeof(data[key].eduroamMonRealm) === 'object') {         // multiple mon realms
+        var tmp = [];
+        for(var realm in data[key].eduroamMonRealm)
+          tmp.push(data[key].eduroamMonRealm[realm].toLowerCase());
 
-      if(data[entry.object['dn']].eduroamMonRealm == undefined)              // set realm to NULL if it is undefined
-        data[entry.object['dn']].eduroamMonRealm = 'NULL';
+        data[key].eduroamMonRealm = tmp;
+      }
+      else if(entry.object.eduroamMonRealm == undefined)              // set realm to NULL if it is undefined
+        data[key].eduroamMonRealm = 'NULL';
+      else                                                                        // single mon realm
+        data[key].eduroamMonRealm = data[key].eduroamMonRealm.toLowerCase();
+
+      // inf realms
+      if(typeof(data[key].eduroamInfRealm) === 'object') {         // multiple inf realms
+        var tmp = [];
+        for(var realm in data[key].eduroamInfRealm)
+          tmp.push(data[key].eduroamInfRealm[realm].toLowerCase());
+
+        data[key].eduroamInfRealm = tmp;
+      }
+      else if(entry.object.eduroamInfRealm == undefined)              // set realm to NULL if it is undefined
+        data[key].eduroamInfRealm = 'NULL';
+      else                                                                        // single inf realm
+        data[key].eduroamInfRealm = data[key].eduroamInfRealm.toLowerCase();
     });
 
     res.on('error', function(err) {

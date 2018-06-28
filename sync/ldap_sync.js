@@ -802,14 +802,11 @@ function print_services(radius_servers, realms, testing_ids, disabled_realms, ca
     if(radius_servers[i].eduroamMonRealm != 'NULL') {      // not undefined
       if(typeof(radius_servers[i].eduroamMonRealm) === 'object')  // multiple mon realms
         for(var realm in radius_servers[i].eduroamMonRealm) {
-          //console.log(typeof(realms[radius_servers[i].eduroamMonRealm[realm]].cn));
-          //console.log(realms[radius_servers[i].eduroamMonRealm[realm]].cn);
 
           if(typeof(realms[radius_servers[i].eduroamMonRealm[realm]].cn) === 'object')
             var value = realms[radius_servers[i].eduroamMonRealm[realm]].cn[0];         // use primary realm only
           else
             var value = realms[radius_servers[i].eduroamMonRealm[realm]].cn;
-
 
           if(radius_servers[i].cn in mon_realm) // key exists, add
             mon_realm[radius_servers[i].cn].push(value)
@@ -832,16 +829,7 @@ function print_services(radius_servers, realms, testing_ids, disabled_realms, ca
   // generate reverse mapping, always one realm as key
   reverse_mapping(mon_realm, realms_radius);
 
-
-  //console.log(mon_realm);
-  //console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-  //console.log(realms_radius);
-
-  //console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-  //console.log(testing_ids);
-  //console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-  //console.log(disabled_realms);
-
+  // process all prepared data and print output
   process_services(radius_servers, mon_realm, realms, realms_radius);
 
   callback(null);

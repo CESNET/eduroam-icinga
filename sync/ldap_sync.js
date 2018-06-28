@@ -282,7 +282,8 @@ function print_realms(data, callback)
   callback(null);
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// set realm state so it can be filtered out if no active radius servers
+// are associated with it
 // --------------------------------------------------------------------------------------
 function set_disabled_realm(disabled_realms, realm, type)
 {
@@ -298,15 +299,13 @@ function set_disabled_realm(disabled_realms, realm, type)
   }
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// store radius server from ldap object
 // --------------------------------------------------------------------------------------
 function store_radius_server(data, key, ldap_object, disabled_realms)
 {
   var types = [ "eduroamMonRealm", "eduroamInfRealm" ];
 
   // radius is disabled, delete realm
-  //                      // TODO - co kdyz nastane pripad, kdy by na jednom realmu byl zaroven aktivni a neaktivni server?
-  //                      // spravne by to melo dopadnout tak, ze pouze pokud pro dany realm budou vsechny servery neaktivni, tak bude vymazan z dalsiho zpracovani
   if(ldap_object.radiusDisabled == 'true') {              // radius is disabled, delete realm
     // process realm types in loop
     for(var type in types) {
@@ -647,7 +646,7 @@ function print_testing_ids(data, callback)
   callback(null);
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// delete realms with no active radius servers, delete corresponding testind ids
 // --------------------------------------------------------------------------------------
 function delete_disabled(realms, disabled_realms, testing_ids, callback)
 {
@@ -663,7 +662,7 @@ function delete_disabled(realms, disabled_realms, testing_ids, callback)
   callback();
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// prepare output for service table
 // --------------------------------------------------------------------------------------
 function prepare_service_output(visitors_realm, mon_realm, j, home_server, realm)
 {
@@ -689,10 +688,6 @@ function prepare_service_output(visitors_realm, mon_realm, j, home_server, realm
     out += " " + 1 + ", ";
   else
     out += " " + 0 + ", ";
-    //out += "'false', ";
-
-  // inf radius
-  // TODO
 
   // testing id, password
   out += "'" + realm.eduroamTestingId + "',";
@@ -702,7 +697,7 @@ function prepare_service_output(visitors_realm, mon_realm, j, home_server, realm
   return out;
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// process one or multiple home servers for visitor's realm
 // --------------------------------------------------------------------------------------
 function multiple_home_servers(realms_radius, primary_realm, mon_realm, j, realm)
 {

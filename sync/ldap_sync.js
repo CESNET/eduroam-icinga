@@ -741,11 +741,11 @@ function multiple_home_servers(realms_radius, primary_realm, mon_realm, j, realm
   return out;
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// process all data to create service table output
 // --------------------------------------------------------------------------------------
 function process_services(radius_servers, mon_realm, realms, realms_radius)
 {
-  var out;
+  var out = [];
 
   for(var l in realms) {
     if(realms[l].eduroamTestingId != undefined) {
@@ -757,28 +757,24 @@ function process_services(radius_servers, mon_realm, realms, realms_radius)
 
       for(var j in mon_realm) {
         if(typeof(mon_realm[j]) === 'object') {         // multiple mon realms
-          // debug
-          //console.log("multiple mon realms for " + j);
-          //console.log("multiple mon realms for " + j);
-
-          for(var k in mon_realm[j]) {
-            out = multiple_home_servers(realms_radius, primary_realm, mon_realm[j][k], j, realms[l]);
-            console.log(out);
-          }
+          for(var k in mon_realm[j])
+            out.push(multiple_home_servers(realms_radius, primary_realm, mon_realm[j][k], j, realms[l]));
         }
-        else {
-          out = multiple_home_servers(realms_radius, primary_realm, mon_realm[j], j, realms[l]);
-          console.log(out);
-        }
+        else
+          out.push(multiple_home_servers(realms_radius, primary_realm, mon_realm[j], j, realms[l]));
       }
     }
   }
 
-  // spise nez out tisknout
-  // out je potreba nasledne upravit, aby na poslednim radku nebyla posledni carka
+  for(var i in out) {
+    if(i == out.length -1)
+      console.log(out[i].substring(0, out[i].length -1) + ";");               // last item
+    else
+      console.log(out[i]);
+  }
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// create reverse mapping between servers and realms
 // --------------------------------------------------------------------------------------
 function reverse_mapping(mon_realm, realms_radius)
 {

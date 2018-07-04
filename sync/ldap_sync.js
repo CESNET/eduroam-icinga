@@ -19,6 +19,8 @@ var force_sync;
 var latest_realm;
 var latest_admin;
 var latest_radius;
+var first_byte = 0;
+var second_byte = 0;
 // --------------------------------------------------------------------------------------
 // main
 // --------------------------------------------------------------------------------------
@@ -689,6 +691,30 @@ function prepare_service_output(visitors_realm, mon_realm, j, home_server, realm
   else
     out += " " + 0 + ", ";
 
+  // mac address
+  if(first_byte < 16) {
+    if(second_byte == 255) {
+      second_byte = 0;
+      out += "'70-6F-6C-69-0" + (first_byte++).toString(16).toUpperCase() + "-";
+    }
+    else
+      out += "'70-6F-6C-69-0" + first_byte.toString(16).toUpperCase() + "-";
+  }
+  else {
+    if(second_byte == 255) {
+      second_byte = 0;
+      out += "'70-6F-6C-69-" + (first_byte++).toString(16).toUpperCase() + "-";
+    }
+    else
+      out += "'70-6F-6C-69-" + first_byte.toString(16).toUpperCase() + "-";
+  }
+
+  if(second_byte < 16)
+    out += "0" + (second_byte++).toString(16).toUpperCase() + "',";
+  else
+    out += (second_byte++).toString(16).toUpperCase() + "',";
+
+
   // testing id, password
   out += "'" + realm.eduroamTestingId + "',";
   out += "'" + realm.eduroamTestingPassword + "'";
@@ -857,7 +883,7 @@ function create_db_structure(callback)
 
   console.log("CREATE TABLE IF NOT EXISTS radius_server (id INT NOT NULL AUTO_INCREMENT, radius_dn VARCHAR(191) NOT NULL, radius_cn VARCHAR(191) NOT NULL, inf_radius_secret VARCHAR(191) NOT NULL, transport VARCHAR(191) NOT NULL, mon_radius_secret VARCHAR(191) NOT NULL, mon_realm VARCHAR(191), FOREIGN KEY (mon_realm) REFERENCES realm(realm_dn), inf_realm VARCHAR(191), FOREIGN KEY (inf_realm) REFERENCES realm(realm_dn), radius_manager VARCHAR(191) NOT NULL, FOREIGN KEY (radius_manager) REFERENCES admin(admin_dn), PRIMARY KEY ( id ), UNIQUE ( id ), INDEX radius_server_idx (radius_dn));");
 
-  console.log("CREATE TABLE IF NOT EXISTS service (id VARCHAR(191) NOT NULL, visitors_realm VARCHAR(191) NOT NULL, visited_realm VARCHAR(191) NOT NULL, check_host VARCHAR(191) NOT NULL, home_server VARCHAR(191) NOT NULL, home_realm_check BOOLEAN, testing_id VARCHAR(191) NOT NULL, password VARCHAR(191) NOT NULL, PRIMARY KEY ( id ), UNIQUE ( id ), INDEX service_idx (id));");
+  console.log("CREATE TABLE IF NOT EXISTS service (id VARCHAR(191) NOT NULL, visitors_realm VARCHAR(191) NOT NULL, visited_realm VARCHAR(191) NOT NULL, check_host VARCHAR(191) NOT NULL, home_server VARCHAR(191) NOT NULL, home_realm_check BOOLEAN, mac_address VARCHAR(191) NOT NULL, testing_id VARCHAR(191) NOT NULL, password VARCHAR(191) NOT NULL, PRIMARY KEY ( id ), UNIQUE ( id ), INDEX service_idx (id));");
 
   callback(null);
 }

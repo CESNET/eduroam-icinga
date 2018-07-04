@@ -223,6 +223,9 @@ function search_realms(client, data, testing_ids, search_base, callback)
       if(entry.object['eduroamTestingId'])
         testing_ids[entry.object['eduroamTestingId']] = { "id" : entry.object['eduroamTestingId'], "password" : entry.object['eduroamTestingPassword'] };
 
+      if(entry.object['labeledUri'])
+        data[key]['labeledUri'] = data[key]['labeledUri'].split(" ")[0];        // save only url
+
       data[key].dn = data[key].dn.toLowerCase();          // normalize dn
     });
 

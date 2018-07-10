@@ -697,18 +697,18 @@ function prepare_service_output(visitors_realm, mon_realm, j, home_server, realm
   if(first_byte < 16) {
     if(second_byte == 255) {
       second_byte = 0;
-      out += "'70-6F-6C-69-0" + (first_byte++).toString(16).toUpperCase() + "-";
+      out += "'70:6F:6C:69:0" + (first_byte++).toString(16).toUpperCase() + ":";
     }
     else
-      out += "'70-6F-6C-69-0" + first_byte.toString(16).toUpperCase() + "-";
+      out += "'70:6F:6C:69:0" + first_byte.toString(16).toUpperCase() + ":";
   }
   else {
     if(second_byte == 255) {
       second_byte = 0;
-      out += "'70-6F-6C-69-" + (first_byte++).toString(16).toUpperCase() + "-";
+      out += "'70:6F:6C:69:" + (first_byte++).toString(16).toUpperCase() + ":";
     }
     else
-      out += "'70-6F-6C-69-" + first_byte.toString(16).toUpperCase() + "-";
+      out += "'70:6F:6C:69:" + first_byte.toString(16).toUpperCase() + ":";
   }
 
   if(second_byte < 16)

@@ -7,17 +7,7 @@
 
 
 # ===============================================================
-# generate roles for users
-# ===============================================================
-function generate_roles
-{
-  role_file="/etc/icingaweb2/roles.ini"
-  role_base="/etc/icingaweb2/roles_base.ini"
-  cp $role_base $role_file      # copy base
-  ./roles.js                    # generate realm amdin roles
-}
-# ===============================================================
-# generate roles for users
+# generate synchronize ldap source with mysql
 # ===============================================================
 function ldap_sync
 {
@@ -47,12 +37,12 @@ function main
   if [[ "$last" != "$current" ]]               # force sync once a day
   then
     ldap_sync force
-    generate_roles
+    : # TODO
   else
     ldap_sync
     if [[ $? -ne 0 ]]
     then
-      generate_roles            # generate roles if ldap sync did something
+      : # TODO
     fi
   fi
 }

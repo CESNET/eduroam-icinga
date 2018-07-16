@@ -31,10 +31,6 @@ function main
   warn_count=$(echo "$services" | grep ',"1"' | wc -l)
   crit_count=$(echo "$services" | grep ',"2"' | wc -l)
 
-  # debug
-  #echo "services: $services"
-
-
   ok_percent=$(printf "%0.2f" $(echo "$ok_count" / $count | bc -l))
 
   echo "$ok_count of visitors realms OK"

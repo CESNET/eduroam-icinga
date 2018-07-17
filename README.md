@@ -45,7 +45,7 @@ php-icinga                           2.5.3-1.stretch
 
 ### icingaweb2
 For simple interaction with icinga2 through web browser, icingaweb2 is needed. This package
-has been also taken from official icinga2 package repositories (see [icinga2 setup](#icinga2_setup).
+has been also taken from official icinga2 package repositories (see [icinga2 setup](#icinga2-setup)).
 
 To use icingaweb2 with icinga2 a database is also needed. Icingaweb2 supports mysql and postgresql.
 Mysql has been chosen as database for our setup for historical reasons and compatilibity with other tools.

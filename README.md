@@ -62,8 +62,8 @@ icinga2 feature enable ido-mysql
 
 Apache is used as webserver because of it's support with shibboleth module.
 
-By default icingaweb2 is located at /icingaweb2.
-With the configuration below, icingaweb2 is available at /.
+By default icingaweb2 is located at url /icingaweb2.
+With the configuration below, icingaweb2 is available at url /.
 
 ```
 <VirtualHost *:80>

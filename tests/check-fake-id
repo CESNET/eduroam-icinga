@@ -1,0 +1,24 @@
+#!/bin/bash
+
+REAL_ID=${10}
+FAKE_ID=${20};
+
+OUT=`/usr/lib/nagios/plugins/rad_eap_test $@`
+RES=$?
+
+
+if [ $RES == 0 ]
+then
+  # access-acept je spatne
+  echo "IdP accepted fake $FAKE_ID: $OUT; this is WRONG"
+  exit 2
+elif [ $RES == 1 ]
+then
+  echo "IdP rejected fake $FAKE_ID: $OUT; this is OK"
+  exit 0;
+fi
+
+# warning; nechame normalni vystup
+echo "IdP other response: $OUT"
+exit 1;
+

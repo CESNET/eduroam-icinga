@@ -184,7 +184,7 @@ TODO
 Icinga2 needs to work with our data. How to get the data to the icinga2 was the tricky part of this implementation.
 The diagram below shows how the data are transfered to icinga2.
 
-![diagram](instruction://github.com/CESNET/eduroam-icinga/blob/master/doc/data_flow.png "Diagram")
+![diagram](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_flow.png "Diagram")
 
 The diagram could be described as follows:
 1. The sychronization script gets the data from the data source.

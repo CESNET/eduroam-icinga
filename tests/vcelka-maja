@@ -10,7 +10,7 @@ REALM=$5
 MAC1=$6
 MAC2=$7
 
-output=`/usr/local/rad_eap_test/rad_eap_test -H $HOSTNAME -P 1812 -S $SECRET -m WPA-EAP -e TTLS -u $ID -p $PASS -t 25 -A vcelka-maja@$REALM -M $MAC1 2>/dev/null`
+output=`/usr/lib/nagios/plugins/rad_eap_test -H $HOSTNAME -P 1812 -S $SECRET -m WPA-EAP -e TTLS -u $ID -p $PASS -t 25 -A vcelka-maja@$REALM -M $MAC1 2>/dev/null`
 ttls_code=$?
 ttls_out="TTLS: vcelka-maja@$REALM $output"
 if [ $ttls_code -eq 0 ]
@@ -19,7 +19,7 @@ then
   echo $ttls_out
   exit 2;
 else
-  output=`/usr/local/rad_eap_test/rad_eap_test -H $HOSTNAME -P 1812 -S $SECRET -m WPA-EAP -e PEAP -u $ID -p $PASS -t 25 -A vcelka-maja@$REALM -M $MAC2 2>/dev/null`
+  output=`/usr/lib/nagios/plugins/rad_eap_test -H $HOSTNAME -P 1812 -S $SECRET -m WPA-EAP -e PEAP -u $ID -p $PASS -t 25 -A vcelka-maja@$REALM -M $MAC2 2>/dev/null`
   peap_code=$?
   peap_out="PEAP: vcelka-maja@$REALM $output"
   if [ $peap_code -eq 0 ]

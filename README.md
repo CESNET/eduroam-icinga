@@ -144,7 +144,7 @@ With the configuration below, icingaweb2 is available at url /.
 
 #### icingaweb2 setup
 
-The setup is done by pointing the browser to your icingaweb2 instance and going thrught the wizard.
+The setup is done by pointing the browser to your icingaweb2 instance and going through the wizard.
 All the steps should be clear with the database correctly set up.
 
 ## icingaweb2 modules

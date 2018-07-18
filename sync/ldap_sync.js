@@ -877,7 +877,7 @@ function prepare_config(radius_servers, realms, testing_ids, disabled_realms, ca
   callback(null);
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// generate realms plain icinga 2 configuration
 // --------------------------------------------------------------------------------------
 function generate_realms(dest, realms, realms_radius)
 {
@@ -914,7 +914,7 @@ function generate_realms(dest, realms, realms_radius)
   fs.appendFileSync(dest, '] \n');
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// generate radius servers plain icinga 2 configuration
 // --------------------------------------------------------------------------------------
 function generate_radius(dest, realms_radius)
 {
@@ -951,7 +951,7 @@ function generate_radius(dest, realms_radius)
   fs.appendFileSync(dest, '] \n');
 }
 // --------------------------------------------------------------------------------------
-// TODO
+// generate icinga2 plain DSL configuration for fileshipper
 // --------------------------------------------------------------------------------------
 function generate_config(radius_servers, mon_realm, realms, realms_radius)
 {

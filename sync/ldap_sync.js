@@ -950,68 +950,6 @@ function generate_radius(dest, realms_radius)
 
   fs.appendFileSync(dest, '] \n');
 }
-//// --------------------------------------------------------------------------------------
-//// TODO
-//// --------------------------------------------------------------------------------------
-//function generate_realms(dest, realms, realms_radius)
-//{
-//  var primary_realm;
-//  fs.writeFileSync(dest, 'const realms = [ \n');
-//
-//  for(var i in realms) {
-//    fs.appendFileSync(dest, '\t{ ');
-//
-//    if(typeof(realms[i].cn) === 'object')
-//      primary_realm = realms[i].cn[0];
-//    else
-//      primary_realm = realms[i].cn;
-//
-//    fs.appendFileSync(dest, 'realm = "' + primary_realm + '", ');
-//    fs.appendFileSync(dest, 'testing_id = "' + realms[i].eduroamTestingId + '", ');
-//    fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword + '", ');
-//    fs.appendFileSync(dest, 'xml_url = "' + realms[i].labeledUri + '", ');
-//
-//    if(typeof(realms_radius[primary_realm]) === 'object') {
-//      fs.appendFileSync(dest, 'home_servers = [');
-//
-//        for(var j in realms_radius[primary_realm])
-//          fs.appendFileSync(dest, '"' + realms_radius[primary_realm][j] + '", ');
-//
-//      fs.appendFileSync(dest, ']');
-//    }
-//    else
-//      fs.appendFileSync(dest, 'home_servers = "' + realms_radius[primary_realm] + '", ');
-//
-//    fs.appendFileSync(dest, '},\n');
-//  }
-//
-//  fs.appendFileSync(dest, '] \n');
-//}
-//// --------------------------------------------------------------------------------------
-//// TODO
-//// --------------------------------------------------------------------------------------
-//function generate_radius(dest, realms_radius)
-//{
-//  var out = [];
-//
-//  for(var i in realms_radius) {
-//    if(typeof(realms_radius[i]) === 'object') {
-//      for(var j in realms_radius[i])
-//        if(out.indexOf(realms_radius[i][j]) == -1)
-//          out.push(realms_radius[i][j]);
-//    }
-//    else {
-//      if(out.indexOf(realms_radius[i]) == -1)
-//        out.push(realms_radius[i]);
-//    }
-//  }
-//
-//  fs.appendFileSync(dest, 'const radius_servers = [ \n');
-//  for(var i in out) {
-//    fs.appendFileSync(dest, '"' + out[i] + '", ');
-//  }
-//  fs.appendFileSync(dest, '] \n');
-//}
 // --------------------------------------------------------------------------------------
 // TODO
 // --------------------------------------------------------------------------------------

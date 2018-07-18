@@ -108,6 +108,10 @@ function save_latest_to_file(file, variable)
 // --------------------------------------------------------------------------------------
 function save_latest()
 {
+  // check if temp directory exists, if not create it
+  if(!fs.existsSync(config.temp_file))
+    fs.mkdirSync(config.temp_file);
+
   save_latest_to_file(config.temp_file + 'latest_realm', latest_realm);
   save_latest_to_file(config.temp_file + 'latest_radius', latest_radius);
   save_latest_to_file(config.temp_file + 'latest_admin', latest_admin);

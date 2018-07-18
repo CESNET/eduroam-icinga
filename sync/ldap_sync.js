@@ -84,7 +84,7 @@ function synchronize_data() {
       print_radius_servers(radius_servers, callback);
     },
     function(callback) {
-      print_services(radius_servers, realms, testing_ids, disabled_realms, callback);
+      prepare_config(radius_servers, realms, testing_ids, disabled_realms, callback);
     },
   ],
   // optional callback
@@ -811,16 +811,25 @@ function reverse_mapping(mon_realm, realms_radius)
   }
 }
 // --------------------------------------------------------------------------------------
-// print testing ids
+// escape unsafe password characters
 // --------------------------------------------------------------------------------------
-function print_services(radius_servers, realms, testing_ids, disabled_realms, callback)
+function transform_passwords(realms)
+{
+  for(var i in realms)
+    if(realms[i].eduroamTestingPassword && realms[i].eduroamTestingPassword.indexOf("$") != -1)
+      realms[i].eduroamTestingPassword = realms[i].eduroamTestingPassword.replace("$", "$$$");             // replace "$" with "$$"
+}
+// --------------------------------------------------------------------------------------
+// print services
+// --------------------------------------------------------------------------------------
+function prepare_config(radius_servers, realms, testing_ids, disabled_realms, callback)
 {
   var out;
   var mon_realm = {};
   var inf_realm = {};
   var realms_radius = {};       // reverse mapping for better indexing
 
-  console.log("INSERT INTO service VALUES");             // insert
+  //console.log("INSERT INTO service VALUES");             // insert
 
   for(var i in radius_servers) {
     if(radius_servers[i].eduroamMonRealm != 'NULL') {      // not undefined
@@ -854,9 +863,161 @@ function print_services(radius_servers, realms, testing_ids, disabled_realms, ca
   reverse_mapping(mon_realm, realms_radius);
 
   // process all prepared data and print output
-  process_services(radius_servers, mon_realm, realms, realms_radius);
+  //process_services(radius_servers, mon_realm, realms, realms_radius);
+
+  // transform "bad" user passwords to be useable by icinga
+  transform_passwords(realms);
+
+  generate_config(radius_servers, mon_realm, realms, realms_radius)
 
   callback(null);
+}
+// --------------------------------------------------------------------------------------
+// TODO
+// --------------------------------------------------------------------------------------
+function generate_realms(dest, realms, realms_radius)
+{
+  var primary_realm;
+  fs.writeFileSync(dest, 'const realms = [ \n');
+
+  for(var i in realms) {
+    //fs.appendFileSync(dest, '\t{ ');
+
+    if(typeof(realms[i].cn) === 'object')
+      primary_realm = realms[i].cn[0];
+    else
+      primary_realm = realms[i].cn;
+
+    fs.appendFileSync(dest, '\t{ "' + primary_realm + '" = { ');
+    fs.appendFileSync(dest, 'testing_id = "' + realms[i].eduroamTestingId + '", ');
+    fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword + '", ');
+    fs.appendFileSync(dest, 'xml_url = "' + realms[i].labeledUri + '", ');
+
+    if(typeof(realms_radius[primary_realm]) === 'object') {
+      fs.appendFileSync(dest, 'home_servers = [');
+
+        for(var j in realms_radius[primary_realm])
+          fs.appendFileSync(dest, '"' + realms_radius[primary_realm][j] + '", ');
+
+      fs.appendFileSync(dest, ']');
+    }
+    else
+      fs.appendFileSync(dest, 'home_servers = "' + realms_radius[primary_realm] + '", ');
+
+    fs.appendFileSync(dest, ' } },\n');
+  }
+
+  fs.appendFileSync(dest, '] \n');
+}
+// --------------------------------------------------------------------------------------
+// TODO
+// --------------------------------------------------------------------------------------
+function generate_radius(dest, realms_radius)
+{
+  var out = {};
+
+  for(var [ realm, server ]  of Object.entries(realms_radius)) {
+    if(typeof(server) === 'object') {
+      for(var j in server) {
+        if(server[j] in out)
+          out[server[j]].push(realm);
+        else
+          out[server[j]] = [ realm ];
+      }
+    }
+    else {
+        if(server in out)
+          out[server].push(realm);
+        else
+          out[server] = [ realm ];
+    }
+  }
+
+  fs.appendFileSync(dest, 'const radius_servers = [ \n');
+
+  for(var [ server, realm ]  of Object.entries(out)) {
+    fs.appendFileSync(dest, '{ "' + server + '" = [ ');
+
+    for(var i in realm)
+      fs.appendFileSync(dest, '"' + realm[i] + '", ');
+
+    fs.appendFileSync(dest, '] },\n');
+  }
+
+  fs.appendFileSync(dest, '] \n');
+}
+//// --------------------------------------------------------------------------------------
+//// TODO
+//// --------------------------------------------------------------------------------------
+//function generate_realms(dest, realms, realms_radius)
+//{
+//  var primary_realm;
+//  fs.writeFileSync(dest, 'const realms = [ \n');
+//
+//  for(var i in realms) {
+//    fs.appendFileSync(dest, '\t{ ');
+//
+//    if(typeof(realms[i].cn) === 'object')
+//      primary_realm = realms[i].cn[0];
+//    else
+//      primary_realm = realms[i].cn;
+//
+//    fs.appendFileSync(dest, 'realm = "' + primary_realm + '", ');
+//    fs.appendFileSync(dest, 'testing_id = "' + realms[i].eduroamTestingId + '", ');
+//    fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword + '", ');
+//    fs.appendFileSync(dest, 'xml_url = "' + realms[i].labeledUri + '", ');
+//
+//    if(typeof(realms_radius[primary_realm]) === 'object') {
+//      fs.appendFileSync(dest, 'home_servers = [');
+//
+//        for(var j in realms_radius[primary_realm])
+//          fs.appendFileSync(dest, '"' + realms_radius[primary_realm][j] + '", ');
+//
+//      fs.appendFileSync(dest, ']');
+//    }
+//    else
+//      fs.appendFileSync(dest, 'home_servers = "' + realms_radius[primary_realm] + '", ');
+//
+//    fs.appendFileSync(dest, '},\n');
+//  }
+//
+//  fs.appendFileSync(dest, '] \n');
+//}
+//// --------------------------------------------------------------------------------------
+//// TODO
+//// --------------------------------------------------------------------------------------
+//function generate_radius(dest, realms_radius)
+//{
+//  var out = [];
+//
+//  for(var i in realms_radius) {
+//    if(typeof(realms_radius[i]) === 'object') {
+//      for(var j in realms_radius[i])
+//        if(out.indexOf(realms_radius[i][j]) == -1)
+//          out.push(realms_radius[i][j]);
+//    }
+//    else {
+//      if(out.indexOf(realms_radius[i]) == -1)
+//        out.push(realms_radius[i]);
+//    }
+//  }
+//
+//  fs.appendFileSync(dest, 'const radius_servers = [ \n');
+//  for(var i in out) {
+//    fs.appendFileSync(dest, '"' + out[i] + '", ');
+//  }
+//  fs.appendFileSync(dest, '] \n');
+//}
+// --------------------------------------------------------------------------------------
+// TODO
+// --------------------------------------------------------------------------------------
+function generate_config(radius_servers, mon_realm, realms, realms_radius)
+{
+  var dest = "/etc/icingaweb2/modules/fileshipper/dynamic_config.conf";
+
+  generate_realms(dest, realms, realms_radius);
+  fs.appendFileSync(dest, '\n/* ====================================================================================== */\n\n');
+  generate_radius(dest, realms_radius);
 }
 // --------------------------------------------------------------------------------------
 // create mysql database structure to store data

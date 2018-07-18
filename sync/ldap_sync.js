@@ -670,117 +670,6 @@ function delete_disabled(realms, disabled_realms, testing_ids, callback)
   callback();
 }
 // --------------------------------------------------------------------------------------
-// prepare output for service table
-// --------------------------------------------------------------------------------------
-function prepare_service_output(visitors_realm, mon_realm, j, home_server, realm)
-{
-  var out;
-  out = "(";
-  // key
-  out += "'" + visitors_realm + "@" + mon_realm + "@" + j + "',";
-
-  // visitors realm
-  out += "'" + visitors_realm + "',";
-
-  // visited realm
-  out += "'" + mon_realm + "',";
-
-  // radius hostname on which the test is being run
-  out += "'" + j + "',";
-
-  // home server for visitor's realm
-  out += "'" + home_server + "',";
-
-  // checking home realm [bool]
-  if(visitors_realm == mon_realm)
-    out += " " + 1 + ", ";
-  else
-    out += " " + 0 + ", ";
-
-  // mac address
-  if(first_byte < 16) {
-    if(second_byte == 255) {
-      second_byte = 0;
-      out += "'70:6F:6C:69:0" + (first_byte++).toString(16).toUpperCase() + ":";
-    }
-    else
-      out += "'70:6F:6C:69:0" + first_byte.toString(16).toUpperCase() + ":";
-  }
-  else {
-    if(second_byte == 255) {
-      second_byte = 0;
-      out += "'70:6F:6C:69:" + (first_byte++).toString(16).toUpperCase() + ":";
-    }
-    else
-      out += "'70:6F:6C:69:" + first_byte.toString(16).toUpperCase() + ":";
-  }
-
-  if(second_byte < 16)
-    out += "0" + (second_byte++).toString(16).toUpperCase() + "',";
-  else
-    out += (second_byte++).toString(16).toUpperCase() + "',";
-
-
-  // testing id, password
-  out += "'" + realm.eduroamTestingId + "',";
-  out += "'" + realm.eduroamTestingPassword + "'";
-
-  out += "),";
-  return out;
-}
-// --------------------------------------------------------------------------------------
-// process one or multiple home servers for visitor's realm
-// --------------------------------------------------------------------------------------
-function multiple_home_servers(realms_radius, primary_realm, mon_realm, j, realm)
-{
-  var out;
-
-  if(typeof(realms_radius[primary_realm]) === 'object') {         // multiple home servers for visitor's realm
-    var tmp = "";
-
-    for(var m in realms_radius[primary_realm])
-      tmp += realms_radius[primary_realm][m] + ','
-    out = prepare_service_output(primary_realm, mon_realm, j, tmp, realm);
-  }
-  else
-    out = prepare_service_output(primary_realm, mon_realm, j, realms_radius[primary_realm], realm);
-
-  return out;
-}
-// --------------------------------------------------------------------------------------
-// process all data to create service table output
-// --------------------------------------------------------------------------------------
-function process_services(radius_servers, mon_realm, realms, realms_radius)
-{
-  var out = [];
-
-  for(var l in realms) {
-    if(realms[l].eduroamTestingId != undefined) {
-      // key
-      if(typeof(realms[l].cn) === 'object')
-        var primary_realm = realms[l].cn[0];
-      else
-        var primary_realm = realms[l].cn;
-
-      for(var j in mon_realm) {
-        if(typeof(mon_realm[j]) === 'object') {         // multiple mon realms
-          for(var k in mon_realm[j])
-            out.push(multiple_home_servers(realms_radius, primary_realm, mon_realm[j][k], j, realms[l]));
-        }
-        else
-          out.push(multiple_home_servers(realms_radius, primary_realm, mon_realm[j], j, realms[l]));
-      }
-    }
-  }
-
-  for(var i in out) {
-    if(i == out.length -1)
-      console.log(out[i].substring(0, out[i].length -1) + ";");               // last item
-    else
-      console.log(out[i]);
-  }
-}
-// --------------------------------------------------------------------------------------
 // create reverse mapping between servers and realms
 // --------------------------------------------------------------------------------------
 function reverse_mapping(mon_realm, realms_radius)
@@ -833,8 +722,6 @@ function prepare_config(radius_servers, realms, testing_ids, disabled_realms, ca
   var inf_realm = {};
   var realms_radius = {};       // reverse mapping for better indexing
 
-  //console.log("INSERT INTO service VALUES");             // insert
-
   for(var i in radius_servers) {
     if(radius_servers[i].eduroamMonRealm != 'NULL') {      // not undefined
       if(typeof(radius_servers[i].eduroamMonRealm) === 'object')  // multiple mon realms
@@ -865,9 +752,6 @@ function prepare_config(radius_servers, realms, testing_ids, disabled_realms, ca
 
   // generate reverse mapping, always one realm as key
   reverse_mapping(mon_realm, realms_radius);
-
-  // process all prepared data and print output
-  //process_services(radius_servers, mon_realm, realms, realms_radius);
 
   // transform "bad" user passwords to be useable by icinga
   transform_passwords(realms);

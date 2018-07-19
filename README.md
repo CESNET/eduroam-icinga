@@ -142,6 +142,22 @@ With the configuration below, icingaweb2 is available at url /.
 
 ```
 
+Sbibboleth module is used to handle authentication to icingaweb2.
+Sbibboleth setup is not covered in this guide.
+
+It is required that only specific users can access icingaweb2.
+This is done by part of the configuration also mentioned above:
+```
+                  <RequireAll>
+                    Require shibboleth
+                    ShibRequestSetting requireSession 1
+                    Require shib-attr perunUniqueGroupName cesnet:members eduroam:eduroam-admin
+                  </RequireAll>
+```
+
+This configuration sets up authorization in a way, that only users which provide sbibboleth attribute
+perunUniqueGroupName with value `cesnet:members` or `eduroam:eduroam-admin` are allowed in.
+
 #### icingaweb2 setup
 
 The setup is done by pointing the browser to your icingaweb2 instance and going through the wizard.

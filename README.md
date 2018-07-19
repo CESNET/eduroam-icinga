@@ -189,7 +189,18 @@ This module is cloned directly from git repository. Revision used is `fd2c797eed
 
 For installation see official [instructions](https://github.com/Icinga/icingaweb2-module-fileshipper/blob/master/doc/02-Installation.md)
 
-Configuration - TODO
+#### configuration
+
+You need to create file `/etc/icingaweb2/modules/fileshipper/directories.ini` with contents:
+```
+[sync hand crafted configuration]
+source = /etc/icingaweb2/modules/fileshipper
+target = zones.d/director-global/service_apply_rules
+```
+
+This configuration defines where the source and target directories are. The source
+directory contains hand crafted icinga2 configuration. On deploy it is shipped to the
+target directory and deployed along with the director generated configuration.
 
 ## icingaweb2/director configuration
 

@@ -603,7 +603,7 @@ List of icinga2 plain config files:
 Static configuration is not changed by any part of the data synchronation tools.
 It should only be modified by hand a it should not be necessary.
 
-File contents:
+`/etc/icingaweb2/modules/fileshipper/static_config.conf` contents:
 ```
 /* --------------------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------------------------------------- */

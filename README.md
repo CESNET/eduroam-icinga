@@ -246,6 +246,8 @@ The icinga2 configuration which is applied with director deployment is located i
 - icingaweb2 - director
 - (client configuration [it actually does not affect deployment, but only client test])
 
+### icinga2
+
 All the configration files in `/etc/icinga2/`:
 ```
 /etc/icinga2/conf.d/api-users.conf
@@ -298,7 +300,7 @@ TODO - nofitications?
 /etc/icinga2/conf.d/dependencies.conf       - defined dependencies here, details below
 ```
 
-### Templates
+#### Templates
 Client service templates are defined in `/etc/icinga2/conf.d/templates.conf`.
 Additional file contents:
 ```
@@ -358,7 +360,7 @@ TODO - add whole file?
 
 TODO - explain what is client according to icinga2 terminology
 
-### Services
+#### Services
 Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.
 Additional file contents:
 ```
@@ -386,7 +388,7 @@ apply Service "CALLING-STATION-ID" {
 TODO - add whole file?
 
 
-### Dependencies
+#### Dependencies
 Dependencies seare defined in `/etc/icinga2/conf.d/dependencies.conf`.
 Configuration is commented and should be self-explanatory.
 File contents:

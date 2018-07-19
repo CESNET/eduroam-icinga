@@ -244,7 +244,7 @@ The icinga2 configuration which is applied with director deployment is located i
 - `/etc/icinga2/`
 - `/etc/icingaweb2/modules/fileshipper/`
 - icingaweb2 - director
-- client configuration
+- (client configuration [it actually does not affect deployment, but only client test])
 
 All the configration files in `/etc/icinga2/`:
 ```

@@ -3,17 +3,17 @@ This repository contains all the auxiliary tools for monitoring of czech eduroam
 The core of monitoring is icinga2. This is intended as a complete guide on how to setup up eduroam monitoring for any other NRENs wishing to 
 monitor their national eduroam infrastructure.
 
-## [icinga2 setup](://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_setup.md)
+## [icinga2 setup](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_setup.md)
 
-## [icingaweb2 modules](://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md)
+## [icingaweb2 modules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md)
 
 ## icingaweb2/director configuration
 
 TODO
 
-## [Data synchronization](://github.com/CESNET/eduroam-icinga/blob/master/doc/data_sync.md)
+## [Data synchronization](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_sync.md)
 
-## [icinga2 configuration](://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_config.md)
+## [icinga2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_config.md)
 
 # icingaweb2?
 

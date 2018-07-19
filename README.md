@@ -825,6 +825,71 @@ for(realm in realms) {
 }
 ```
 
+The second part of the static configuration is file `/etc/icingaweb2/modules/fileshipper/mac_address.conf`
+This file only exists to ease assignment of mac address variables to services.
+The file contains 65536 hex string in range from `70:6f:6c:69:00:00` to `70:6f:6c:69:ff:ff`.
+
+`/etc/icingaweb2/modules/fileshipper/mac_address.conf` contents:
+```
+const mac_address = [
+"70:6f:6c:69:00:00",
+"70:6f:6c:69:00:01",
+"70:6f:6c:69:00:02",
+...
+```
+
+#### dynamic configuration
+Dynamic configuration is created when source of the data changes somehow.
+In our specific case it is created by https://github.com/CESNET/eduroam-icinga/blob/master/sync/ldap_sync.js.
+
+The configration only contains two variables which are used in `/etc/icingaweb2/modules/fileshipper/static_config.conf`.
+
+Variables in `/etc/icingaweb2/modules/fileshipper/dynanic_config.conf` have the following structure.
+
+Variable `realms` is an array of objects. Each object has a dynamic key which is its realm.
+The value of the key is an object with keys:
+- `testing_id`
+- `testing_password`
+- `xml_url`
+- `home_servers`
+
+All values of these keys except `home_servers` are strings.
+Variable `home_servers` is a string if there is only one home server.
+If there are multiple home servers variable `home_servers` is an array.
+
+Sample of data from file:
+```
+const realms = [
+	{ "cesnet.cz" =   { testing_id = "user@cesnet.cz",   testing_password = "password", xml_url = "http://eduroam.cesnet.cz/institution.xml",       home_servers = ["radius1.cesnet.cz", "radius2.cesnet.cz", ] } },
+	{ "fel.cvut.cz" = { testing_id = "user@fel.cvut.cz", testing_password = "password", xml_url = "http://eduroam.feld.cvut.cz/institution.xml",    home_servers = ["reu5.feld.cvut.cz", "radius.felk.cvut.cz", ] } },
+	{ "tul.cz" =      { testing_id = "user@tul.cz",      testing_password = "password", xml_url = "http://eduroam.tul.cz/institution.xml",          home_servers = ["radius1.tul.cz", "radius2.tul.cz", ] } },
+	{ "faf.cuni.cz" = { testing_id = "user@faf.cuni.cz", testing_password = "password", xml_url = "http://www.faf.cuni.cz/eduroam/institution.xml", home_servers = ["radius1.hknet.cz", "radius2.hknet.cz", ] } },
+	{ "prf.cuni.cz" = { testing_id = "user@prf.cuni.cz", testing_password = "password", xml_url = "http://eduroam.prf.cuni.cz/institution.xml",     home_servers = "eduroam.prf.cuni.cz",  } },
+    .....
+```
+
+Variable `radius_servers` is an array of objects. Each object has a dynamic key which is server dns name.
+The value of each key is an array of realms, for which the server authenticates users.
+
+Sample of data from file:
+```
+const radius_servers = [
+{ "radius1.tul.cz" = [ "tul.cz", ] },
+{ "radius2.tul.cz" = [ "tul.cz", ] },
+{ "radius.zcu.cz" = [ "zcu.cz", ] },
+{ "radius2.zcu.cz" = [ "zcu.cz", ] },
+{ "radius1.osu.cz" = [ "osu.cz", ] },
+{ "radius2.osu.cz" = [ "osu.cz", ] },
+{ "radius.sssvt.cz" = [ "sssvt.cz", ] },
+{ "radius1.hknet.cz" = [ "faf.cuni.cz", "uhk.cz", ] },
+{ "radius2.hknet.cz" = [ "faf.cuni.cz", "uhk.cz", ] },
+....
+```
+
+This structure has been chosen for easier and cleaner implementation of static configuration part.
+
+You should create your own script, which creates this file according to the rules mentioned above.
+
 - director
 - plain config in /etc/icinga2
 - client config

@@ -1,6 +1,9 @@
 ## Data synchronization
 
-Icinga2 needs to work with our data. How to get the data to the icinga2 was the tricky part of this implementation.
+Configuration data about Czech eduroam infrastructure are stored in an LDAP in a quite complex structure, this includes hostnames of RADIUSes, shared secrets, testing accounts, assignment of realms to RADIUS servers and more. How to get the configuration data from the LDAP to the icinga2 was the tricky part of this implementation.
+
+TODO: Zminka ze director umi cist LDAP ale nase struktura mu delala potize. Zalezi co si vzpomenes. 
+
 The diagram below shows how the data are transfered to icinga2.
 
 ![diagram](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_flow.png "Diagram")

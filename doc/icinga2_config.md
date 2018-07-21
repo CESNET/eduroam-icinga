@@ -537,7 +537,7 @@ for(realm in realms) {
     // fake uid
     apply Service "FAKE-UID" use(realm, radius, index, server, key) {
 
-      import "chargeable user identity template"
+      import "fake uid template"
       vars.testing_id = realm[key].testing_id
       vars.testing_password = realm[key].testing_password
       vars.mac_address = mac_address[index]

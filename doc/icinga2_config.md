@@ -141,7 +141,13 @@ apply Service "RADSEC" {
 
 apply Service "CALLING-STATION-ID" {
     import "calling station id template"
-    assign where host.vars.transport
+    assign where host.vars.transport && host.vars.transport != "undefined"
+}
+
+apply Service "OPERATOR-NAME" {
+
+  import "operator name template"
+  assign where host.vars.transport && host.vars.transport != "undefined"
 }
 ```
 
@@ -558,13 +564,6 @@ for(realm in realms) {
       assign where host.name == server && host.vars.type != "SP"
     }
     index += 1
-    /* --------------------------------------------------------------------------------------------------------- */
-    // operator name
-    apply Service "OPERATOR-NAME" use(realm, radius, index, server, key) {
-
-      import "operator name template"
-      assign where host.name == server && host.vars.transport
-    }
     /* --------------------------------------------------------------------------------------------------------- */
     // vcelka maja
     apply Service "VCELKA-MAJA" use(realm, radius, index, server, key) {

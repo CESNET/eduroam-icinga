@@ -370,237 +370,20 @@ List of icinga2 plain config files:
 Static configuration is not changed by any part of the data synchronation tools.
 It should only be modified by hand a it should not be necessary.
 
-`/etc/icingaweb2/modules/fileshipper/static_config.conf` contents:
-```
-/* --------------------------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------------------------- */
-// icinga2 static configuration for eduroam.cz
-//
-//
-/* --------------------------------------------------------------------------------------------------------- */
-/* --------------------------------------------------------------------------------------------------------- */
+`/etc/icingaweb2/modules/fileshipper/static_config.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf)
 
-index = 0
-
-for(realm in realms) {
-  key = keys(realm)[0]                // get realm
-
-  /* --------------------------------------------------------------------------------------------------------- */
-  // institution-xml
-
-  if(typeof(realm[key].home_servers) == Array && realm[key].xml_url != "undefined") {
-    apply Service "INSTITUTION-XML-" + key use(realm, key) {
-      import "institution xml template"
-
-      vars.xml_url = realm[key].xml_url
-      vars.temp = vars.xml_url.replace("https://", "").replace("http://", "")
-      vars.xml_host = vars.temp.split("/")[0]
-
-      vars.xml_url_part = vars.temp.substr(vars.temp.find("/"))
-
-      if(match(vars.xml_url, "https://.*")) {
-        vars.xml_https = 1
-      }
-
-      if(match(vars.xml_url, "http://.*")) {
-        vars.xml_https = 0
-      }
-
-      assign where host.name == realm[key].home_servers[0]
-    }
-  }
-
-  if(typeof(realm[key].home_servers) != Array && realm[key].xml_url != "undefined") {
-    apply Service "INSTITUTION-XML-" + key use(realm, key) {
-      import "institution xml template"
-
-      vars.xml_url = realm[key].xml_url
-      vars.temp = vars.xml_url.replace("https://", "").replace("http://", "")
-      vars.xml_host = vars.temp.split("/")[0]
-
-      vars.xml_url_part = vars.temp.substr(vars.temp.find("/"))
-
-      if(match(vars.xml_url, "https://.*")) {
-        vars.xml_https = 1
-      }
-
-      if(match(vars.xml_url, "http://.*")) {
-        vars.xml_https = 0
-      }
-
-      assign where host.name == realm[key].home_servers
-    }
-  }
-  /* --------------------------------------------------------------------------------------------------------- */
-  // compromised users
-  if(typeof(realm[key].home_servers) == Array) {
-    apply Service "COMPROMISED-USERS-" + key use(realm, key) {
-      import "compromised users template"
-      vars.realm = key
-      assign where host.name == realm[key].home_servers[0]
-    }
-  }
-
-  if(typeof(realm[key].home_servers) != Array) {
-    apply Service "COMPROMISED-USERS-" + key use(realm, key) {
-      import "compromised users template"
-      vars.realm = key
-      assign where host.name == realm[key].home_servers
-    }
-  }
-
-  /* --------------------------------------------------------------------------------------------------------- */
-  // concurrent inst
-  if(typeof(realm[key].home_servers) == Array) {
-    apply Service "CONCURRENT-INST-" + key use(realm, key) {
-      import "concurrent inst template"
-      vars.realm = key
-      assign where host.name == realm[key].home_servers[0]
-    }
-  }
-
-  if(typeof(realm[key].home_servers) != Array) {
-    apply Service "CONCURRENT-INST-" + key use(realm, key) {
-      import "concurrent inst template"
-      vars.realm = key
-      assign where host.name == realm[key].home_servers
-    }
-  }
-  /* --------------------------------------------------------------------------------------------------------- */
-
-  // skip if visitor's realm does not have testing user
-  // or no home server exists where testing user should be authenticated
-  if(realm[key].testing_id == "undefined" || realm[key].home_servers == "undefined") {
-    continue
-  }
-
-  /* --------------------------------------------------------------------------------------------------------- */
-  // home realm alive
-  if(typeof(realm[key].home_servers) == Array) {
-    for(home_server in realm[key].home_servers) {
-      apply Service "HOME-REALM-ALIVE-" + key use(realm, home_server, key) {
-
-        import "home realm alive template"
-        vars.home_servers = realm[key].home_servers
-        vars.realm = key
-        assign where host.name == home_server
-      }
-    }
-  }
-  /* --------------------------------------------------------------------------------------------------------- */
-
-  for(radius in radius_servers) {
-    server = keys(radius)[0]
-
-    /* --------------------------------------------------------------------------------------------------------- */
-    // check_rad_eap / matrix of visits
-    apply Service "@" + key use(realm, server, radius, index, key) {
-
-      display_name = "@" + key
-      check_command = "check_rad_eap"
-      vars.home_servers = realm[key].home_servers           // visitor's home servers
-      vars.testing_id = realm[key].testing_id               // visitor's testind id
-      vars.testing_password = realm[key].testing_password   // visitor's testing password
-      vars.mac_address = mac_address[index]
-      vars.visitors_realm = key
-      groups = [ key ]
-
-      if((typeof(realm[key].home_servers) == Array && server in realm[key].home_servers) || (typeof(realm[key].home_servers) == String && server == realm[key].home_servers)) {
-        vars.home_realm_check = 1
-        check_interval = 300
-        retry_interval = 600
-      }
-      if((typeof(realm[key].home_servers) == Array && server !in realm[key].home_servers) || (typeof(realm[key].home_servers) == String && server != realm[key].home_servers)) {
-        vars.home_realm_check = 0
-        check_interval = 10800
-        retry_interval = 7200
-      }
-
-      max_check_attempts = 3
-
-      assign where host.name == server
-    }
-    index += 1
-    /* --------------------------------------------------------------------------------------------------------- */
-
-    // key in not matching the first monitored realm of server
-    if(key != radius[server][0]) {              // suitable for services which should be applied only once to every server in case there are multiple monitored realms on one server
-      continue
-    }
-
-    /* --------------------------------------------------------------------------------------------------------- */
-    // chargeable user identity
-    apply Service "CHARGEABLE-USER-IDENTITY" use(realm, server, radius, index, key) {
-
-      import "chargeable user identity template"
-      vars.testing_id = realm[key].testing_id
-      vars.testing_password = realm[key].testing_password
-      vars.mac_address = mac_address[index]
-
-      assign where host.name == server
-    }
-    index += 1
-    /* --------------------------------------------------------------------------------------------------------- */
-    // fake uid
-    apply Service "FAKE-UID" use(realm, radius, index, server, key) {
-
-      import "fake uid template"
-      vars.testing_id = realm[key].testing_id
-      vars.testing_password = realm[key].testing_password
-      vars.mac_address = mac_address[index]
-
-      assign where host.name == server && host.vars.type != "SP"
-    }
-    index += 1
-    /* --------------------------------------------------------------------------------------------------------- */
-    // big packet
-    // TODO - tohle je nejake rozbite
-    apply Service "BIG-PACKET" use(realm, radius, index, server, key) {
-
-      import "big packet template"
-      vars.testing_id = "big-test@cesnet.cz"
-      vars.testing_password = big_packet_testing_password
-      vars.mac_address = mac_address[index]
-
-      assign where host.name == server && host.vars.type != "SP"
-    }
-    index += 1
-    /* --------------------------------------------------------------------------------------------------------- */
-    // vcelka maja
-    apply Service "VCELKA-MAJA" use(realm, radius, index, server, key) {
-
-      import "vcelka maja template"
-
-      vars.testing_id = realm[key].testing_id
-      vars.testing_password = realm[key].testing_password
-      vars.mac_address1 = mac_address[index]
-      vars.mac_address2 = mac_address[index + 1]
-      vars.realm = host.vars.mon_realm[0]       // TODO ?
-
-      assign where host.name == server && host.vars.type != "SP"
-    }
-    index += 2
-    /* --------------------------------------------------------------------------------------------------------- */
-  }
-}
-```
 
 The second part of the static configuration is file `/etc/icingaweb2/modules/fileshipper/mac_address.conf`
 This file only exists to ease assignment of mac address variables to services.
 The file contains 65536 hex strings in range from `70:6f:6c:69:00:00` to `70:6f:6c:69:ff:ff`.
 
-`/etc/icingaweb2/modules/fileshipper/mac_address.conf` contents:
-```
-const mac_address = [
-"70:6f:6c:69:00:00",
-"70:6f:6c:69:00:01",
-"70:6f:6c:69:00:02",
-...
-```
+`/etc/icingaweb2/modules/fileshipper/mac_address.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/mac_address.conf)
+
 
 The third part of the static configuration is file `/etc/icingaweb2/modules/fileshipper/secrets.conf`
 This file contains sensitive data, so the contents of the file are not part of this repository.
 The file contains definition of variable `big_packet_testing_password`.
+
 
 #### dynamic configuration
 Dynamic configuration is created when source of the data changes somehow.
@@ -653,6 +436,8 @@ const radius_servers = [
 This structure has been chosen for easier and cleaner implementation of static configuration part.
 
 You should create your own script, which creates this file according to the rules mentioned above.
+
+This file contains sensitive data, so the contents of the file are not part of this repository.
 
 - director
 - plain config in /etc/icinga2

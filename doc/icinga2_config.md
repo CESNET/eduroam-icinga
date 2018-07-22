@@ -361,6 +361,7 @@ which are shipped to icinga2 when director configuration is deployed.
 List of icinga2 plain config files:
 ```
 /etc/icingaweb2/modules/fileshipper/static_config.conf
+/etc/icingaweb2/modules/fileshipper/secrets.conf
 /etc/icingaweb2/modules/fileshipper/mac_address.conf
 /etc/icingaweb2/modules/fileshipper/dynamic_config.conf
 ```
@@ -558,7 +559,7 @@ for(realm in realms) {
 
       import "big packet template"
       vars.testing_id = "big-test@cesnet.cz"
-      vars.testing_password = "password"
+      vars.testing_password = big_packet_testing_password
       vars.mac_address = mac_address[index]
 
       assign where host.name == server && host.vars.type != "SP"
@@ -596,6 +597,10 @@ const mac_address = [
 "70:6f:6c:69:00:02",
 ...
 ```
+
+The third part of the static configuration is file `/etc/icingaweb2/modules/fileshipper/secrets.conf`
+This file contains sensitive data, so the contents of the file are not part of this repository.
+The file contains definition of variable `big_packet_testing_password`.
 
 #### dynamic configuration
 Dynamic configuration is created when source of the data changes somehow.

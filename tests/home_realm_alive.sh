@@ -23,10 +23,9 @@ function main
 
   for i in $@
   do
-    out=$(icingacli monitoring list services --host=$i --service="@$realm" --format=csv --columns=service_state)
-    state=$(echo "$out" | tail -1)
+    state=$(icingacli monitoring list services --host=$i --service="@$realm" --format='$service_state$' --columns=service_state)
 
-    if [[ "$state" =~ "1" ]]
+    if [[ "$state" == "1" || "$state" == "2" || "$state" == "3" ]]
     then
       ((dead++))
     else

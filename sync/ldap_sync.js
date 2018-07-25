@@ -781,16 +781,16 @@ function generate_realms(dest, realms, realms_radius)
     fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword + '", ');
     fs.appendFileSync(dest, 'xml_url = "' + realms[i].labeledUri + '", ');
 
-    if(typeof(realms_radius[primary_realm]) === 'object') {
-      fs.appendFileSync(dest, 'home_servers = [');
+    fs.appendFileSync(dest, 'home_servers = [ ');        // always an array !
 
+    if(typeof(realms_radius[primary_realm]) === 'object') {
         for(var j in realms_radius[primary_realm])
           fs.appendFileSync(dest, '"' + realms_radius[primary_realm][j] + '", ');
 
       fs.appendFileSync(dest, ']');
     }
     else
-      fs.appendFileSync(dest, 'home_servers = "' + realms_radius[primary_realm] + '", ');
+      fs.appendFileSync(dest, '"' + realms_radius[primary_realm] + '" ] ');
 
     fs.appendFileSync(dest, ' } },\n');
   }

@@ -5,7 +5,7 @@
 #
 # ============================================================
 # usage:
-# aggregate-results.sh realm hostname1 hostname2 [hostname3] [...]
+# home_realm_alive.sh realm hostname1 hostname2 [hostname3] [...]
 # ============================================================
 
 

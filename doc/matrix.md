@@ -4,7 +4,9 @@ The availability matrix is actually "only" a visualisation of monitoring data. T
 There were several reasons which made is really useful. The main reason was to get complete overview of all the testing users on all the servers in simple graph,
 which could help easily diagnose problematic servers or realms and could also help diagnose some more complex problems.
 
-[Screenshot](https://github.com/CESNET/eduroam-icinga/blob/master/doc/orig_matrix.png) from original matrix.
+Screenshot from original matrix below.
+
+![Screenshot](https://github.com/CESNET/eduroam-icinga/blob/master/doc/orig_matrix.png "original matrix")
 
 
 ## new setup

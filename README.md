@@ -28,33 +28,7 @@ TODO
 #### director
 
 
-
-## tests
-
-### chargeable user identity
-
-### calling station id
-
-### vcelka maja
-
-### radsec
-
-### ipsec
-
-### operator name
-
-### institution.xml
-
-### fake uid
-
-### check_rad_eap
-
-### big packet
-
-### concurrent inst
-
-### compromised users
-
+## [tests](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md)
 
 ## [availability matrix](https://github.com/CESNET/eduroam-icinga/blob/master/doc/matrix.md)
 

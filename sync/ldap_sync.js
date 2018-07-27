@@ -605,11 +605,6 @@ function print_admins(data, callback)
   console.log("INSERT INTO admin VALUES");             // insert
 
   for(var item in data) {
-    // Pokud bude mail prazdny, tak chceme cloveka alespon evidovat a icinga by se s tim mela byt schopna nejak vyrovnat
-    // TODO - tohle zkusit nejak rozumne otestovat?     - podminka v kodu na me
-
-    // TODO - co kdyz bude mail prazdny?
-
     // icingaweb2 is not able to correctly handle czech characters, so cn;lang-en is used here
     // more info:
     // https://github.com/Icinga/icinga2/issues/5412
@@ -622,14 +617,17 @@ function print_admins(data, callback)
         out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail[0] + "', '" + data[item].uid + "')";  // first mail
       else
         out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail + "', '" + data[item].uid + "')";  // the only mail
-
-      if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item
-        out += ";";
-      else                       // not last item
-        out += ",";
-
-      console.log(out);
     }
+    else {
+      out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '', '" + data[item].uid + "')";  // no mail available, set it to empty string
+    }
+
+    if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item
+      out += ";";
+    else                       // not last item
+      out += ",";
+
+    console.log(out);
   }
   callback(null);
 }

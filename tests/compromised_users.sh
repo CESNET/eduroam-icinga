@@ -43,6 +43,14 @@ function get_data()
   data=$(echo $data | sed -e 's/},{/\n/g')   # convert to lines and remove brackets
 }
 # =======================================================================================================
+# count number of users
+# =======================================================================================================
+function count_users
+{
+  stats=$(echo "$data" | cut -d "," -f8 | cut -d ":" -f2 | sort | uniq -c | sort -rn)   # get usernames, sort, count number of occurences, sort by number of occurences
+  total_count=$(echo "$stats" | wc -l)      # get total user count
+}
+# =======================================================================================================
 # process data
 # =======================================================================================================
 function process_data()
@@ -51,7 +59,7 @@ function process_data()
 
   if [[ "$data" != "[]" ]]
   then
-    total_count=$(echo "$data" | wc -l) # count number of users
+    count_users
   else  # no data available
     # we need to distinct no data available for given realm - 0 users moving too fast and unknown realm
     found=$(curl "https://$hostname:8443/api/realms" 2>/dev/null)
@@ -71,6 +79,7 @@ function check_threshold()
   if [[ $total_count -gt 0 ]]
   then
     echo "CRITICAL: $total_count users compromised for realm $realm | $total_count"
+    echo -e "stats:\n$stats"
     exit 2
   #elif [[ $total_count -ge $warning ]]
   #then

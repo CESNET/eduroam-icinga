@@ -56,10 +56,8 @@ TODO
 ### compromised users
 
 
-## availability matrix
-- reduced, full
-- radius x realm
-icingacli
+## [availability matrix](https://github.com/CESNET/eduroam-icinga/blob/master/doc/matrix.md)
 
 
-TODO - popsat i dalsi veci, ktere jsou na soucasnem ermonu?
+## Auxiliary tools
+TODO - semik

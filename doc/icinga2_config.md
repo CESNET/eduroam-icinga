@@ -55,9 +55,10 @@ From all these files, these are the important ones which should be modified:
 ```
 /etc/icinga2/conf.d/api-users.conf          - define director api user here
 /etc/icinga2/conf.d/templates.conf          - define client service templates here, details below
-TODO - nofitications?
+/etc/icinga2/conf.d/notification.conf       - define notifications here, details below
 /etc/icinga2/conf.d/services.conf           - define client services here, details below
 /etc/icinga2/conf.d/dependencies.conf       - defined dependencies here, details below
+/etc/icinga2/conf.d/groups.conf             - define service groups here, details below
 ```
 
 #### Templates

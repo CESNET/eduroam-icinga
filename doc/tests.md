@@ -50,6 +50,8 @@ Notifications for this test are enabled.
 ### notifications
 
 Notifications for this test are **NOT** enabled.
+Notifications are disabled for this test because operator-name attribute is not set as mandatory by czech eduroam policy.
+It is recommended to implement this attribute.
 
 
 <!--
@@ -63,6 +65,8 @@ This test
 ### notifications
 
 Notifications for this test are **NOT** enabled.
+Notifications are disabled for this test because chargeable-user-identity attribute is not set as mandatory by czech eduroam policy.
+It is recommended to implement this attribute.
 
 <!--
 # ==========================================================================================================================================
@@ -102,6 +106,8 @@ Notifications for this test are enabled.
 ### notifications
 
 Notifications for this test are **NOT** enabled.
+Notifications are disabled for this test because the administrator(s) of the corrensponding server can not affect if the home server
+authenticates the user correctly. That is also the reason why notifications are enabled for home realm.
 
 
 <!--
@@ -159,6 +165,7 @@ This is done by `usermod -a -G icingaweb2 nagios`.
 ### notifications
 
 Notifications for this test are **NOT** enabled.
+Notifications are disabled for this test because the would be redundant to notification for home realm.
 
 <!--
 # ==========================================================================================================================================

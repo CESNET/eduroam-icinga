@@ -1,24 +1,168 @@
+## ping
+<!--
+# ==========================================================================================================================================
+-->
+
+
+### notifications
+
+Notifications for this test are enabled.
+
+## radsec
+
+<!--
+# ==========================================================================================================================================
+-->
+
+### notifications
+
+Notifications for this test are enabled.
+
+## ipsec
+
+### notifications
+
+Notifications for this test are enabled.
+
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## calling station id
+
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## vcelka maja
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## operator name
+
+### notifications
+
+Notifications for this test are **NOT** enabled.
+
+
+<!--
+# ==========================================================================================================================================
+-->
+
 ## chargeable user identity
 
 This test 
 
-## calling station id
+### notifications
 
-## vcelka maja
+Notifications for this test are **NOT** enabled.
 
-## radsec
-
-## ipsec
-
-## operator name
+<!--
+# ==========================================================================================================================================
+-->
 
 ## institution.xml
 
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
 ## fake uid
 
-## check_rad_eap
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## home realm
+
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## visitors' realms
+
+### notifications
+
+Notifications for this test are **NOT** enabled.
+
+
+<!--
+# ==========================================================================================================================================
+-->
 
 ## big packet
+
+### notifications
+
+Notifications for this test are **NOT** enabled.
+
+reason TODO
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## cve-2017-9148
+
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## visitors
+
+This check
+
+### modifications needed
+
+This test internally uses the `icingacli` tool to get data.
+For this plugin to work under nagios user, the user needs to be added to icingaweb2 group.
+This is done by `usermod -a -G icingaweb2 nagios`.
+
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
+
+## home realm alive
+
+### modifications needed
+
+This test internally uses the `icingacli` tool to get data.
+For this plugin to work under nagios user, the user needs to be added to icingaweb2 group.
+This is done by `usermod -a -G icingaweb2 nagios`.
+
+### notifications
+
+Notifications for this test are **NOT** enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
 
 ## concurrent inst
 
@@ -41,6 +185,14 @@ The second parameter specifies minimal time difference between time needed to tr
 The third parameter specifies threshold for warning state. It is set to 10.
 The fourth parameter specifies threshold for critical state. It is set to 20.
 
+### notifications
+
+Notifications for this test are enabled.
+
+<!--
+# ==========================================================================================================================================
+-->
+
 ## compromised users
 
 This test is based on the data from system [etlog](https://github.com/CESNET/etlog). 
@@ -57,6 +209,10 @@ The script takes two parameters:
 
 The first parameter specifies the realm for which compromised users are retrieved.
 The second parameter specifies minimal time difference between time needed to travel from first visited insitution to second at specified speed (set to 100 km/h) and the time actually reached. It is set to 60 seconds.
+
+### notifications
+
+Notifications for this test are enabled.
 
 ### TODO
 

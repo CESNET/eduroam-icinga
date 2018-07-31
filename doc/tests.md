@@ -303,7 +303,7 @@ This is done by `usermod -a -G icingaweb2 nagios`.
 ### notifications
 
 Notifications for this test are **NOT** enabled.
-Notifications are disabled for this test because they would be redundant to notification for home realm.
+Notifications are disabled for this test because they would be redundant to notifications for home realm.
 
 <!--
 # ==========================================================================================================================================

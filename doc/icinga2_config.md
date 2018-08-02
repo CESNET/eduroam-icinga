@@ -125,6 +125,25 @@ We chose scenario when the client only recieves commdna execution events from th
 
 [Official documentation](https://www.icinga.com/docs/icinga2/latest/doc/06-distributed-monitoring/) on this topic.
 
+
+#### Notifications
+Notifications are defined in `/etc/icinga2/conf.d/notifications.conf`.
+Notifications are only setup for services, because we use dummy checks for hosts.
+
+No notifications will be sent unless notification feature is enabled as icinga2 feature.
+
+Additional file contents:
+```
+apply Notification "Send Mails for Services to their contact groups" to Service {
+  import "generic notification"
+  user_groups = [ host.name ]
+  assign where host.vars.type
+}
+```
+
+`/etc/icingaweb2/modules/icinga2/notifications.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/notifications.conf)
+
+
 #### Services
 Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.
 Additional file contents:

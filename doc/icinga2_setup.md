@@ -38,6 +38,40 @@ libicinga2                           2.8.4-1.stretch
 php-icinga                           2.5.3-1.stretch
 ```
 
+We noticed, that in icinga-users mailing list several people complained about errors when
+using newest icinga2 packages from official icinga repositories.
+Although we did not encouner any problems, we decided to mark all related packages as held.
+This ensured that when upgrading packages, these will stay on currently installed version.
+Marking packages for hold is done by:
+```
+for i in $(dpkg -l | grep icinga | awk '{ print $2 }'); do apt-mark hold $i; done
+```
+
+List of held packages can be verified by:
+```
+apt-mark showhold
+```
+
+Held packages should be:
+```
+icinga2
+icinga2-bin
+icinga2-common
+icinga2-doc
+icinga2-ido-mysql
+icingacli
+icingaweb2
+icingaweb2-common
+icingaweb2-module-doc
+icingaweb2-module-monitoring
+libicinga2
+php-icinga
+```
+
+In case no futher complaints appear in icinga-users list after several days since the updates are
+available, it should be safe to install these updates.
+
+
 ### icingaweb2
 For simple interaction with icinga2 through web browser, icingaweb2 is needed. This package
 has been also taken from official icinga2 package repositories (see [icinga2 setup](#icinga2-setup)).

@@ -425,7 +425,6 @@ Timeouts also apply in this condition.
 ### dependencies
 
 - depends on ping
-TODO
 
 ### check intervals
 

@@ -119,8 +119,11 @@ template Service "operator name template" {
 
 `/etc/icingaweb2/modules/icinga2/templates.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/templates.conf)
 
+In icinga cluster terminology the client is an icinga2 node, which has only one parent node.
+A client node will either run its own configured checks or receive command execution events from the parent node.
+We chose scenario when the client only recieves commdna execution events from the parent node.
 
-TODO - explain what is client according to icinga2 terminology
+[Official documentation](https://www.icinga.com/docs/icinga2/latest/doc/06-distributed-monitoring/) on this topic.
 
 #### Services
 Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.

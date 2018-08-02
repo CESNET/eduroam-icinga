@@ -179,202 +179,70 @@ apply Service "OPERATOR-NAME" {
 
 
 #### Dependencies
-Dependencies seare defined in `/etc/icinga2/conf.d/dependencies.conf`.
+Dependencies are defined in `/etc/icinga2/conf.d/dependencies.conf`.
 Configuration is commented and should be self-explanatory.
-File contents:
+
+TODO - add whole file
+
+#### Groups
+Service groups are defined in `/etc/icinga2/conf.d/groups.conf`.
+Additional file contents:
+
 ```
-/* definition of dependencies for monitored services */
-
-// ========================================================================================================================
-// ipsec
-
-// dependency of ipsec on ping
-apply Dependency "ipsec_ping" to Service {
-  parent_service_name = "PING"
-  disable_checks = true
-  assign where host.vars.transport == "IPSEC" && service.name == "IPSEC"
+object ServiceGroup "CONCURRENT-INST" {
+  display_name = "CONCURRENT-INST"
 }
 
-// ========================================================================================================================
-// radsec
-
-// dependency of radsec na ping
-apply Dependency "radsec_ping" to Service {
-  parent_service_name = "PING"
-  disable_checks = true
-  assign where host.vars.transport == "RADSEC" && host.vars.type != "SP" && service.name == "RADSEC"
+object ServiceGroup "RADSEC" {
+  display_name = "RADSEC"
 }
 
-// dependency of radsec sp only on ping
-apply Dependency "radsec_sp_ping" to Service {
-  parent_service_name = "PING"
-  disable_checks = true
-  assign where host.vars.transport == "RADSEC" && host.vars.type == "SP" && service.name == "RADSEC"
+object ServiceGroup "IPSEC" {
+  display_name = "IPSEC"
 }
 
-// ========================================================================================================================
-// home realm
-
-// dependency of home realm on ping
-apply Dependency "home_realm_ping" to Service {
-  parent_service_name = "PING"
-  disable_checks = true
-  assign where service.vars.home_realm_check == 1
+object ServiceGroup "VCELKA-MAJA" {
+  display_name = "VCELKA-MAJA"
 }
 
-// ========================================================================================================================
-// visitors' realms
-
-// in current state icinga2 is not able to do OR between multiple 
-// services which the child servervice should depend on
-// for more see https://github.com/Icinga/icinga2/issues/1869
-//
-// for this purpose an aggerated check service HOME-REALM-ALIVE was made
-// it represents state of all home servers with home users
-// the service is critical only if none of the home servers cannot authenticate the user
-
-// dependency of visitors' realms on home servers
-apply Dependency "visitor_realms_home_servers" for (server in service.vars.home_servers) to Service {
-  parent_host_name = server
-
-  if(typeof(service.vars.home_servers) == Array) {      // multiple home servers
-    parent_service_name = "HOME-REALM-ALIVE-" + service.vars.visitors_realm     // "virtual" service which represent states of all home servers
-  }
-
-  if(typeof(service.vars.home_servers) == String) {     // one home server
-    parent_service_name = "@" + service.vars.visitors_realm                     // one home server only, so only one service
-  }
-
-  disable_checks = true
-  assign where service.vars.home_realm_check == 0
+object ServiceGroup "HOME-REALM-ALIVE" {
+  display_name = "HOME-REALM-ALIVE"
 }
 
-// ========================================================================================================================
-// visitors
-
-// dependency of visitors on home realm
-apply Dependency "visitors_home_realm" for (realm in host.vars.mon_realm) to Service {
-    parent_service_name = "@" + realm
-    disable_checks = true
-    assign where service.name == "VISITORS" && host.vars.type != "SP" && get_service(host.name, "@" + realm) != null
+object ServiceGroup "CALLING-STATION-ID" {
+  display_name = "CALLING-STATION-ID"
 }
 
-// ========================================================================================================================
-// big packet
-
-// dependency of big_packet on radsec
-apply Dependency "big_packet_radsec" to Service {
-    parent_service_name = "RADSEC"
-    disable_checks = true
-    assign where host.vars.transport == "RADSEC" && host.vars.type != "SP" && service.name == "BIG-PACKET"
+object ServiceGroup "CHARGEABLE-USER-IDENTITY" {
+  display_name = "CHARGEABLE-USER-IDENTITY"
 }
 
-// dependency of big_packet on radsec sp only
-apply Dependency "big_packet_radsec_sp_only" to Service {
-    parent_service_name = "RADSEC"
-    disable_checks = true
-    assign where host.vars.transport == "RADSEC" && host.vars.type == "SP" && service.name == "BIG-PACKET"
+object ServiceGroup "FAKE-UID" {
+  display_name = "FAKE-UID"
 }
 
-// dependency of big_packet on ipsec
-apply Dependency "big_packet_ipsec" to Service {
-    parent_service_name = "IPSEC"
-    disable_checks = true
-    assign where host.vars.transport == "IPSEC" && service.name == "BIG-PACKET"
+object ServiceGroup "BIG-PACKET" {
+  display_name = "BIG-PACKET"
 }
 
-// dependency of big_packet on cesnet.cz@homeservers
-// icinga2 cannot do an OR dependency between two (or multiple) services
-// because of this, service HOME-REALM-ALIVE was implemented and is used here
-
-apply Dependency "big_packet_cesnet.cz@radius1.cesnet.cz" to Service {
-    parent_service_name = "HOME-REALM-ALIVE-cesnet.cz"
-    parent_host_name = "radius1.cesnet.cz"
-    disable_checks = true
-    assign where service.name == "BIG-PACKET"
+object ServiceGroup "COMPROMISED-USERS" {
+  display_name = "COMPROMISED-USERS"
 }
 
-// dependency of big_packet on cesnet.cz@homeservers
-apply Dependency "big_packet_cesnet.cz@radius2.cesnet.cz" to Service {
-    parent_service_name = "HOME-REALM-ALIVE-cesnet.cz"
-    parent_host_name = "radius2.cesnet.cz"
-    disable_checks = true
-    assign where service.name == "BIG-PACKET"
+object ServiceGroup "OPERATOR-NAME" {
+  display_name = "OPERATOR-NAME"
 }
 
-// ========================================================================================================================
-// calling station id
-
-// dependency of calling station id on ping
-apply Dependency "calling_station_id_ping" to Service {
-    parent_service_name = "PING"
-    disable_checks = true
-    assign where service.name == "CALLING-STATION-ID"
+object ServiceGroup "INSTITUTION-XML" {
+  display_name = "INSTITUTION-XML"
 }
 
-// ========================================================================================================================
-// chargeable user identity
-
-// dependency of chargeable user identity on home realm
-apply Dependency "chargeable_user_identity_home_realm" for (realm in host.vars.mon_realm) to Service {
-    parent_service_name = "@" + realm
-    disable_checks = true
-    assign where service.name == "CHARGEABLE-USER-IDENTITY" && host.vars.type != "SP"
+object ServiceGroup "CVE-2017-9148" {
+  display_name = "CVE-2017-9148"
 }
-
-// ========================================================================================================================
-// cve-2017-9148
-
-// dependency of cve on home realm
-apply Dependency "cve_2017_9148_home_realm" for (realm in host.vars.mon_realm) to Service {
-    parent_service_name = "@" + realm
-    disable_checks = true
-    assign where service.name == "CVE-2017-9148" && host.vars.type != "SP" && get_service(host.name, "@" + realm) != null
-}
-
-// ========================================================================================================================
-// fake-uid
-
-// dependency of fake uid on home realm
-apply Dependency "fake_uid_home_realm" for (realm in host.vars.mon_realm) to Service {
-    parent_service_name = "@" + realm
-    disable_checks = true
-    assign where service.name == "FAKE-UID" && host.vars.type != "SP"
-}
-
-// ========================================================================================================================
-// operator name
-
-// dependency of operator name on ping
-apply Dependency "operator_name_ping" to Service {
-    parent_service_name = "PING"
-    disable_checks = true
-    assign where service.name == "OPERATOR-NAME"
-}
-
-// ========================================================================================================================
-// vcelka maja
-
-// dependency of vcelka-maja on home relam
-apply Dependency "vcelka_maja_home_realm" for (realm in host.vars.mon_realm) to Service {
-    parent_service_name = "@" + realm
-    disable_checks = true
-    assign where service.name == "VCELKA-MAJA" && host.vars.type != "SP"
-}
-
-// ========================================================================================================================
-// institution-xml
-
-// dependency of institution-xml on ping
-apply Dependency "institution_xml_ping" to Service {
-    parent_service_name = "PING"
-    disable_checks = true
-    assign where match("INSTITUTION-XML*", service.name)
-}
-// ========================================================================================================================
 ```
 
-TODO - add whole file (as link?)?
+TODO - add whole file
 
 ### fileshipper
 Fileshipper configuration is located in directory `/etc/icingaweb2/modules/fileshipper/`.

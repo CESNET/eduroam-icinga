@@ -117,7 +117,8 @@ template Service "operator name template" {
 
 ```
 
-TODO - add whole file?
+`/etc/icingaweb2/modules/icinga2/templates.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/templates.conf)
+
 
 TODO - explain what is client according to icinga2 terminology
 

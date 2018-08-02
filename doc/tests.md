@@ -463,6 +463,8 @@ There can be two cases:
 In case of multiple home servers, the visitor's realm check depends on service `HOME-REALM-ALIVE` on one of home servers (`HOME-REALM-ALIVE` service exists only on one of home servers).
 In case of single home server, the visitor's realm check depends on home realm check on home server.
 
+TODO - other realms should depend on home realm on server
+
 ### check intervals
 
 - normal check period is 180 minutes

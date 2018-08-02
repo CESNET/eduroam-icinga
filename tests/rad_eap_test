@@ -14,7 +14,7 @@
 umask 0077
 
 # path to eapol test
-EAPOL_PROG=bin/eapol_test
+EAPOL_PROG=/usr/local/bin/eapol_test
 
 # default verbosity
 VERBOSE=0

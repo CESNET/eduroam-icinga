@@ -156,7 +156,7 @@ apply Service "OPERATOR-NAME" {
 }
 ```
 
-TODO - add whole file?
+`/etc/icingaweb2/modules/icinga2/services.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf)
 
 
 #### Dependencies

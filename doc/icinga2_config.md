@@ -130,7 +130,7 @@ We chose scenario when the client only recieves commdna execution events from th
 Notifications are defined in `/etc/icinga2/conf.d/notifications.conf`.
 Notifications are only setup for services, because we use dummy checks for hosts.
 
-No notifications will be sent unless notification feature is enabled as icinga2 feature.
+No notifications will be sent unless notification feature is enabled.
 
 Additional file contents:
 ```

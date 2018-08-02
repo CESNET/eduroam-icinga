@@ -293,8 +293,7 @@ The value of the key is an object with keys:
 - `home_servers`
 
 All values of these keys except `home_servers` are strings.
-Variable `home_servers` is a string if there is only one home server.
-If there are multiple home servers variable `home_servers` is an array.
+Variable `home_servers` is always an array even if there is only one server.
 
 Sample of data from file:
 ```
@@ -303,7 +302,7 @@ const realms = [
 	{ "fel.cvut.cz" = { testing_id = "user@fel.cvut.cz", testing_password = "password", xml_url = "http://eduroam.feld.cvut.cz/institution.xml",    home_servers = ["reu5.feld.cvut.cz", "radius.felk.cvut.cz", ] } },
 	{ "tul.cz" =      { testing_id = "user@tul.cz",      testing_password = "password", xml_url = "http://eduroam.tul.cz/institution.xml",          home_servers = ["radius1.tul.cz", "radius2.tul.cz", ] } },
 	{ "faf.cuni.cz" = { testing_id = "user@faf.cuni.cz", testing_password = "password", xml_url = "http://www.faf.cuni.cz/eduroam/institution.xml", home_servers = ["radius1.hknet.cz", "radius2.hknet.cz", ] } },
-	{ "prf.cuni.cz" = { testing_id = "user@prf.cuni.cz", testing_password = "password", xml_url = "http://eduroam.prf.cuni.cz/institution.xml",     home_servers = "eduroam.prf.cuni.cz",  } },
+	{ "prf.cuni.cz" = { testing_id = "user@prf.cuni.cz", testing_password = "password", xml_url = "http://eduroam.prf.cuni.cz/institution.xml",     home_servers = [ "eduroam.prf.cuni.cz" ]  } },
     .....
 ```
 

@@ -7,9 +7,9 @@ monitor their national eduroam infrastructure.
 
 ## [icingaweb2 modules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md)
 
-## icingaweb2/director configuration
+## [icingaweb2](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_config.md)
 
-TODO
+## [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md)
 
 ## [Data synchronization](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_sync.md)
 

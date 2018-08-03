@@ -6,7 +6,7 @@ This page sumarizes all the tests that used for czech eduroam monitoring.
 # ==========================================================================================================================================
 -->
 
-## ping
+## PING
 
 Uses the standard icinga2 `ping4` check. Tests whether the server is reachable by response to ICMP echo request.
 Ping is assigned to all RADIUS servers regardless of their role.
@@ -26,7 +26,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## radsec
+## RADSEC
 
 This test checks the state of RadSec connection between servers.
 Test is assigned only to servers which are part of the infrastructure and are connected using the RadSec protocol.
@@ -82,7 +82,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## ipsec
+## IPSEC
 
 This test checks the state of IPSec connection between servers. Tests whether the server is reachable by response to ICMP echo request though ipsec tunnel.
 Test is assigned only to servers which are part of the infrastructure and are connected using the IPSec protocol.
@@ -121,7 +121,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## calling station id
+## CALLING-STATION-ID
 
 This test checks that the RADIUS server is sending Calling-Station-Id attribute.
 Test is implemented on the base of logs from national RADIUS server. Source data are refreshed once an hour.
@@ -158,7 +158,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## vcelka maja
+## VCELKA-MAJA
 
 Tests sending the inner EAP identity. The outer identity is `vcelka-maja@realm`, the inner identity is `test001@cesnet.cz`.
 If Access-accept is sent for this test, it means failure.
@@ -206,7 +206,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## operator name
+## OPERATOR-NAME
 
 This test checks that the RADIUS server is sending Operator-Name attribute. Existence of attribute and syntax are checked.
 Test is implemented on the base of logs from national RADIUS server. Source data are refreshed once an hour.
@@ -245,7 +245,7 @@ It is recommended to implement this attribute.
 # ==========================================================================================================================================
 -->
 
-## chargeable user identity
+## CHARGEABLE-USER-IDENTITY
 
 This test checks that the RADIUS server is sending Chargeable-User-Idenity attribute.
 The test is run from CESNET's RADIUS servers with the organization's testing account.
@@ -291,7 +291,7 @@ It is recommended to implement this attribute.
 # ==========================================================================================================================================
 -->
 
-## institution.xml
+## INSTITUTION-XML
 
 Tests existence of the institution.xml file. The file is tested for existence of string "inst\_realm".
 
@@ -331,7 +331,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## fake uid
+## FAKE-UID
 
 Tests if the organization forces inner and outer identity to be equal. Randomized identity is used as outer idenity.
 Organiyzation's testing id is used as inner identity. The IdP must not evaluate this request positively.
@@ -481,7 +481,7 @@ authenticates the user correctly. That is also the reason why notifications are 
 # ==========================================================================================================================================
 -->
 
-## big packet
+## BIG-PACKET
 
 Test of relaying fragmented UDP packets. Test is realized by user big-test@cesnet.cz on every RADIUS server.
 User big-test@cesnet.cz sends Access-accept stuffed with Reply-Message so it surely overflows 1500B.
@@ -526,7 +526,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## cve-2017-9148
+## CVE-2017-9148
 
 TODO
 
@@ -550,7 +550,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## visitors
+## VISITORS
 
 The purpose of this test is to inform the administrator(s) of the server, that visitors can have issues with authentication.
 The problem is, that there are always several realms that currently do not work at some servers.
@@ -592,7 +592,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## home realm alive
+## HOME-REALM-ALIVE
 
 This test was created just to represent state of home realm authentication on all home servers.
 It has no other actual usefull value than as a dependency parent service.
@@ -635,7 +635,7 @@ Notifications are disabled for this test because they would be redundant to noti
 # ==========================================================================================================================================
 -->
 
-## concurrent inst
+## CONCURRENT-INST
 
 This test is based on the data from system [etlog](https://github.com/CESNET/etlog). 
 This test identifies users which successfully authenticated in short time in distant locations with same MAC addresses.
@@ -668,7 +668,7 @@ Notification interval it set to 24 hours.
 # ==========================================================================================================================================
 -->
 
-## compromised users
+## COMPROMISED-USERS
 
 This test is based on the data from system [etlog](https://github.com/CESNET/etlog). 
 This test identifies users which successfully authenticated in short time in distant locations with different MAC addresses.

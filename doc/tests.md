@@ -519,9 +519,8 @@ All other parameters are same as for [home-realm](#home-realm).
 
 ### notifications
 
-Notifications for this test are **NOT** enabled.
-
-reason TODO
+Notifications for this test are enabled.
+Notification interval it set to 24 hours.
 
 <!--
 # ==========================================================================================================================================

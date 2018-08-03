@@ -38,6 +38,8 @@ libicinga2                           2.8.4-1.stretch
 php-icinga                           2.5.3-1.stretch
 ```
 
+### Package versions
+
 We noticed, that in icinga-users mailing list several people complained about errors when
 using newest icinga2 packages from official icinga repositories.
 Although we did not encouner any problems, we decided to mark all related packages as held.
@@ -71,6 +73,13 @@ php-icinga
 In case no futher complaints appear in icinga-users list after several days since the updates are
 available, it should be safe to install these updates.
 
+
+Unhold of the packages can be done by:
+```
+for i in $(dpkg -l | grep icinga | awk '{ print $2 }'); do apt-mark unhold $i; done
+```
+
+After unholding the packages you can upgrade them and put them on hold again.
 
 ### icingaweb2
 For simple interaction with icinga2 through web browser, icingaweb2 is needed. This package

@@ -661,8 +661,8 @@ The fourth parameter specifies threshold for critical state. It is set to 20.
 
 ### notifications
 
-Notifications for this test are enabled.
-Notification interval it set to 24 hours.
+Notifications for this test are **NOT** enabled.
+Notifications are disabled for this test because institution.xml data are not sufficient and many isntitutions would get notified because of this.
 
 <!--
 # ==========================================================================================================================================
@@ -690,8 +690,8 @@ The second parameter specifies minimal time difference between time needed to tr
 
 ### notifications
 
-Notifications for this test are enabled.
-Notification interval it set to 24 hours.
+Notifications for this test are **NOT** enabled.
+Notifications are disabled for this test because institution.xml data are not sufficient and many isntitutions would get notified because of this.
 
 ### TODO
 

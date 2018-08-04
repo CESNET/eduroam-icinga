@@ -53,12 +53,14 @@ All the configration files in `/etc/icinga2/`:
 
 From all these files, these are the important ones which should be modified:
 ```
-/etc/icinga2/conf.d/api-users.conf          - define director api user here
-/etc/icinga2/conf.d/templates.conf          - define client service templates here, details below
-/etc/icinga2/conf.d/notification.conf       - define notifications here, details below
-/etc/icinga2/conf.d/services.conf           - define client services here, details below
-/etc/icinga2/conf.d/dependencies.conf       - defined dependencies here, details below
-/etc/icinga2/conf.d/groups.conf             - define service groups here, details below
+/etc/icinga2/conf.d/api-users.conf                  - define director api user here
+/etc/icinga2/conf.d/templates.conf                  - define client service templates here, details below
+/etc/icinga2/conf.d/notification.conf               - define notifications here, details below
+/etc/icinga2/conf.d/services.conf                   - define client services here, details below
+/etc/icinga2/conf.d/dependencies.conf               - define dependencies here, details below
+/etc/icinga2/conf.d/groups.conf                     - define service groups here, details below
+/etc/icinga2/conf.d/commands.conf                   - modify mail notification here, details below
+/etc/icinga2/scripts/mail-service-notification.sh   - modify service mail notification script, details below
 ```
 
 #### Templates
@@ -243,6 +245,90 @@ object ServiceGroup "CVE-2017-9148" {
 ```
 
 TODO - add whole file
+
+#### Commands
+We modified default configuration for our mail notifications. To do this, part of `/etc/icinga2/conf.d/commands.conf` needs to be modified:
+
+```
+object NotificationCommand "mail-service-notification" {
+  command = [ SysconfDir + "/icinga2/scripts/mail-service-notification.sh" ]
+
+  arguments += {
+    "-4" = "$notification_address$"
+    "-6" = "$notification_address6$"
+    "-b" = "$notification_author$"
+    "-c" = "$notification_comment$"
+    "-d" = {
+      required = true
+      value = "$notification_date$"
+    }
+    "-e" = {
+      required = true
+      value = "$notification_servicename$"
+    }
+    "-f" = {
+      value = "$notification_from$"
+      description = "Set from address. Requires GNU mailutils (Debian/Ubuntu) or mailx (RHEL/SUSE)"
+    }
+    "-i" = "$notification_icingaweb2url$"
+    "-k" = "$notification_docurl$"
+    "-l" = {
+      required = true
+      value = "$notification_hostname$"
+    }
+    "-n" = {
+      required = true
+      value = "$notification_hostdisplayname$"
+    }
+    "-o" = {
+      required = true
+      value = "$notification_serviceoutput$"
+    }
+    "-r" = {
+      required = true
+      value = "$notification_useremail$"
+    }
+    "-s" = {
+      required = true
+      value = "$notification_servicestate$"
+    }
+    "-t" = {
+      required = true
+      value = "$notification_type$"
+    }
+    "-u" = {
+      required = true
+      value = "$notification_servicedisplayname$"
+    }
+    "-v" = "$notification_logtosyslog$"
+  }
+
+  vars += {
+    //notification_address = "$address$"
+    notification_address6 = "$address6$"
+    notification_author = "$notification.author$"
+    notification_comment = "$notification.comment$"
+    notification_type = "$notification.type$"
+    notification_date = "$icinga.long_date_time$"
+    notification_hostname = "$host.name$"
+    notification_hostdisplayname = "$host.display_name$"
+    notification_servicename = "$service.name$"
+    notification_serviceoutput = "$service.output$"
+    notification_servicestate = "$service.state$"
+    notification_useremail = "$user.email$"
+    notification_servicedisplayname = "$service.display_name$"
+    notification_icingaweb2url = "https://" + NodeName
+    notification_docurl = "$service.vars.doc_url$"
+    notification_from = "nagios@" + NodeName
+  }
+}
+```
+
+`/etc/icingaweb2/modules/icinga2/commands.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/commands.conf)
+
+The script which creates notifications must me modified too.
+`/etc/icinga2/scripts/mail-service-notification.sh` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/mail-service-notification.sh)
+
 
 ### fileshipper
 Fileshipper configuration is located in directory `/etc/icingaweb2/modules/fileshipper/`.

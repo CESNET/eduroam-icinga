@@ -17,6 +17,14 @@ Ping is assigned to all RADIUS servers regardless of their role.
 - check period is 1 minute in case of outage
 - CRITICAL-HARD state is reached after 10 failed checks (maximum 5 + 9 * 1 = 14 minutes from outage)
 
+### assign rule
+
+This service is assigned to all hosts which have host variable `name` set.
+
+### definition
+
+This service is defined via director.
+
 ### notifications
 
 Notifications for this test are enabled.
@@ -73,6 +81,20 @@ The second parameter is fixed and is set to `--SPonly`.
 - check period is 1 minute in case of outage
 - CRITICAL-HARD state is reached after 10 failed checks (maximum 5 + 9 * 1 = 14 minutes from outage)
 
+### assign rule
+
+This service is assigned to two types of hosts:
+- All hosts which have custom host variable transport set to "RADSEC" and custom variable type set to "SP".
+- All hosts which have custom host variable transport set to "RADSEC" and custom variable type not set to "SP".
+
+Based on the assignment, the servers which have custom host variable type set to "SP" get assigned template,
+which defines two command parameters (SP only).
+The other ones get assigned template, which defines only one command parameter (IdP+SP).
+
+### definition
+
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L134).
+
 ### notifications
 
 Notifications for this test are enabled.
@@ -112,6 +134,14 @@ The script takes 1 parameter:
 
 The first parameter uses host variable `radius_ip`.
 
+### assign rule
+
+This service is assigned to all RADIUS servers which have custom host variable transport set to "IPSEC".
+
+### definition
+
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L128).
+
 ### notifications
 
 Notifications for this test are enabled.
@@ -148,6 +178,14 @@ The second parameter uses host variable `radius_ip`.
 - normal check period is 24 hours
 - check period is 12 hours in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
+
+### assign rule
+
+This service is assigned to all RADIUS servers which have custom host variable transport set and is not set to "undefined".
+
+### definition
+
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L146).
 
 ### notifications
 
@@ -191,6 +229,14 @@ The seventh parameter uses service variable `mac_address2`.
 
 - depends on home realm
 
+### assign rule
+
+This service is assigned to all hosts which have custom host variable `type` set to other value than "SP".
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L179).
+
 ### check intervals
 
 - normal check period is 48 hours
@@ -233,6 +279,14 @@ The second parameter uses host variable `radius_ip`.
 - normal check period is 24 hours
 - check period is 12 hours in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
+
+### assign rule
+
+This service is assigned to all RADIUS servers which have custom host variable transport set and is not set to "undefined".
+
+### definition
+
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L152).
 
 ### notifications
 
@@ -281,6 +335,14 @@ The sixth parameter uses service variable `testing_id`.
 - check period is 3 hours in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
 
+### assign rule
+
+This service is assigned to all RADIUS servers which are set as monitoring in our evidence.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L165).
+
 ### notifications
 
 Notifications for this test are **NOT** enabled.
@@ -321,6 +383,14 @@ The fifth parameter uses service variable `xml_url_part`.
 - normal check period is 24 hours
 - check period is 3 hours in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
+
+### assign rule
+
+This service is assigned to every first server (or the only one) which is set as monitoring server in our evidence for one or more realms.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L15).
 
 ### notifications
 
@@ -374,6 +444,14 @@ The tenth parameter uses service variable `testing_id`.
 - normal check period is 48 hours
 - check period is 3 hours in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
+
+### assign rule
+
+This service is assigned to all hosts which have custom host variable `type` set to other value than "SP".
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L179).
 
 ### notifications
 
@@ -432,6 +510,14 @@ Timeouts also apply in this condition.
 - check period is 10 minutes in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
 
+### assign rule
+
+This service is assigned to all RADIUS servers which are set as monitoring in our evidence.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L131).
+
 ### notifications
 
 Notifications for this test are enabled.
@@ -470,6 +556,14 @@ TODO - other realms should depend on home realm on server
 - normal check period is 180 minutes
 - check period is 120 minutes in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
+
+### assign rule
+
+This service is assigned to all RADIUS servers which are set as monitoring in our evidence.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L131).
 
 ### notifications
 
@@ -517,6 +611,14 @@ All other parameters are same as for [home-realm](#home-realm).
 - check period is 12 hours in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
 
+### assign rule
+
+This service is assigned to all hosts which have custom host variable `type` set to other value than "SP".
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L234).
+
 ### notifications
 
 Notifications for this test are enabled.
@@ -533,13 +635,25 @@ TODO
 This test is multiplied by number of home realms for each server. So if the server has two home realms, it has the test for each of them.
 
 ### parameters
+
 TODO
 
 ### dependencies
+
 TODO
 
 ### check intervals
+
 TODO
+
+### assign rule
+
+TODO
+
+### definition
+
+TODO
+
 
 ### notifications
 
@@ -569,6 +683,7 @@ The script takes 1 parameter:
 The first parameter uses host variable `name`.
 
 ### dependencies
+
 - home realm
 
 ### check intervals
@@ -582,6 +697,14 @@ The first parameter uses host variable `name`.
 This test internally uses the `icingacli` tool to get data.
 For this plugin to work under nagios user, the user needs to be added to icingaweb2 group.
 This is done by `usermod -a -G icingaweb2 nagios`.
+
+### assign rule
+
+This service is assigned to all hosts which have custom host variable `mon_realm` set.
+
+### definition
+
+This service is defined via director.
 
 ### notifications
 
@@ -613,9 +736,11 @@ The first parameter uses host variable `name`.
 All the other parameters are expanded from service variable `home_servers`.
 
 ### dependencies
+
 no dependencies
 
 ### check intervals
+
 - normal check period is 5 minutes
 - check period is 10 minutes in case of outage
 - CRITICAL-HARD state is reached after 3 failed checks
@@ -625,6 +750,14 @@ no dependencies
 This test internally uses the `icingacli` tool to get data.
 For this plugin to work under nagios user, the user needs to be added to icingaweb2 group.
 This is done by `usermod -a -G icingaweb2 nagios`.
+
+### assign rule
+
+This service is assigned to every first server which is one of multiple servers which are set as monitoring servers in our evidence for one or more realms.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L110).
 
 ### notifications
 
@@ -659,6 +792,14 @@ The second parameter specifies minimal time difference between time needed to tr
 The third parameter specifies threshold for warning state. It is set to 10.
 The fourth parameter specifies threshold for critical state. It is set to 20.
 
+### assign rule
+
+This service is assigned to every first server (or the only one) which is set as monitoring server in our evidence for one or more realms.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L81).
+
 ### notifications
 
 Notifications for this test are **NOT** enabled.
@@ -687,6 +828,14 @@ The script takes two parameters:
 
 The first parameter specifies the realm for which compromised users are retrieved.
 The second parameter specifies minimal time difference between time needed to travel from first visited insitution to second at specified speed (set to 100 km/h) and the time actually reached. It is set to 60 seconds.
+
+### assign rule
+
+This service is assigned to every first server (or the only one) which is set as monitoring server in our evidence for one or more realms.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L59).
 
 ### notifications
 

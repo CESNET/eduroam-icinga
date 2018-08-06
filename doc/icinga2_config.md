@@ -244,7 +244,7 @@ object ServiceGroup "CVE-2017-9148" {
 }
 ```
 
-TODO - add whole file
+`/etc/icingaweb2/modules/icinga2/groups.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/groups.conf)
 
 #### Commands
 We modified default configuration for our mail notifications. To do this, part of `/etc/icinga2/conf.d/commands.conf` needs to be modified:

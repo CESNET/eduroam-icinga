@@ -184,7 +184,7 @@ apply Service "OPERATOR-NAME" {
 Dependencies are defined in `/etc/icinga2/conf.d/dependencies.conf`.
 Configuration is commented and should be self-explanatory.
 
-TODO - add whole file
+`/etc/icingaweb2/modules/icinga2/dependencies.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf)
 
 #### Groups
 Service groups are defined in `/etc/icinga2/conf.d/groups.conf`.

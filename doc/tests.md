@@ -50,7 +50,7 @@ The test actually works by searching the target server ip address in established
 For IdP+SP server there has to be two connections - one from the server and one to the server.
 For SP server there has to be one connection from the server.
 
-For servers with IdP only role, this check does not work. TODO
+The test is currently not able to check connections for servers which are IdP only.
 
 There is slight problem with this check because a lot a participating organizations use freeradius.
 Freeradius actively closes connections to national RADIUS server, when there is no traffic.

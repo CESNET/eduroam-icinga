@@ -11,6 +11,10 @@ This page sumarizes all the tests that used for czech eduroam monitoring.
 Uses the standard icinga2 `ping4` check. Tests whether the server is reachable by response to ICMP echo request.
 Ping is assigned to all RADIUS servers regardless of their role.
 
+### dependencies
+
+- None
+
 ### check intervals
 
 - normal check period is 5 minutes
@@ -73,7 +77,8 @@ The first parameter uses host variable `radius_ip`.
 The second parameter is fixed and is set to `--SPonly`.
 
 ### dependencies
-- depends on ping
+
+- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L13))
 
 ### check intervals
 
@@ -119,7 +124,8 @@ It would be better to check that the SA has been agreed on and the ping, but tha
 Test is done by [check_ipsec](https://github.com/CESNET/eduroam-icinga/blob/master/tests/check_ipsec).
 
 ### dependencies
-- depends on ping
+
+- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L3))
 
 ### check intervals
 
@@ -171,7 +177,7 @@ The second parameter uses host variable `radius_ip`.
 
 ### dependencies
 
-- depends on ping
+- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L111))
 
 ### check intervals
 
@@ -227,7 +233,7 @@ The seventh parameter uses service variable `mac_address2`.
 
 ### dependencies
 
-- depends on home realm
+- depends on home realm (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L161))
 
 ### assign rule
 
@@ -272,7 +278,7 @@ The second parameter uses host variable `radius_ip`.
 
 ### dependencies
 
-- depends on ping
+- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L151))
 
 ### check intervals
 
@@ -327,7 +333,7 @@ The sixth parameter uses service variable `testing_id`.
 
 ### dependencies
 
-- depends on home realm
+- depends on home realm (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L121))
 
 ### check intervals
 
@@ -376,7 +382,7 @@ The fifth parameter uses service variable `xml_url_part`.
 
 ### dependencies
 
-- depends on ping
+- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L171))
 
 ### check intervals
 
@@ -437,7 +443,7 @@ The tenth parameter uses service variable `testing_id`.
 
 ### dependencies
 
-- depends on home realm
+- depends on home realm (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L141))
 
 ### check intervals
 
@@ -502,7 +508,7 @@ Timeouts also apply in this condition.
 
 ### dependencies
 
-- depends on ping
+- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L30))
 
 ### check intervals
 
@@ -540,16 +546,17 @@ Same as for [home-realm](#home-realm).
 
 ### dependencies
 
-- each visitor's realm depends on authentication on home servers
+- each visitor's realm depends on authentication on home servers (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L51))
 
-There can be two cases:
-- multiple home servers
-- single home server
+  There can be two cases:
+  - multiple home servers
+  - single home server
 
-In case of multiple home servers, the visitor's realm check depends on service `HOME-REALM-ALIVE` on one of home servers (`HOME-REALM-ALIVE` service exists only on one of home servers).
-In case of single home server, the visitor's realm check depends on home realm check on home server.
+  In case of multiple home servers, the visitor's realm check depends on service `HOME-REALM-ALIVE` on one of home servers (`HOME-REALM-ALIVE` service exists only on one of home servers).
+  In case of single home server, the visitor's realm check depends on home realm check on home server.
 
-TODO - other realms should depend on home realm on server
+
+- each visitor's realm depends on all home realms on the given server (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L65))
 
 ### check intervals
 
@@ -603,7 +610,8 @@ All other parameters are same as for [home-realm](#home-realm).
 
 ### dependencies
 
-- depends on home realm
+- depends on established connection to radius1.eduroam.cz - RADSEC or IPSEC (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L86))
+- depends on HOME-REALM-ALIVE on radius1.cesnet.cz (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L104))
 
 ### check intervals
 
@@ -640,7 +648,7 @@ TODO
 
 ### dependencies
 
-TODO
+- depends on home realm (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L131))
 
 ### check intervals
 
@@ -684,7 +692,7 @@ The first parameter uses host variable `name`.
 
 ### dependencies
 
-- home realm
+- depends on home realm (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L73))
 
 ### check intervals
 
@@ -737,7 +745,7 @@ All the other parameters are expanded from service variable `home_servers`.
 
 ### dependencies
 
-no dependencies
+- None
 
 ### check intervals
 
@@ -792,6 +800,10 @@ The second parameter specifies minimal time difference between time needed to tr
 The third parameter specifies threshold for warning state. It is set to 10.
 The fourth parameter specifies threshold for critical state. It is set to 20.
 
+### dependencies
+
+- None
+
 ### assign rule
 
 This service is assigned to every first server (or the only one) which is set as monitoring server in our evidence for one or more realms.
@@ -828,6 +840,10 @@ The script takes two parameters:
 
 The first parameter specifies the realm for which compromised users are retrieved.
 The second parameter specifies minimal time difference between time needed to travel from first visited insitution to second at specified speed (set to 100 km/h) and the time actually reached. It is set to 60 seconds.
+
+### dependencies
+
+- None
 
 ### assign rule
 

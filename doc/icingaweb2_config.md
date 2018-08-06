@@ -1,7 +1,7 @@
 # icingaweb2 configuration
 
 This summarizes whole icingaweb2 configuration.
-A lot of configuration is also done in icingaweb2, but this configuration is part of [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md).
+A lot of configuration is also done in icingaweb2, but that configuration is part of [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md).
 
 ## roles
 

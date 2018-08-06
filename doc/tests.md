@@ -638,13 +638,25 @@ Notification interval it set to 24 hours.
 
 ## CVE-2017-9148
 
-TODO
+This test checks if the RADIUS server correctly handles session resumption in PEAP and TTLS. If the server does not handle it correctly, the user
+is able to log in even without correct credentials.
 
 This test is multiplied by number of home realms for each server. So if the server has two home realms, it has the test for each of them.
 
 ### parameters
 
-TODO
+The script takes 5 parameters:
+- username
+- RADIUS server ip address
+- shared secret
+- mac address 1
+- mac address 2
+
+The first parameter uses custom service variable `testing_id`.
+The second parameter uses custom host variable `radius_ip`.
+The third parameter uses custom host variable `mon_radius_secret`.
+The fourth parameter uses custom service variable `mac_address1`.
+The fifth parameter uses custom service variable `mac_address2`.
 
 ### dependencies
 
@@ -652,16 +664,17 @@ TODO
 
 ### check intervals
 
-TODO
+- normal check period is 48 hours
+- check period is 3 hours in case of outage
+- CRITICAL-HARD state is reached after 3 failed checks
 
 ### assign rule
 
-TODO
+This service is assigned to all hosts which have custom host variable `type` set to other value than "SP".
 
 ### definition
 
-TODO
-
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L209).
 
 ### notifications
 

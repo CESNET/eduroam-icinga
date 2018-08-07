@@ -33,9 +33,9 @@ function main
 
   ok_percent=$(printf "%0.2f" $(echo "$ok_count" / $count | bc -l))
 
-  echo "$ok_count of visitors realms OK"
-  echo "$warn_count of visitors realms WARNING"
-  echo "$crit_count of visitors realms CRITICAL"
+  echo "$ok_count visitors' realms OK"
+  echo "$warn_count visitors' realms WARNING"
+  echo "$crit_count visitors' realms CRITICAL"
 
   if [[ $(echo "$ok_percent > 0.8" | bc) -eq 1 ]]
   then

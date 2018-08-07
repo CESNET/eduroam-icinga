@@ -57,8 +57,7 @@ and [dynamic](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_c
 This import source defines source data for synchronization of hosts.
 A number of modifiers is used to transform some of the values to desired data types.
 The most important modifier is the one, which fills variable `radius_ip`.
-This modifier looks up host by name. It is not clear if there is IPv6 support. (see [this](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md#ipv6-support))
-The modifier has always filled an IPv4 address, so no real problems arised, but this could potentially cause problems.
+This modifier looks up host by name. It returns IPv4 address. (see [this](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md#ipv6-support))
 
 #### DNS failure
 

@@ -894,8 +894,12 @@ There is currently no IPv6 support. This is done on purpose.
 Enabling ipv6 withing monitoring and RADIUS infrastructure ifself could cause a totally new problems and it would also
 mean solving current problems in new manner and maybe twice for both ipv4 and ipv6.
 
-Support of ipv6 in director - TODO
 Most of the tests use host variable `radius_ip` which is filled by icinga-director import source.
+This variable is filled by director get host by name property modifier.
+Director uses PHP function gethotbyname in the [modifier](https://github.com/Icinga/icingaweb2-module-director/blob/master/library/Director/PropertyModifier/PropertyModifierGetHostByName.php#L32).
+According to the documentation, the function returns IPv4 address, to this should be totally safe.
+
+In case the situation changes a modifier for getting specific DNS record could be used.
 
 <!--
 # ==========================================================================================================================================

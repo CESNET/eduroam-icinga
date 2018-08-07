@@ -14,6 +14,8 @@ They can also be used as a step by step guide to set up eduroam monitoring at na
 
 ## [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md)
 
+## [clients](https://github.com/CESNET/eduroam-icinga/blob/master/doc/clients.md)
+
 ## [data synchronization](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_sync.md)
 
 ## [icinga2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_config.md)

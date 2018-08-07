@@ -1,0 +1,201 @@
+[
+    {
+        "rule_name": "sync users",
+        "object_type": "user",
+        "update_policy": "override",
+        "purge_existing": "y",
+        "filter_expression": null,
+        "description": "synchronize users",
+        "originalId": "14",
+        "properties": [
+            {
+                "source_expression": "${admins_cn}",
+                "destination_field": "display_name",
+                "priority": "1",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga sql - users"
+            },
+            {
+                "source_expression": "${mail}",
+                "destination_field": "email",
+                "priority": "2",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga sql - users"
+            },
+            {
+                "source_expression": "${group_concat(distinct radius_cn)}",
+                "destination_field": "groups",
+                "priority": "3",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga sql - users"
+            }
+        ]
+    },
+    {
+        "rule_name": "sync user groups",
+        "object_type": "usergroup",
+        "update_policy": "override",
+        "purge_existing": "y",
+        "filter_expression": null,
+        "description": "synchronizace uzivatelskych skupin ktere odpovidaji radius serverum",
+        "originalId": "15",
+        "properties": [
+            {
+                "source_expression": "${radius_cn}",
+                "destination_field": "object_name",
+                "priority": "1",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            }
+        ]
+    },
+    {
+        "rule_name": "sync host groups from realms",
+        "object_type": "hostgroup",
+        "update_policy": "override",
+        "purge_existing": "y",
+        "filter_expression": null,
+        "description": "synchronize hostgroups",
+        "originalId": "16",
+        "properties": [
+            {
+                "source_expression": "${realm_cn}",
+                "destination_field": "object_name",
+                "priority": "1",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - realms"
+            }
+        ]
+    },
+    {
+        "rule_name": "sync hosts from radius servers",
+        "object_type": "host",
+        "update_policy": "override",
+        "purge_existing": "y",
+        "filter_expression": null,
+        "description": "synchronize hosts",
+        "originalId": "17",
+        "properties": [
+            {
+                "source_expression": "${radius_cn}",
+                "destination_field": "display_name",
+                "priority": "1",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${radius_cn}",
+                "destination_field": "address",
+                "priority": "2",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "generic eduroam radius server",
+                "destination_field": "import",
+                "priority": "3",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${transport}",
+                "destination_field": "vars.transport",
+                "priority": "4",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${mon_radius_secret}",
+                "destination_field": "vars.mon_radius_secret",
+                "priority": "5",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${group_concat(distinct testing_id order by testing_id)}",
+                "destination_field": "vars.testing_id[]",
+                "priority": "6",
+                "filter_expression": null,
+                "merge_policy": "merge",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${group_concat(distinct password order by testing_id)}",
+                "destination_field": "vars.testing_password[]",
+                "priority": "7",
+                "filter_expression": null,
+                "merge_policy": "merge",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${group_concat(distinct mon_realm order by mon_realm)}",
+                "destination_field": "groups",
+                "priority": "8",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${group_concat(distinct mon_realm order by mon_realm)}",
+                "destination_field": "vars.mon_realm[]",
+                "priority": "9",
+                "filter_expression": null,
+                "merge_policy": "merge",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${member_type}",
+                "destination_field": "vars.type",
+                "priority": "10",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${radius_ip}",
+                "destination_field": "vars.radius_ip",
+                "priority": "11",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${xml_host}",
+                "destination_field": "vars.xml_host",
+                "priority": "13",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - hosts"
+            }
+        ]
+    },
+    {
+        "rule_name": "sync service groups",
+        "object_type": "servicegroup",
+        "update_policy": "merge",
+        "purge_existing": "y",
+        "filter_expression": null,
+        "description": "synchronize servicegroups",
+        "originalId": "19",
+        "properties": [
+            {
+                "source_expression": "${radius_cn}",
+                "destination_field": "object_name",
+                "priority": "2",
+                "filter_expression": null,
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - realms"
+            }
+        ]
+    }
+]

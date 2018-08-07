@@ -1,0 +1,230 @@
+[
+    {
+        "source_name": "ldap_to_icinga sql - users",
+        "provider_class": "Icinga\\Module\\Director\\Import\\ImportSourceSql",
+        "key_column": "admin_cn",
+        "description": "import source for users",
+        "originalId": "4",
+        "settings": {
+            "column_cache": "admin_cn, mail, group_concat(distinct radius_cn)",
+            "query": "select admin_cn, mail, group_concat(distinct radius_cn) from admin join radius_server on admin.admin_dn = radius_server.radius_manager group by admin_cn;",
+            "resource": "ldap_to_icinga"
+        },
+        "modifiers": [
+            {
+                "property_name": "group_concat(distinct radius_cn)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "1",
+                "description": null,
+                "settings": {
+                    "delimiter": ",",
+                    "when_empty": "empty_array"
+                }
+            }
+        ]
+    },
+    {
+        "source_name": "ldap_to_icinga - hosts",
+        "provider_class": "Icinga\\Module\\Director\\Import\\ImportSourceSql",
+        "key_column": "radius_cn",
+        "description": "import source for hosts",
+        "originalId": "5",
+        "settings": {
+            "column_cache": "radius_cn, group_concat(distinct inf_realm), inf_radius_secret, mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url",
+            "query": "select radius_cn, group_concat(distinct inf_realm), inf_radius_secret, mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url from radius_server left join realm on radius_server.mon_realm = realm.realm_dn left join testing_id on testing_id.id = realm.testing_id group by radius_cn;",
+            "resource": "ldap_to_icinga"
+        },
+        "modifiers": [
+            {
+                "property_name": "group_concat(distinct testing_id)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "1",
+                "description": "prevod testovacich uctu na pole",
+                "settings": {
+                    "delimiter": ",",
+                    "when_empty": "empty_array"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct password order by testing_id)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "2",
+                "description": "escapovani znaku $ pomoci zdvojeni (nelze escapovat pomoci \\$)",
+                "settings": {
+                    "pattern": "\/\\$\/",
+                    "replacement": "$$"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct password order by testing_id)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "3",
+                "description": "prevod hesel k testovacim uctum na pole",
+                "settings": {
+                    "delimiter": ",",
+                    "when_empty": "empty_array"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct mon_realm order by mon_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "6",
+                "description": "transformace na pole v pripade, ze je na serveru monitorovano vice realmu",
+                "settings": {
+                    "delimiter": "=cz,cn=",
+                    "when_empty": "empty_array"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct mon_realm order by mon_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "7",
+                "description": "extrakce realmu - 1. cast",
+                "settings": {
+                    "pattern": "\/,.*$\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "group_concat(distinct mon_realm order by mon_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "8",
+                "description": "extrakce realmu - 2. cast",
+                "settings": {
+                    "pattern": "\/cn=\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "radius_cn",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierGetHostByName",
+                "target_property": "radius_ip",
+                "priority": "9",
+                "description": "ziskani ip adresy z dns nazvu",
+                "settings": {
+                    "on_failure": "null"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "10",
+                "description": "transformace na pole v pripade, ze je na serveru vice infrastrukturnich realmu",
+                "settings": {
+                    "delimiter": "=cz,cn=",
+                    "when_empty": "empty_array"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "11",
+                "description": "extrakce inf realmu - 1. cast",
+                "settings": {
+                    "pattern": "\/,.*$\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "12",
+                "description": "extrakce inf realmu - 2. cast",
+                "settings": {
+                    "pattern": "\/cn=\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "xml_url",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": "xml_host",
+                "priority": "13",
+                "description": "extrakce hosta pro test institution-xml 1.cast",
+                "settings": {
+                    "pattern": "\/http(s)?:\\\/\\\/\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "xml_host",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": "xml_url_part",
+                "priority": "14",
+                "description": "extrakce url za \/ - 1.cast",
+                "settings": {
+                    "pattern": "\/^.*?\\\/\/",
+                    "replacement": "\/"
+                }
+            },
+            {
+                "property_name": "xml_host",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "15",
+                "description": "extrakce hosta pro test institution-xml 2.cast",
+                "settings": {
+                    "pattern": "\/\\\/.*\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "xml_url",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": "xml_https",
+                "priority": "16",
+                "description": "evidovani http\/https - 1.cast",
+                "settings": {
+                    "pattern": "\/^https.*$\/",
+                    "replacement": "1"
+                }
+            },
+            {
+                "property_name": "xml_https",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "17",
+                "description": "evidovani http\/https - 2.cast",
+                "settings": {
+                    "pattern": "\/^http.*$\/",
+                    "replacement": "0"
+                }
+            }
+        ]
+    },
+    {
+        "source_name": "ldap_to_icinga - realms",
+        "provider_class": "Icinga\\Module\\Director\\Import\\ImportSourceSql",
+        "key_column": "realm_cn",
+        "description": "import source for realms",
+        "originalId": "8",
+        "settings": {
+            "column_cache": "realm_cn, realm_dn, status, member_type, testing_id",
+            "query": "select realm_cn, realm_dn, status, member_type, testing_id from realm group by realm_cn ;",
+            "resource": "ldap_to_icinga"
+        },
+        "modifiers": [
+            {
+                "property_name": "realm_cn",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "1",
+                "description": "ponechavame pouze primarni realm",
+                "settings": {
+                    "pattern": "\/,.*$\/",
+                    "replacement": ""
+                }
+            }
+        ]
+    }
+]

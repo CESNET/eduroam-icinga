@@ -122,22 +122,6 @@
                 "source": "ldap_to_icinga - hosts"
             },
             {
-                "source_expression": "${group_concat(distinct testing_id order by testing_id)}",
-                "destination_field": "vars.testing_id[]",
-                "priority": "6",
-                "filter_expression": null,
-                "merge_policy": "merge",
-                "source": "ldap_to_icinga - hosts"
-            },
-            {
-                "source_expression": "${group_concat(distinct password order by testing_id)}",
-                "destination_field": "vars.testing_password[]",
-                "priority": "7",
-                "filter_expression": null,
-                "merge_policy": "merge",
-                "source": "ldap_to_icinga - hosts"
-            },
-            {
                 "source_expression": "${group_concat(distinct mon_realm order by mon_realm)}",
                 "destination_field": "groups",
                 "priority": "8",
@@ -165,14 +149,6 @@
                 "source_expression": "${radius_ip}",
                 "destination_field": "vars.radius_ip",
                 "priority": "11",
-                "filter_expression": null,
-                "merge_policy": "override",
-                "source": "ldap_to_icinga - hosts"
-            },
-            {
-                "source_expression": "${xml_host}",
-                "destination_field": "vars.xml_host",
-                "priority": "13",
                 "filter_expression": null,
                 "merge_policy": "override",
                 "source": "ldap_to_icinga - hosts"

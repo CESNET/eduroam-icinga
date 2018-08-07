@@ -37,39 +37,6 @@
         },
         "modifiers": [
             {
-                "property_name": "group_concat(distinct testing_id)",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
-                "target_property": null,
-                "priority": "1",
-                "description": "prevod testovacich uctu na pole",
-                "settings": {
-                    "delimiter": ",",
-                    "when_empty": "empty_array"
-                }
-            },
-            {
-                "property_name": "group_concat(distinct password order by testing_id)",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
-                "target_property": null,
-                "priority": "2",
-                "description": "escapovani znaku $ pomoci zdvojeni (nelze escapovat pomoci \\$)",
-                "settings": {
-                    "pattern": "\/\\$\/",
-                    "replacement": "$$"
-                }
-            },
-            {
-                "property_name": "group_concat(distinct password order by testing_id)",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
-                "target_property": null,
-                "priority": "3",
-                "description": "prevod hesel k testovacim uctum na pole",
-                "settings": {
-                    "delimiter": ",",
-                    "when_empty": "empty_array"
-                }
-            },
-            {
                 "property_name": "group_concat(distinct mon_realm order by mon_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
                 "target_property": null,
@@ -143,61 +110,6 @@
                 "settings": {
                     "pattern": "\/cn=\/",
                     "replacement": ""
-                }
-            },
-            {
-                "property_name": "xml_url",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
-                "target_property": "xml_host",
-                "priority": "13",
-                "description": "extrakce hosta pro test institution-xml 1.cast",
-                "settings": {
-                    "pattern": "\/http(s)?:\\\/\\\/\/",
-                    "replacement": ""
-                }
-            },
-            {
-                "property_name": "xml_host",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
-                "target_property": "xml_url_part",
-                "priority": "14",
-                "description": "extrakce url za \/ - 1.cast",
-                "settings": {
-                    "pattern": "\/^.*?\\\/\/",
-                    "replacement": "\/"
-                }
-            },
-            {
-                "property_name": "xml_host",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
-                "target_property": null,
-                "priority": "15",
-                "description": "extrakce hosta pro test institution-xml 2.cast",
-                "settings": {
-                    "pattern": "\/\\\/.*\/",
-                    "replacement": ""
-                }
-            },
-            {
-                "property_name": "xml_url",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
-                "target_property": "xml_https",
-                "priority": "16",
-                "description": "evidovani http\/https - 1.cast",
-                "settings": {
-                    "pattern": "\/^https.*$\/",
-                    "replacement": "1"
-                }
-            },
-            {
-                "property_name": "xml_https",
-                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
-                "target_property": null,
-                "priority": "17",
-                "description": "evidovani http\/https - 2.cast",
-                "settings": {
-                    "pattern": "\/^http.*$\/",
-                    "replacement": "0"
                 }
             }
         ]

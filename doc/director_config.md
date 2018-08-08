@@ -814,6 +814,8 @@ template Notification "generic notification" {
 
 ## Endpoints
 
+![endpoints](https://github.com/CESNET/eduroam-icinga/blob/master/doc/endpoints.png "endpoints")
+
 We defined two endpoints - one for czech top level RADIUS server and for for monitoring itself:
 
 Monitoring endpoint:
@@ -862,6 +864,8 @@ so this has to be done manually in the director.
 
 Data fields enable icinga objects to be to have custom variables.
 These variables may be set using director.
+
+![data fields](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_fields.png "data fields")
 
 Our sync rules [datafields.json](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/director/datafields.json)
 The import is not possible currently.

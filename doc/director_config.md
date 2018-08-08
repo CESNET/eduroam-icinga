@@ -78,9 +78,9 @@ The mapping is done for every row from the import source data.
 For each row from import source data an object of selected type is created.
 Object properties can be filled by selecting mapping of fields from import source data.
 
-![sync rules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/import_sources.png "sync rules")
+![sync rules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/sycrules.png "sync rules")
 
-Our sync rules [syncrules.json](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/director/syncurles.json)
+Our sync rules [syncrules.json](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/director/syncrules.json)
 
 You can use these exported data for import using:
 ```
@@ -136,7 +136,20 @@ so this has to be done manually in the director.
 
 ## Service templates
 
-TODO
+Service templates are assigned to service definitions.
+This is used in [static_config](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf)
+and in director service apply rules.
+
+![service templates](https://github.com/CESNET/eduroam-icinga/blob/master/doc/service_templates.png "service templates")
+
+Some of the templates may indicate that the are not in use when viewed in icingaweb2.
+This may not be completely true, because some files from fileshipper may still use these templates.
+Director has no way of knowing if some fileshipper configration uses these or not.
+
+There is currently no way that this configuration can be exported or imported,
+so this has to be done manually in the director.
+
+All the used templates are defined below.
 
 ### BIG-PACKET
 
@@ -225,7 +238,6 @@ template Service "home realm alive template" {
 }
 ```
 
-
 ### INSTITUTION-XML
 ```
 template Service "institution xml template" {
@@ -236,7 +248,6 @@ template Service "institution xml template" {
     enable_notifications = true
 }
 ```
-
 
 ### PING
 ```
@@ -251,7 +262,6 @@ template Service "ping template" {
     command_endpoint = null
 }
 ```
-
 
 ### VCELKA-MAJA
 ```
@@ -278,36 +288,589 @@ template Service "visitors template" {
 }
 ```
 
-
 ## Service groups
 
-TODO
+Most of the service groups are defined in [groups.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/groups.conf).
+Only two groups are defined in director, because service apply rules for these services are also configured in director.
+
+Servicegroup for PING service:
+
+```
+object ServiceGroup "PING" {
+    display_name = "PING"
+}
+```
+
+Servicegroup for VISITORS service:
+```
+object ServiceGroup "VISITORS" {
+    display_name = "VISITORS"
+}
+```
+
+Export of our service groups [servicegroups.json](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/director/servicegroups.json)
+The import is not possible currently.
 
 ## Service apply rules
 
-TODO
+Most of the service apply rules are defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf).
+Only two service apply rules are defined in director.
+
+
+Service apply rule for PING:
+```
+apply Service "PING" {
+    import "ping template"
+
+    assign where host.name
+
+    import DirectorOverrideTemplate
+}
+```
+
+Service apply rule for VISITORS:
+```
+apply Service "VISITORS" {
+    import "visitors template"
+
+    assign where host.vars.mon_realm
+    groups = [ "VISITORS" ]
+
+    import DirectorOverrideTemplate
+}
+```
+
+There is currently no way that this configuration can be exported or imported,
+so this has to be done manually in the director.
+
 
 ## Commands
 
-TODO
+Commands represent the plugins used for checks.
+
+![commands](https://github.com/CESNET/eduroam-icinga/blob/master/doc/commands.png "commands")
+
+There is currently no way that this configuration can be exported or imported,
+so this has to be done manually in the director.
+
+Some of the commands will show that they are not used when viewed in icingaweb2.
+This is because they are used in icinga2 configuration. Director has no way of knowing this.
+
+All the used commands are defined below.
+
+### CHECK-COMPROMISED
+```
+object CheckCommand "check_compromised" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/compromised_users.sh" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$service.vars.realm$"
+        }
+        "(no key.2)" = {
+            order = 2
+            required = true
+            skip_key = true
+            value = "60"
+        }
+    }
+}
+```
+
+### CHECK-CONCURRENT
+```
+object CheckCommand "check_concurrent" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/concurrent_inst.sh" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$service.vars.realm$"
+        }
+        "(no key.2)" = {
+            order = 2
+            required = true
+            skip_key = true
+            value = "20"
+        }
+        "(no key.3)" = {
+            order = 3
+            required = true
+            skip_key = true
+            value = "10"
+        }
+        "(no key.4)" = {
+            order = 4
+            required = true
+            skip_key = true
+            value = "20"
+        }
+    }
+}
+```
+
+### CALLING-STATION-ID
+```
+object CheckCommand "check_csi" {
+    import "plugin-check-command"
+    command = [ "/usr/local/bin/test-Calling-Station-Id-v2.pl" ]
+    timeout = 1m
+    arguments += {
+        "-F" = {
+            required = true
+            value = "/var/log/arch/radiator/ON_CSI.last"
+        }
+        "-H" = {
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+    }
+}
+```
+
+### CHARGEABLE-USER-IDENTITY
+```
+object CheckCommand "check_cui" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/test-Chargeable-User-Identity.pl" ]
+    arguments += {
+        "-H" = {
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+        "-M" = {
+            required = true
+            value = "$service.vars.mac_address$"
+        }
+        "-P" = {
+            required = true
+            value = "1812"
+        }
+        "-S" = "$host.vars.mon_radius_secret$"
+        "-p" = {
+            required = true
+            value = "$service.vars.testing_password$"
+        }
+        "-u" = {
+            required = true
+            value = "$service.vars.testing_id$"
+        }
+    }
+}
+```
+
+### CVE-2017-9148
+```
+object CheckCommand "check_cve_2017_9148" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/tls-resume-expl" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$service.vars.testing_id$"
+        }
+        "(no key.2)" = {
+            order = 2
+            required = true
+            skip_key = true
+            value = "$host.vars.radius_ip$"
+        }
+        "(no key.3)" = {
+            order = 3
+            required = true
+            skip_key = true
+            value = "$host.vars.mon_radius_secret$"
+        }
+        "(no key.4)" = {
+            order = 4
+            required = true
+            skip_key = true
+            value = "$service.vars.mac_address1$"
+        }
+        "(no key.5)" = {
+            order = 5
+            required = true
+            skip_key = true
+            value = "$service.vars.mac_address2$"
+        }
+    }
+}
+```
+
+### FAKE-UID
+```
+object CheckCommand "check_fake_uid" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/check-fake-id" ]
+    arguments += {
+        "-A" = {
+            required = true
+            value = "$service.vars.anon_id$"
+        }
+        "-H" = {
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+        "-M" = {
+            required = true
+            value = "$service.vars.mac_address$"
+        }
+        "-P" = {
+            required = true
+            value = "1812"
+        }
+        "-S" = {
+            required = true
+            value = "$host.vars.mon_radius_secret$"
+        }
+        "-e" = {
+            required = true
+            value = "PEAP"
+        }
+        "-m" = {
+            required = true
+            value = "WPA-EAP"
+        }
+        "-p" = {
+            required = true
+            value = "$service.vars.testing_password$"
+        }
+        "-t" = {
+            required = true
+            value = "50"
+        }
+        "-u" = {
+            required = true
+            value = "$service.vars.testing_id$"
+        }
+    }
+}
+```
+
+### HOME-REALM-ALIVE
+```
+object CheckCommand "check_home_realm_alive" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/home_realm_alive.sh" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$service.vars.realm$"
+        }
+        "(no key.2)" = {
+            order = 2
+            required = true
+            skip_key = true
+            value = "$service.vars.home_servers$"
+        }
+    }
+}
+```
+
+### INSTITUTION-XML
+```
+object CheckCommand "check_institution_xml" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/check_http", "--onredirect=follow" ]
+    arguments += {
+        "--sni" = {
+            required = false
+            set_if = "$service.vars.xml_https$"
+        }
+        "-H" = {
+            required = true
+            value = "$service.vars.xml_host$"
+        }
+        "-S" = {
+            required = false
+            set_if = "$service.vars.xml_https$"
+        }
+        "-s" = {
+            required = true
+            value = "inst_realm"
+        }
+        "-u" = {
+            required = true
+            value = "$service.vars.xml_url_part$"
+        }
+    }
+}
+```
+
+### IPSEC
+```
+object CheckCommand "check_ipsec" {
+    import "plugin-check-command"
+    command = [ "/usr/local/bin/check_ipsec" ]
+    timeout = 1m
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$host.vars.radius_ip$"
+        }
+    }
+}
+```
+
+### OPERATOR-NAME
+```
+object CheckCommand "check_operator_name" {
+    import "plugin-check-command"
+    command = [ "/usr/local/bin/test-Operator-Name.pl" ]
+    arguments += {
+        "-F" = {
+            required = true
+            value = "/var/log/arch/radiator/ON_CSI.last"
+        }
+        "-H" = {
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+    }
+}
+```
+
+### RADSEC
+
+RADSEC command is configured twice - once for servers with IdP+SP role
+and once for server with SP only role.
+
+```
+object CheckCommand "check_radsec" {
+    import "plugin-check-command"
+    command = [ "/usr/local/bin/check_radsec.pl" ]
+    timeout = 1m
+    arguments += {
+        "-H" = {
+            order = 1
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+    }
+}
+```
+
+```
+object CheckCommand "check_radsec_sp" {
+    import "plugin-check-command"
+    command = [ "/usr/local/bin/check_radsec.pl" ]
+    timeout = 1m
+    arguments += {
+        "--SPonly" = {}
+        "-H" = {
+            order = 1
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+    }
+}
+```
+
+
+### home realm / vistors realm
+```
+object CheckCommand "check_rad_eap" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/rad_eap_test" ]
+    timeout = 1m
+    arguments += {
+        "-H" = {
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+        "-M" = {
+            required = true
+            value = "$service.vars.mac_address$"
+        }
+        "-P" = {
+            required = true
+            value = "1812"
+        }
+        "-S" = {
+            required = true
+            value = "$host.vars.mon_radius_secret$"
+        }
+        "-e" = {
+            required = true
+            value = "PEAP"
+        }
+        "-i" = {
+            required = false
+            value = "$service.vars.info$"
+        }
+        "-m" = {
+            required = true
+            value = "WPA-EAP"
+        }
+        "-p" = {
+            required = true
+            value = "$service.vars.testing_password$"
+        }
+        "-t" = {
+            required = true
+            value = "50"
+        }
+        "-u" = {
+            required = true
+            value = "$service.vars.testing_id$"
+        }
+    }
+}
+```
+
+### VCELKA-MAJA
+```
+object CheckCommand "check_vcelka_maja" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/vcelka-maja" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "test001@cesnet.cz"
+        }
+        "(no key.2)" = {
+            order = 2
+            required = true
+            skip_key = true
+            value = "password"      // password removed for being sensitive infomation
+        }
+        "(no key.3)" = {
+            order = 3
+            required = true
+            skip_key = true
+            value = "$host.vars.radius_ip$"
+        }
+        "(no key.4)" = {
+            order = 4
+            required = true
+            skip_key = true
+            value = "$host.vars.mon_radius_secret$"
+        }
+        "(no key.5)" = {
+            order = 5
+            required = true
+            skip_key = true
+            value = "$service.vars.realm$"
+        }
+        "(no key.6)" = {
+            order = 6
+            required = true
+            skip_key = true
+            value = "$service.vars.mac_address1$"
+        }
+        "(no key.7)" = {
+            order = 7
+            required = true
+            skip_key = true
+            value = "$service.vars.mac_address2$"
+        }
+    }
+}
+```
+
+### VISITORS
+```
+object CheckCommand "check_visitors" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/check_visitors.sh" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$host.name$"
+        }
+    }
+}
+```
+
 
 ## Notification templates
 
-TODO
+We only use notifications for services.
+Only one notification template is used:
+
+```
+template Notification "generic notification" {
+    command = "mail-service-notification"
+    interval = 1d
+    states = [ Critical, OK, Unknown, Warning ]
+    types = [ Acknowledgement, Custom, Problem, Recovery ]
+}
+```
 
 ## Endpoints
 
-TODO
+We defined two endpoints - one for czech top level RADIUS server and for for monitoring itself:
+
+Monitoring endpoint:
+```
+object Endpoint "ermon2.cesnet.cz" {
+    host = "ermon2.cesnet.cz"
+    port = "5665"
+    log_duration = 1d
+}
+```
+
+Czech top level RADIUS server endpoint:
+```
+object Endpoint "radius1.eduroam.cz" {
+    host = "radius1.eduroam.cz"
+    port = "5665"
+}
+```
+
+There is currently no way that this configuration can be exported or imported,
+so this has to be done manually in the director.
 
 ## Zones
 
-TODO
+We defined two zones - one for czech top level RADIUS server and for for monitoring itself:
+
+Monitoring zone:
+```
+object Zone "ermon2.cesnet.cz" {
+    endpoints = [ "ermon2.cesnet.cz" ]
+}
+```
+
+Czech top level RADIUS server zone:
+```
+object Zone "radius1.eduroam.cz" {
+    parent = "ermon2.cesnet.cz"
+    endpoints = [ "radius1.eduroam.cz" ]
+}
+```
+
+There is currently no way that this configuration can be exported or imported,
+so this has to be done manually in the director.
 
 ## Data fields
 
-TODO
+Data fields enable icinga objects to be to have custom variables.
+These variables may be set using director.
 
+Our sync rules [datafields.json](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/director/datafields.json)
+The import is not possible currently.
 
 ## Manually added hosts
 
+The national top level RADIUS server needs to be added manually using director.
+This host is not in our evidence.
+
 TODO - client
+
+TODO - setup

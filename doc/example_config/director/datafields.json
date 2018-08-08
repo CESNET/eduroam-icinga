@@ -1,0 +1,11 @@
+[
+    {
+        "varname": "doc_url",
+        "caption": "doc_url",
+        "description": "documentation url",
+        "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeString",
+        "format": null,
+        "originalId": "9",
+        "settings": {}
+    }
+]

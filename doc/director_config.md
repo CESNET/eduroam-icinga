@@ -78,7 +78,7 @@ The mapping is done for every row from the import source data.
 For each row from import source data an object of selected type is created.
 Object properties can be filled by selecting mapping of fields from import source data.
 
-![sync rules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/sycrules.png "sync rules")
+![sync rules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/syncrules.png "sync rules")
 
 Our sync rules [syncrules.json](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/director/syncrules.json)
 

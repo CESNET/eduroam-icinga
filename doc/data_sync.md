@@ -47,23 +47,44 @@ The diagram below shows how the data are transfered to icinga2.
 ![data flow diagram](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_flow_explained.png "data flow diagram")
 
 The diagram could be described as follows:
-1. The sychronization script gets the data from the data source.
-(In our case this is done by https://github.com/CESNET/eduroam-icinga/blob/master/sync/ldap_sync.js ,
-but this is highly tied to our environment so anyone else trying to implement this
+
+1. The sychronization [script](https://github.com/CESNET/eduroam-icinga/blob/master/sync/main.sh) script is running at regular intervals by cron daemon.
+Once a day reconfiguration of whole icinga setup if forced even if there are no changes in the source data.
+Our evidence is partly based on DNS, so if anything changes in DNS, our configration remain the same.
+The script runs another [script](https://github.com/CESNET/eduroam-icinga/blob/master/sync/ldap_sync.js).
+
+2. The script checks the source of the data for changes.
+If there are no changes, the script does no changes and the configuration attempt is terminated in main script.
+If there are changes, the script gets the data from the data source.
+(Our sync [script](https://github.com/CESNET/eduroam-icinga/blob/master/sync/ldap_sync.js) is highly tied to our environment so anyone else trying to implement this
 should create sync tool suited for their environment.)
 
-2. The data are transferred to the synchronization script.
+3. The script generates database data for director.
 
-3. The script generates dynanic icinga2 configuration for fileshipper module to import in director.
-The script generates database data for director.
+4. The script generates dynanic icinga2 configuration for fileshipper module to import in director.
+The script's work ends here.
 
-4. (Not shown in the diagram)
-This step is needed to apply all the prepared configuration to icinga2.
-Synchronize icinga director import sources & sync rules.
+5. The main script synchronizes all director import sources.
 
-5. (Not shown in the diagram)
-This step is needed to apply all the prepared configuration to icinga2
-Deploy icinga director configuration.
+6. Director import sources get data from previously filled database.
+
+7. The main script synchronizes all director sync rules.
+
+8. Director sync rules get data from director import sources.
+
+9. New configuration is deployed.
+Newly deployed configuration takes configratuion from several sources:
+  - director config
+  - director sync rules (could be viewed as part of director config)
+  - fileshipper dynamic config
+  - fileshipper static config
+  - icinga2 configuration
+
+The main script can send notification if something fails during the deployment process.
+
+
+
+TODO
 
 
 - director

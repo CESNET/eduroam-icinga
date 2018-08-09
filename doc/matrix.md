@@ -16,7 +16,7 @@ It was decided that this should be preserved with the new monitoring setup. Orig
 The source code is actually in repository [eduroam-monitor](https://github.com/CESNET/eduroam-monitor).
 It was not included in this repostiory, because it is not part of the monitoring setup itself, but it is mentioned here in documentation for obvious reasons.
 
-Screenshot from new matrix. - TODO
+![Screenshot](https://github.com/CESNET/eduroam-icinga/blob/master/doc/new_matrix.png "new matrix")
 
 ## how it works
 

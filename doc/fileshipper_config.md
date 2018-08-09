@@ -1,6 +1,6 @@
 # fileshipper
 Fileshipper configuration is located in directory `/etc/icingaweb2/modules/fileshipper/`.
-There is only one configuration file for the module itself, which is `/etc/icingaweb2/modules/fileshipper/directories.ini` (see [above](https://github.com/CESNET/eduroam-icinga#configuration) for explanation).
+There is only one configuration file for the module itself, which is `/etc/icingaweb2/modules/fileshipper/directories.ini` (see [module configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md#configuration) for explanation).
 The rest of the files in `/etc/icingaweb2/modules/fileshipper/` are plain icinga2 configuration files,
 which are shipped to icinga2 when director configuration is deployed.
 

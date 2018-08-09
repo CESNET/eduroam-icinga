@@ -10,15 +10,17 @@ They can also be used as a step by step guide to set up eduroam monitoring at na
 
 ## [icingaweb2 modules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md)
 
-## [icingaweb2](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_config.md)
+## [icingaweb2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_config.md)
 
-## [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md)
+## [director configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md)
 
-## [clients](https://github.com/CESNET/eduroam-icinga/blob/master/doc/clients.md)
-
-## [data synchronization](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_sync.md)
+## [fileshipper configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/fileshipper_config.md)
 
 ## [icinga2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_config.md)
+
+## [clients configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/clients.md)
+
+## [data synchronization](https://github.com/CESNET/eduroam-icinga/blob/master/doc/data_sync.md)
 
 ## [tests](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md)
 

@@ -1,10 +1,10 @@
-## icingaweb2 modules
+# icingaweb2 modules
 
 For our setup two additional icingaweb2 modules are used:
 - director
 - fileshipper
 
-### director ([module home](https://github.com/Icinga/icingaweb2-module-director))
+## director ([module home](https://github.com/Icinga/icingaweb2-module-director))
 
 This module enables configuration management through web browser.
 The main functionality we use is synchronization from database sources.
@@ -13,7 +13,7 @@ This module is cloned directly from git repository. Revision used is `ef2d198328
 
 For installation see official [instructions](https://github.com/Icinga/icingaweb2-module-director/blob/master/doc/02-Installation.md)
 
-### filehsipper ([module home](https://github.com/Icinga/icingaweb2-module-fileshipper))
+## filehsipper ([module home](https://github.com/Icinga/icingaweb2-module-fileshipper))
 This module extends the director module in certain ways. It enables director to synchronize
 file formats XML, YAML, CSV, XSLX, JSON and plain icinga2 configuration.
 We use this module ty synchronize plain icinga2 configuration because it cannot be done in director itself.
@@ -23,7 +23,7 @@ This module is cloned directly from git repository. Revision used is `fd2c797eed
 
 For installation see official [instructions](https://github.com/Icinga/icingaweb2-module-fileshipper/blob/master/doc/02-Installation.md)
 
-#### configuration
+### configuration
 
 You need to create file `/etc/icingaweb2/modules/fileshipper/directories.ini` with contents:
 ```

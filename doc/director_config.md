@@ -61,7 +61,26 @@ This modifier looks up host by name. It returns IPv4 address. (see [this](https:
 
 #### DNS failure
 
-It sometimes happens, that some RADIUS host names are not resolvable from DNS. In case this happens TODO
+It sometimes happens, that some RADIUS host names are not resolvable from DNS.
+When this happens someone should be notified about this.
+
+In case this happens without any deployments,
+all the tests except PING will be working fine.
+In case this happens with new configuration deployment,
+the modifier mentioned above will set variable `radius_ip` as null.
+All the tests which use this variable will get to state UNKNOWN since
+the variable will not be available.
+
+In both cases the PING test will return someting like:
+```
+Invalid hostname/address - radius.domain.tld
+```
+
+To be able to notify administrators about this, simple [script](https://github.com/CESNET/eduroam-icinga/blob/master/other/check_dns.sh) was created.
+This script should be run at regular intervals by cron daemon.
+It checks all the ping services using `icingacli`.
+If there are some services which report the error message mentioned above,
+the script notifies administrators about this.
 
 ### import source for realms
 

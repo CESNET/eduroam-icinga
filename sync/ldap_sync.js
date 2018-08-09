@@ -60,13 +60,16 @@ function synchronize_data() {
       create_db_structure(callback);
     },
     function(callback) {
+      search_realms(client, realms, testing_ids, config.search_base_realms, callback);
+    },
+    function(callback) {
       search_admins(client, admins, config.search_base_admins, callback);
     },
     function(callback) {
-      print_admins(admins, callback);
+      fix_missing_realm_admins(realms, admins, callback);
     },
     function(callback) {
-      search_realms(client, realms, testing_ids, config.search_base_realms, callback);
+      print_admins(admins, callback);
     },
     function(callback) {
       print_testing_ids(testing_ids, callback);
@@ -96,6 +99,25 @@ function synchronize_data() {
     });
   });
 };
+// --------------------------------------------------------------------------------------
+// set realm admins to CESNET admistrators if there are no users for given specific realm
+// --------------------------------------------------------------------------------------
+function fix_missing_realm_admins(realms, admins, callback)
+{
+  for(var i in realms) {
+    if(typeof(realms[i].manager) === 'object') {
+      for(var j in realms[i].manager)
+        if(!(realms[i].manager[j].toLowerCase() in admins))
+          realms[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];      // subtitute dead admins
+    }
+    else {
+      if(!(realms[i].manager.toLowerCase() in admins))
+        realms[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];        // subtitute dead admins
+    }
+  }
+
+  callback();
+}
 // --------------------------------------------------------------------------------------
 // write specific variable to specific file
 // --------------------------------------------------------------------------------------
@@ -581,7 +603,7 @@ function save_admins(client, input, data, done)
       assert.ifError(err);
 
       res.on('searchEntry', function(entry) {
-        data[entry.object.dn] = entry.object;
+        data[entry.object.dn.toLowerCase()] = entry.object;     // normalize key
       });
 
       res.on('error', function(err) {

@@ -24,8 +24,6 @@ They can also be used as a step by step guide to set up eduroam monitoring at na
 
 ## [tests](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md)
 
-## [availability matrix](https://github.com/CESNET/eduroam-icinga/blob/master/doc/matrix.md)
-
 TODO - separate to [eduroam-monitor](https://github.com/CESNET/eduroam-monitor)?
 
 ## Auxiliary tools

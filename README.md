@@ -24,10 +24,11 @@ They can also be used as a step by step guide to set up eduroam monitoring at na
 
 ## [tests](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md)
 
-TODO - separate to [eduroam-monitor](https://github.com/CESNET/eduroam-monitor)?
-
 ## Auxiliary tools
-TODO - semik
+
+These tools are not a part of monitoring setup itself,
+but they provide additional valuable data in good form.
+All the tools are in separate [repository](https://github.com/CESNET/eduroam-monitor).
 
 ## LICENSE
 

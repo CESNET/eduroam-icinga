@@ -83,22 +83,114 @@ Newly deployed configuration takes configratuion from several sources:
 The main script can send notification if something fails during the deployment process.
 
 
-
-TODO
-
-
-- director
-- plain config in /etc/icinga2
-- client config
-- fileshipper
-
-
-## source synchronization
-
-## CESNET specific part
-
-## mysql
-
 ### database structure
+
+The database layer used in data synchronization process has strictly defined structure.
+The structure is tied to the director sync rules and import source.
+In case anyone implements this while **NOT** respecting the database structure,
+the director part of the synchronization will not work correctly.
+
+We used the mysql database for this as well as for icinga2, but postgresql may surely be used too.
+In case you would like to use postgresql, make sure the table design works fine.
+
+#### tables
+
+The database contains these tables:
+- admin
+- radius\_server
+- realm
+- testing\_id
+
+##### table admin
+
+This table contains information about realms' and servers' administators.
+table structure:
+```
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| admin_dn | varchar(191) | NO   | PRI | NULL    |       |
+| admin_cn | varchar(191) | NO   |     | NULL    |       |
+| mail     | varchar(191) | NO   |     | NULL    |       |
+| uid      | varchar(191) | NO   |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+```
+
+Example data:
+```
++----------------------------------------+----------------+-----------------------------+----------+
+| admin_dn                               | admin_cn       | mail                        | uid      |
++----------------------------------------+----------------+-----------------------------+----------+
+| uid=user1,ou=People,dc=org,dc=cz       | John Doe       | user1-email@company.cz      | user1    |
+| uid=user2,ou=People,dc=org,dc=cz       | Jan Novak      | user2-email@company.cz      | user2    |
+| uid=user3,ou=People,dc=org,dc=cz       | Jane Doe       | user3-email@google.com      | user3    |
+| uid=user4,ou=People,dc=org,dc=cz       | Real User      | user4-email@yahoo.com       | user4    |
+| uid=user5,ou=People,dc=org,dc=cz       | Somebody Else  | user5-email@company.cz      | user5    |
++----------------------------------------+----------------+-----------------------------+----------+
+```
+
+The column `admin_dn` is the primary key of this table. Is it also used to identify
+users in other tables. A unique user identifier should be used here.
+
+The column `admin_cn` holds the user full name. It is advised to keep this in ASCII only values.
+
+
+The column `admin_cmail` holds the user email address. This is used for notifications.
+
+The column `uid` holds user identifier. This is currently not used. TODO
+
+##### table radius\_server
+
+This table contains information about RADIUS servers.
+table structure:
+```
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| id                | int(11)      | NO   | PRI | NULL    | auto_increment |
+| radius_dn         | varchar(191) | NO   | MUL | NULL    |                |
+| radius_cn         | varchar(191) | NO   |     | NULL    |                |
+| inf_radius_secret | varchar(191) | NO   |     | NULL    |                |
+| transport         | varchar(191) | NO   |     | NULL    |                |
+| mon_radius_secret | varchar(191) | NO   |     | NULL    |                |
+| mon_realm         | varchar(191) | YES  | MUL | NULL    |                |
+| inf_realm         | varchar(191) | YES  | MUL | NULL    |                |
+| radius_manager    | varchar(191) | NO   | MUL | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+```
+
+##### table realm
+
+This table contains information about realms.
+table structure:
+```
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | int(11)      | NO   | PRI | NULL    | auto_increment |
+| realm_dn      | varchar(191) | NO   | MUL | NULL    |                |
+| realm_cn      | varchar(191) | NO   |     | NULL    |                |
+| status        | varchar(191) | NO   |     | NULL    |                |
+| member_type   | varchar(191) | NO   |     | NULL    |                |
+| xml_url       | varchar(191) | NO   |     | NULL    |                |
+| realm_manager | varchar(191) | NO   | MUL | NULL    |                |
+| testing_id    | varchar(191) | YES  | MUL | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+```
+
+##### table testing\_id
+
+This table contains information about testing accounts.
+table structure:
+```
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| id       | varchar(191) | NO   | MUL | NULL    |       |
+| password | varchar(191) | NO   |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+```
+
+## clients
 
 ## director

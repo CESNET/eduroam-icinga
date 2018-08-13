@@ -875,7 +875,6 @@ function create_db_structure(callback)
   console.log("DROP TABLE IF EXISTS realm;");
   console.log("DROP TABLE IF EXISTS admin;");
   console.log("DROP TABLE IF EXISTS testing_id;");
-  console.log("DROP TABLE IF EXISTS service;");
 
   // max varchar size set to 191 - because of https://stackoverflow.com/questions/1814532/1071-specified-key-was-too-long-max-key-length-is-767-bytes
   // 191 * 4 = 764
@@ -887,8 +886,6 @@ function create_db_structure(callback)
   console.log("CREATE TABLE IF NOT EXISTS realm (id INT NOT NULL AUTO_INCREMENT, realm_dn VARCHAR(191) NOT NULL, realm_cn VARCHAR(191) NOT NULL, status VARCHAR(191) NOT NULL, member_type VARCHAR(191) NOT NULL, xml_url VARCHAR(191) NOT NULL, realm_manager VARCHAR(191) NOT NULL, FOREIGN KEY (realm_manager) REFERENCES admin(admin_dn), testing_id VARCHAR(191), FOREIGN KEY (testing_id) REFERENCES testing_id(id), PRIMARY KEY ( id ), UNIQUE ( id ), INDEX realm_idx (realm_dn));");
 
   console.log("CREATE TABLE IF NOT EXISTS radius_server (id INT NOT NULL AUTO_INCREMENT, radius_dn VARCHAR(191) NOT NULL, radius_cn VARCHAR(191) NOT NULL, inf_radius_secret VARCHAR(191) NOT NULL, transport VARCHAR(191) NOT NULL, mon_radius_secret VARCHAR(191) NOT NULL, mon_realm VARCHAR(191), FOREIGN KEY (mon_realm) REFERENCES realm(realm_dn), inf_realm VARCHAR(191), FOREIGN KEY (inf_realm) REFERENCES realm(realm_dn), radius_manager VARCHAR(191) NOT NULL, FOREIGN KEY (radius_manager) REFERENCES admin(admin_dn), PRIMARY KEY ( id ), UNIQUE ( id ), INDEX radius_server_idx (radius_dn));");
-
-  console.log("CREATE TABLE IF NOT EXISTS service (id VARCHAR(191) NOT NULL, visitors_realm VARCHAR(191) NOT NULL, visited_realm VARCHAR(191) NOT NULL, check_host VARCHAR(191) NOT NULL, home_server VARCHAR(191) NOT NULL, home_realm_check BOOLEAN, mac_address VARCHAR(191) NOT NULL, testing_id VARCHAR(191) NOT NULL, password VARCHAR(191) NOT NULL, PRIMARY KEY ( id ), UNIQUE ( id ), INDEX service_idx (id));");
 
   callback(null);
 }

@@ -908,5 +908,5 @@ In case the situation changes a modifier for getting specific DNS record could b
 ## remote tests
 
 Remote tests are run on radius1.eduroam.cz. The tests are run using icinga cluster protocol.
-The client (radius1.eduroam.cz) only needs to know the definotion of the tests to run them.
+The client (radius1.eduroam.cz) only needs to know the definition of the tests to run them.
 Parameter relaying is done using the icinga cluster protocol.

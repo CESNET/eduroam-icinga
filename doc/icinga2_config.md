@@ -123,7 +123,7 @@ template Service "operator name template" {
 
 In icinga cluster terminology the client is an icinga2 node, which has only one parent node.
 A client node will either run its own configured checks or receive command execution events from the parent node.
-We chose scenario when the client only recieves commdna execution events from the parent node.
+We chose scenario when the client only recieves command execution events from the parent node.
 
 [Official documentation](https://www.icinga.com/docs/icinga2/latest/doc/06-distributed-monitoring/) on this topic.
 

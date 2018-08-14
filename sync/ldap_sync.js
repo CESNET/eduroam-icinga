@@ -106,9 +106,10 @@ function fix_missing_realm_admins(realms, admins, callback)
 {
   for(var i in realms) {
     if(typeof(realms[i].manager) === 'object') {
-      for(var j in realms[i].manager)
-        if(!(realms[i].manager[j].toLowerCase() in admins))
+      for(var j in realms[i].manager) {
+        if(realms[i].manager[j] !== undefined && !(realms[i].manager[j].toLowerCase() in admins))
           realms[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];      // subtitute dead admins
+      }
     }
     else {
       if(!(realms[i].manager.toLowerCase() in admins))

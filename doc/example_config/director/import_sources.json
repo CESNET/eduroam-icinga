@@ -31,8 +31,8 @@
         "description": "import source for hosts",
         "originalId": "5",
         "settings": {
-            "column_cache": "radius_cn, group_concat(distinct inf_realm), inf_radius_secret, mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url",
-            "query": "select radius_cn, group_concat(distinct inf_realm), inf_radius_secret, mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url from radius_server left join realm on radius_server.mon_realm = realm.realm_dn left join testing_id on testing_id.id = realm.testing_id group by radius_cn;",
+            "column_cache": "radius_cn, group_concat(distinct inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url",
+            "query": "select radius_cn, group_concat(distinct inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url from radius_server left join realm on radius_server.mon_realm = realm.realm_dn left join testing_id on testing_id.id = realm.testing_id group by radius_cn;",
             "resource": "ldap_to_icinga"
         },
         "modifiers": [

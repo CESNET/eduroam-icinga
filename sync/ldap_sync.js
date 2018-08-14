@@ -479,7 +479,7 @@ function print_radius_multiple_managers(data, item, input)
 // --------------------------------------------------------------------------------------
 function check_null_values(item, num, ret, obj)
 {
-  ret.out = "(" + num + ", '"  + item.dn + "', '" + item.cn + "', '" + item.eduroamInfRadiusSecret1 + "', '" + item.eduroamInfTransport + "', '" + item.eduroamMonRadiusSecret + "', ";
+  ret.out = "(" + num + ", '"  + item.dn + "', '" + item.cn + "', '" + item.eduroamInfTransport + "', '" + item.eduroamMonRadiusSecret + "', ";
 
   if("mon" in obj && obj["mon"] == "NULL")
     ret.out += obj["mon"] + ", ";
@@ -886,7 +886,7 @@ function create_db_structure(callback)
 
   console.log("CREATE TABLE IF NOT EXISTS realm (id INT NOT NULL AUTO_INCREMENT, realm_dn VARCHAR(191) NOT NULL, realm_cn VARCHAR(191) NOT NULL, status VARCHAR(191) NOT NULL, member_type VARCHAR(191) NOT NULL, xml_url VARCHAR(191) NOT NULL, realm_manager VARCHAR(191) NOT NULL, FOREIGN KEY (realm_manager) REFERENCES admin(admin_dn), testing_id VARCHAR(191), FOREIGN KEY (testing_id) REFERENCES testing_id(id), PRIMARY KEY ( id ), UNIQUE ( id ), INDEX realm_idx (realm_dn));");
 
-  console.log("CREATE TABLE IF NOT EXISTS radius_server (id INT NOT NULL AUTO_INCREMENT, radius_dn VARCHAR(191) NOT NULL, radius_cn VARCHAR(191) NOT NULL, inf_radius_secret VARCHAR(191) NOT NULL, transport VARCHAR(191) NOT NULL, mon_radius_secret VARCHAR(191) NOT NULL, mon_realm VARCHAR(191), FOREIGN KEY (mon_realm) REFERENCES realm(realm_dn), inf_realm VARCHAR(191), FOREIGN KEY (inf_realm) REFERENCES realm(realm_dn), radius_manager VARCHAR(191) NOT NULL, FOREIGN KEY (radius_manager) REFERENCES admin(admin_dn), PRIMARY KEY ( id ), UNIQUE ( id ), INDEX radius_server_idx (radius_dn));");
+  console.log("CREATE TABLE IF NOT EXISTS radius_server (id INT NOT NULL AUTO_INCREMENT, radius_dn VARCHAR(191) NOT NULL, radius_cn VARCHAR(191) NOT NULL, transport VARCHAR(191) NOT NULL, mon_radius_secret VARCHAR(191) NOT NULL, mon_realm VARCHAR(191), FOREIGN KEY (mon_realm) REFERENCES realm(realm_dn), inf_realm VARCHAR(191), FOREIGN KEY (inf_realm) REFERENCES realm(realm_dn), radius_manager VARCHAR(191) NOT NULL, FOREIGN KEY (radius_manager) REFERENCES admin(admin_dn), PRIMARY KEY ( id ), UNIQUE ( id ), INDEX radius_server_idx (radius_dn));");
 
   callback(null);
 }

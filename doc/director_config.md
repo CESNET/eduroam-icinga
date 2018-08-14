@@ -894,6 +894,16 @@ The import is not possible currently.
 The national top level RADIUS server needs to be added manually using director.
 This host is not in our evidence.
 
-TODO - client
+The top level national RADIUS server represents a client in icinga cluster protocol.
+Some of the tests must be ran on the client, because the monitoring server itself does not have data needed for the tests.
+For more info see [tests](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md#remote-tests)
 
-TODO - setup
+The host is added manualy in icingaweb2 director menu.
+No special settings are set.
+
+### Client setup
+
+Client setup may be done using script provided in icingaweb2.
+Download this script on client a run it.
+It should do all the work and the master and the client should be able to communicate.
+

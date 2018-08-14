@@ -66,7 +66,7 @@ function sync_director
       exit 1
     elif [[ $(echo "$state" | grep "pending changes") != "" ]]
     then
-     icingacli director importsource run --id $i
+     icingacli director importsource run --id $i &>/dev/null
      # TODO - return value handling?
     fi
   done

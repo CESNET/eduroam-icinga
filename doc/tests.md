@@ -56,7 +56,7 @@ There is slight problem with this check because a lot a participating organizati
 Freeradius actively closes connections to national RADIUS server, when there is no traffic.
 When there is not enough monitoring activity, it could result in an incorrect test state.
 A solution for this could be to write some better test which could hold information for each server
-for last hour or so and test this.  TODO
+for last hour or so and test this. TODO - depends on possible implementation of new/improved test.
 
 The command in icinga2 is set in two variants - for IdP+SP servers and for SP only servers (see parameters below).
 

@@ -98,7 +98,7 @@ The other ones get assigned template, which defines only one command parameter (
 
 ### definition
 
-This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L134).
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L148).
 
 ### notifications
 
@@ -146,7 +146,7 @@ This service is assigned to all RADIUS servers which have custom host variable t
 
 ### definition
 
-This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L128).
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L142).
 
 ### notifications
 
@@ -290,7 +290,7 @@ This service is assigned to all RADIUS servers which have custom host variable t
 
 ### definition
 
-This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L152).
+This service is defined in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/services.conf#L133).
 
 ### notifications
 
@@ -345,7 +345,7 @@ This service is assigned to all RADIUS servers which are set as monitoring in ou
 
 ### definition
 
-This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L165).
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L127).
 
 ### notifications
 

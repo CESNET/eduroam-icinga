@@ -378,4 +378,8 @@ Example data:
 
 ## director
 
-TODO
+Data synchronization to director is done using combination of import sources and sync rules.
+These are defined in [director config](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md).
+The synchronization itself means synchronizing all the sync rules in correct order.
+This can be done automatically (for example by [script](https://github.com/CESNET/eduroam-icinga/blob/master/sync/main.sh#L54)) or manually in icingaweb2.
+

@@ -1,5 +1,8 @@
 # director configuration
 
+Director is a config management module for icingaweb2.
+Icingaweb2 enhanched with director enables users to use it to create icinga2 configuration.
+
 This summarizes director configuration.
 All the configuration is done via icingaweb2 director section. 
 Because the configuration is done in gui, is is hard to document it. 
@@ -12,6 +15,13 @@ Using director enables together with all tools in this setup enables
 the configuration to be fully automated.
 This means that when the source data changes,
 it propagates all the changes to whole monitoring setup and deploys the changes made without any human interaction.
+
+One of really good features of this setup is that the configuration management can
+be either automated or the monitoring server administrator can deploy configuration manually
+when needed. All the configuration director modifications are tracked in activity log.
+The deployment log can provide a diff between specific files from deployed configurations.
+This can also be used on some fileshipper configuration in case that there would be any changes.
+This could help diagnose any encountered problems with apply rules or so.
 
 ## Import sources
 

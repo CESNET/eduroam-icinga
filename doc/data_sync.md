@@ -137,7 +137,9 @@ The column `admin_cn` holds the user full name. It is advised to keep this in AS
 
 The column `admin_cmail` holds the user email address. This is used for notifications.
 
-The column `uid` holds user identifier. This is currently not used. TODO
+The column `uid` holds user identifier. This is currently not used.
+TODO - is this really somehow used in icinga? SEMIK: No jak icinga zjisti kdo ma jaka prava?
+Vasek: Jaka prava k cemu?
 
 ##### table radius\_server
 
@@ -150,7 +152,6 @@ table structure:
 | id                | int(11)      | NO   | PRI | NULL    | auto_increment |
 | radius_dn         | varchar(191) | NO   | MUL | NULL    |                |
 | radius_cn         | varchar(191) | NO   |     | NULL    |                |
-| inf_radius_secret | varchar(191) | NO   |     | NULL    |                |
 | transport         | varchar(191) | NO   |     | NULL    |                |
 | mon_radius_secret | varchar(191) | NO   |     | NULL    |                |
 | mon_realm         | varchar(191) | YES  | MUL | NULL    |                |
@@ -158,6 +159,89 @@ table structure:
 | radius_manager    | varchar(191) | NO   | MUL | NULL    |                |
 +-------------------+--------------+------+-----+---------+----------------+
 ```
+
+The column `id` is the primary key of this table. The value has no other real meaning.
+
+The column `radius_dn` fully identifies the radius server.
+
+The column `radius_cn` is the domain name of the RADIUS server.
+
+The column `transport` is the transport type that is used to connected to the national top level eduroam server.
+There can be only two values in this field - "RADSEC" or "IPSEC".
+
+The column `mon_radius_secret` is the secret shared between the RADIUS server and the monitoring server.
+
+The column `mon_realm` is the realm which is monitored on this RADIUS server.
+This column is a foreing key to the realm table. The column refenced is `realm_dn`.
+
+The column `inf_realm` is the realm for which this RADIUS server handles the requests.
+This column is a foreing key to the realm table. The column refenced is `realm_dn`.
+
+TODO - is this really somehow used in icinga? This is good question ;)
+TODO - tohle jeste probrat osobne - nikde v konfiguraci to zminene neni.
+pokud se to nepouziva, tak vyhodit
+
+The column `radius_manager` is the administrator of this RADIUS server.
+This column is a foreing key to the admin table. The column refenced is `admin_dn`.
+
+
+Example data:
+```
+*************************** 1. row ***************************
+               id: 1
+        radius_dn: cn=radius.some.company.cz,ou=radius servers,o=eduroam,o=apps,dc=org,dc=cz
+        radius_cn: radius.some.company.cz
+inf_radius_secret: testing123
+        transport: RADSEC
+mon_radius_secret: some_monitoring_password
+        mon_realm: cn=some.company.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+        inf_realm: cn=some.company.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+   radius_manager: uid=admin1,ou=People,dc=org,dc=cz
+*************************** 2. row ***************************
+               id: 2
+        radius_dn: cn=radius.university1.cz,ou=radius servers,o=eduroam,o=apps,dc=org,dc=cz
+        radius_cn: radius.university1.cz
+inf_radius_secret: testing123
+        transport: RADSEC
+mon_radius_secret: some_monitoring_password
+        mon_realm: cn=university1.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+        inf_realm: cn=university1.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+   radius_manager: uid=admin2,ou=People,dc=org,dc=cz
+*************************** 3. row ***************************
+               id: 3
+        radius_dn: cn=radius.university2.cz,ou=radius servers,o=eduroam,o=apps,dc=org,dc=cz
+        radius_cn: radius.university2.cz
+inf_radius_secret: testing123
+        transport: RADSEC
+mon_radius_secret: some_monitoring_password
+        mon_realm: cn=university2.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+        inf_realm: cn=university2.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+   radius_manager: uid=admin3,ou=People,dc=org,dc=cz
+*************************** 4. row ***************************
+               id: 4
+        radius_dn: cn=radius.university3.cz,ou=radius servers,o=eduroam,o=apps,dc=org,dc=cz
+        radius_cn: radius.university3.cz
+inf_radius_secret: testing123
+        transport: RADSEC
+mon_radius_secret: some_monitoring_password
+        mon_realm: cn=university3.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+        inf_realm: cn=university3.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+   radius_manager: uid=admin4,ou=People,dc=org,dc=cz
+*************************** 5. row ***************************
+               id: 5
+        radius_dn: cn=radius.university3.cz,ou=radius servers,o=eduroam,o=apps,dc=org,dc=cz
+        radius_cn: radius.university3.cz
+inf_radius_secret: testing123
+        transport: RADSEC
+mon_radius_secret: some_monitoring_password
+        mon_realm: cn=university3.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+        inf_realm: cn=university3.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+   radius_manager: uid=admin5,ou=People,dc=org,dc=cz
+```
+
+Each RADIUS server is stored individually for each administrator.
+This is done on purpose. This can be solved by better sql schema of the whole database.
+This was done just to ease the implementation.
 
 ##### table realm
 
@@ -170,13 +254,87 @@ table structure:
 | id            | int(11)      | NO   | PRI | NULL    | auto_increment |
 | realm_dn      | varchar(191) | NO   | MUL | NULL    |                |
 | realm_cn      | varchar(191) | NO   |     | NULL    |                |
-| status        | varchar(191) | NO   |     | NULL    |                |
 | member_type   | varchar(191) | NO   |     | NULL    |                |
 | xml_url       | varchar(191) | NO   |     | NULL    |                |
 | realm_manager | varchar(191) | NO   | MUL | NULL    |                |
 | testing_id    | varchar(191) | YES  | MUL | NULL    |                |
 +---------------+--------------+------+-----+---------+----------------+
 ```
+
+The column `id` is the primary key of this table. The value has no other real meaning.
+
+The column `realm_dn` full identifies the realm.
+
+The column `realm_cn` is the domain name of the realm.
+
+The column `member_type` represents the type of this server.
+Only three values can be used here:
+- "IdPSP" - can authenticate own users and also provides eduroam service
+- "SP" - only provides eduroam service
+- "IdP" - can only authenticate own users
+
+The column `xml_url` is the url of the institution.xml file for this realm.
+All realms must provide institution.xml files with the information about eduroam service coverage.
+
+The column `realm_manager` is the realm administrator.
+This column is a foreing key to the admin table. The column refenced is `admin_dn`.
+
+The column `testing_id` is the testing account for this realm.
+This column is a foreing key to the testin\_id table. The column refenced is `testing_id`.
+
+
+Example data:
+```
+*************************** 1. row ***************************
+           id: 1
+     realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+     realm_cn: org.cz,org.eu,guest.org.cz
+       status: connected
+  member_type: IdPSP
+      xml_url: http://eduroam.org.cz/institution.xml
+realm_manager: uid=admin1,ou=People,dc=org,dc=cz
+   testing_id: testing_id@org.cz
+*************************** 2. row ***************************
+           id: 2
+     realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+     realm_cn: org.cz,org.eu,guest.org.cz
+       status: connected
+  member_type: IdPSP
+      xml_url: http://eduroam.org.cz/institution.xml
+realm_manager: uid=admin2,ou=People,dc=org,dc=cz
+   testing_id: testing_id@org.cz
+*************************** 3. row ***************************
+           id: 3
+     realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+     realm_cn: org.cz,org.eu,guest.org.cz
+       status: connected
+  member_type: IdPSP
+      xml_url: http://eduroam.org.cz/institution.xml
+realm_manager: uid=admin3,ou=People,dc=org,dc=cz
+   testing_id: testing_id@org.cz
+*************************** 4. row ***************************
+           id: 4
+     realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+     realm_cn: org.cz,org.eu,guest.org.cz
+       status: connected
+  member_type: IdPSP
+      xml_url: http://eduroam.org.cz/institution.xml
+realm_manager: uid=admin4,ou=People,dc=org,dc=cz
+   testing_id: testing_id@org.cz
+*************************** 5. row ***************************
+           id: 5
+     realm_dn: cn=university1.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
+     realm_cn: university1.cz
+       status: connected
+  member_type: IdPSP
+      xml_url: http://eduroam.university1.cz/institution.xml
+realm_manager: uid=admin5,ou=People,dc=org,dc=cz
+   testing_id: testing_id@university1.cz
+```
+
+Each realm is stored individually for each administrator.
+This is done on purpose. This can be solved by better sql schema of the whole database.
+This was done just to ease the implementation.
 
 ##### table testing\_id
 
@@ -191,6 +349,31 @@ table structure:
 +----------+--------------+------+-----+---------+-------+
 ```
 
-## clients
+The column `id` identifies the testing id.
+It can be arbitrary username in the corresponding realm.
+
+The column `password` contains password for the testing id. The password is stored in plain text.
+We do not think that there are other possibilites how to store the password since it is used for tests.
+
+Example data:
+```
++------------------------------------+------------------+
+| id                                 | password         |
++------------------------------------+------------------+
+| testing_id@org.cz                  | password1        |
+| testing_id@university1.cz          | password2        |
+| testing_id@faculty1.university1.cz | password3        |
+| testing_id@faculty2.university1.cz | password4        |
+| testing_id@university2.cz          | password5        |
++------------------------------------+------------------+
+```
+
+## ER diagram
+
+![entity relationship diagram](https://github.com/CESNET/eduroam-icinga/blob/master/doc/database_schema.png "ER diagram")
+
+![entity relationship diagram 2](https://github.com/CESNET/eduroam-icinga/blob/master/doc/database_schema2.png "ER diagram 2")
 
 ## director
+
+TODO

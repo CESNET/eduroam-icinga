@@ -166,7 +166,8 @@ so this has to be done manually in the director.
 ## Service templates
 
 Service templates are assigned to service definitions.
-This is used in [static_config](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf)
+This is used in [static_config](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf),
+in [services.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/templates.conf)
 and in director service apply rules.
 
 ![service templates](https://github.com/CESNET/eduroam-icinga/blob/master/doc/service_templates.png "service templates")
@@ -314,6 +315,32 @@ template Service "visitors template" {
     retry_interval = 2h
     command_endpoint = null
     vars.doc_url = "https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#visitors"
+}
+```
+
+### CHARGEABLE-USER-IDENTITY
+```
+template Service "chargeable user identity template" {
+    check_command = "check_cui"
+    max_check_attempts = "3"
+    check_interval = 2d
+    retry_interval = 3h
+    enable_notifications = true
+    enable_flapping = true
+    command_endpoint = null
+}
+```
+
+### OPERATOR-NAME
+```
+template Service "operator name template" {
+    check_command = "check_operator_name"
+    max_check_attempts = "3"
+    check_interval = 1d
+    retry_interval = 12h
+    enable_notifications = true
+    enable_flapping = true
+    command_endpoint = null
 }
 ```
 

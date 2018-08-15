@@ -160,8 +160,7 @@ Notification interval it set to 24 hours.
 ## CALLING-STATION-ID
 
 This test checks that the RADIUS server is sending Calling-Station-Id attribute.
-Test is implemented on the base of logs from national RADIUS server. Source data are refreshed once an hour.
-Test is run remotely on radius1.eduroam.cz.
+Test is implemented on the base of logs from national RADIUS server. Source data are refreshed every 5 minutes.
 This test only applies to servers that are directly connected to national RADIUS server.
 
 Test is done by [test-Calling-Station-Id-v2.pl](https://github.com/CESNET/eduroam-icinga/blob/master/tests/test-Calling-Station-Id-v2.pl).
@@ -261,8 +260,7 @@ Notification interval it set to 24 hours.
 ## OPERATOR-NAME
 
 This test checks that the RADIUS server is sending Operator-Name attribute. Existence of attribute and syntax are checked.
-Test is implemented on the base of logs from national RADIUS server. Source data are refreshed once an hour.
-Test is run remotely on radius1.eduroam.cz.
+Test is implemented on the base of logs from national RADIUS server. Source data are refreshed every 5 minutes.
 This test only applies to servers that are directly connected to national RADIUS server.
 
 Test is done by [test-Operator-Name.pl](https://github.com/CESNET/eduroam-icinga/blob/master/tests/test-Operator-Name.pl).

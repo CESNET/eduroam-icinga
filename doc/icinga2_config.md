@@ -96,27 +96,6 @@ template Service "radsec_sp_only template" {
     enable_flapping = true
     command_endpoint = "radius1.eduroam.cz"
 }
-
-template Service "calling station id template" {
-    check_command = "check_csi"
-    max_check_attempts = "3"
-    check_interval = 1d
-    retry_interval = 12h
-    enable_notifications = true
-    enable_flapping = true
-    command_endpoint = "radius1.eduroam.cz"
-}
-
-template Service "operator name template" {
-    check_command = "check_operator_name"
-    max_check_attempts = "3"
-    check_interval = 1d
-    retry_interval = 12h
-    enable_notifications = true
-    enable_flapping = true
-    command_endpoint = "radius1.eduroam.cz"
-}
-
 ```
 
 `/etc/icingaweb2/modules/icinga2/templates.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/templates.conf)
@@ -150,6 +129,20 @@ apply Notification "Send Mails for Services to their contact groups" to Service 
 Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.
 Additional file contents:
 ```
+apply Service "CALLING-STATION-ID" {
+    import "calling station id template"
+    assign where host.vars.transport && host.vars.transport != "undefined"
+}
+
+apply Service "OPERATOR-NAME" {
+
+  import "operator name template"
+  assign where host.vars.transport && host.vars.transport != "undefined"
+}
+
+/* ---------------------------------------------------------------- */
+// client services defined here
+
 apply Service "IPSEC" {
     import "ipsec template"
     assign where host.vars.transport == "IPSEC"
@@ -163,17 +156,6 @@ apply Service "RADSEC" {
 apply Service "RADSEC" {
     import "radsec_sp_only template"
     assign where host.vars.transport == "RADSEC" && host.vars.type == "SP"
-}
-
-apply Service "CALLING-STATION-ID" {
-    import "calling station id template"
-    assign where host.vars.transport && host.vars.transport != "undefined"
-}
-
-apply Service "OPERATOR-NAME" {
-
-  import "operator name template"
-  assign where host.vars.transport && host.vars.transport != "undefined"
 }
 ```
 

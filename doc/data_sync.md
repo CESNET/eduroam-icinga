@@ -93,6 +93,8 @@ the director part of the synchronization will not work correctly.
 We used the mysql database for this as well as for icinga2, but postgresql may surely be used too.
 In case you would like to use postgresql, make sure the table design works fine.
 
+The structure is ivailable in sql [form](https://github.com/CESNET/eduroam-icinga/blob/master/doc/database.sql).
+
 #### tables
 
 The database contains these tables:

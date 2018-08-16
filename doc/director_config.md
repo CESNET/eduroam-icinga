@@ -474,12 +474,12 @@ object CheckCommand "check_concurrent" {
 ```
 object CheckCommand "check_csi" {
     import "plugin-check-command"
-    command = [ "/usr/local/bin/test-Calling-Station-Id-v2.pl" ]
+    command = [ PluginDir + "/test-Calling-Station-Id-v2.pl" ]
     timeout = 1m
     arguments += {
         "-F" = {
             required = true
-            value = "/var/log/arch/radiator/ON_CSI.last"
+            value = " /var/log/radius1edu-radius.ON_CSI"
         }
         "-H" = {
             required = true
@@ -683,11 +683,11 @@ object CheckCommand "check_ipsec" {
 ```
 object CheckCommand "check_operator_name" {
     import "plugin-check-command"
-    command = [ "/usr/local/bin/test-Operator-Name.pl" ]
+    command = [ PluginDir + "/test-Operator-Name.pl" ]
     arguments += {
         "-F" = {
             required = true
-            value = "/var/log/arch/radiator/ON_CSI.last"
+            value = "/var/log/radius1edu-radius.ON_CSI"
         }
         "-H" = {
             required = true

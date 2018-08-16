@@ -171,7 +171,7 @@ The script takes 2 parameters:
 - (key -F) source data file
 - (key -H) radius ip address
 
-The first parameter is fixed and is set to `/var/log/arch/radiator/ON_CSI.last`.
+The first parameter is fixed and is set to `/var/log/radius1edu-radius.ON_CSI`.
 The second parameter uses host variable `radius_ip`.
 
 ### dependencies
@@ -271,7 +271,7 @@ The script takes 2 parameters:
 - (key -F) source data file
 - (key -H) radius ip address
 
-The first parameter is fixed and is set to `/var/log/arch/radiator/ON_CSI.last`.
+The first parameter is fixed and is set to `/var/log/radius1edu-radius.ON_CSI`.
 The second parameter uses host variable `radius_ip`.
 
 ### dependencies

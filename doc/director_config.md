@@ -318,13 +318,13 @@ template Service "visitors template" {
 }
 ```
 
-### CHARGEABLE-USER-IDENTITY
+### CALLING-STATION-ID
 ```
-template Service "chargeable user identity template" {
-    check_command = "check_cui"
+template Service "calling station id template" {
+    check_command = "check_csi"
     max_check_attempts = "3"
-    check_interval = 2d
-    retry_interval = 3h
+    check_interval = 1d
+    retry_interval = 12h
     enable_notifications = true
     enable_flapping = true
     command_endpoint = null

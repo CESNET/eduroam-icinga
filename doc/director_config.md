@@ -69,6 +69,8 @@ A number of modifiers is used to transform some of the values to desired data ty
 The most important modifier is the one, which fills variable `radius_ip`.
 This modifier looks up host by name. It returns IPv4 address. (see [this](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md#ipv6-support))
 
+TODO - add list of fields in import source with explanation to each one?
+
 #### DNS failure
 
 It sometimes happens, that some RADIUS host names are not resolvable from DNS.
@@ -130,6 +132,8 @@ This sync rule **must** be run before sync rule for hosts.
 ### sync rule for hosts
 
 Uses import source for hosts. Creates hosts with DNS names of RADIUS servers.
+TODO - add info about all custom variables? All the tests heavily rely on these variables.
+TODO - add to all sync rules?
 
 ### sync rule for servicegroups
 

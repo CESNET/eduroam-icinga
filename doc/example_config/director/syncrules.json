@@ -152,6 +152,14 @@
                 "filter_expression": null,
                 "merge_policy": "override",
                 "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${operator_names}",
+                "destination_field": "vars.all_realms",
+                "priority": "12",
+                "filter_expression": null,
+                "merge_policy": "merge",
+                "source": "ldap_to_icinga - hosts"
             }
         ]
     },

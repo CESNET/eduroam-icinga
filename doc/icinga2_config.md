@@ -124,6 +124,8 @@ apply Notification "Send Mails for Services to their contact groups" to Service 
 
 `/etc/icingaweb2/modules/icinga2/notifications.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/notifications.conf)
 
+TODO - add notification example?
+TODO - info about custom info url variable used in services?
 
 ### Services
 Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.

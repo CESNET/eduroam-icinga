@@ -267,12 +267,14 @@ Test is done by [test-Operator-Name.pl](https://github.com/CESNET/eduroam-icinga
 
 ### parameters
 
-The script takes 2 parameters:
+The script takes 3 parameters:
 - (key -F) source data file
 - (key -H) radius ip address
+- (key -R) list of expected Operator-Names
 
 The first parameter is fixed and is set to `/var/log/radius1edu-radius.ON_CSI`.
 The second parameter uses host variable `radius_ip`.
+The second parameter uses host variable `all_realms`.
 
 ### dependencies
 

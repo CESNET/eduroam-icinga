@@ -697,6 +697,10 @@ object CheckCommand "check_operator_name" {
             required = true
             value = "$host.vars.radius_ip$"
         }
+        "-R" = {
+            required = true
+            value = "$host.vars.all_realms$"
+        }
     }
 }
 ```

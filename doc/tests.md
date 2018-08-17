@@ -848,11 +848,12 @@ This test is multiplied by number of home realms for first home server. So if th
 ### parameters
 
 The script takes two parameters:
-- realm
 - time difference
+- realm list
 
-The first parameter specifies the realm for which compromised users are retrieved.
-The second parameter specifies minimal time difference between time needed to travel from first visited insitution to second at specified speed (set to 100 km/h) and the time actually reached. It is set to 60 seconds.
+The first parameter specifies minimal time difference between time needed to travel from first visited insitution to second at specified speed (set to 100 km/h) and the time actually reached. It is set to 60 seconds.
+The second parameter specifies the realm list for which compromised users are retrieved. The realms in the list must be separated by comma, for example: `realm1,realm2,realm3...`.
+This parameter uses host custom variable `all_realms`.
 
 ### dependencies
 
@@ -870,11 +871,6 @@ This service is defined in [static_config.conf](https://github.com/CESNET/eduroa
 
 Notifications for this test are **NOT** enabled.
 Notifications are disabled for this test because institution.xml data are not sufficient and many isntitutions would get notified because of this.
-
-### TODO
-
-This test does not reflect realm aliases. CESNET CAAS enables realm to use alias such `alias.realm.cz` for realm `realm.cz`. 
-This test checks only users for "primary" realm.
 
 <!--
 # ==========================================================================================================================================

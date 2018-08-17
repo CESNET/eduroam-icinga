@@ -1,8 +1,8 @@
 #!/bin/bash
 # =======================================================================================================
 # script parameters:
-# 1) realm
-# 2) time difference of achieved time and realistic time
+# 1) time difference of achieved time and realistic time
+# 2) realm list (realms must be separated by comma: 'realm1,realm2,realm3'
 #
 # =======================================================================================================
 # =======================================================================================================
@@ -11,9 +11,31 @@
 function main()
 {
   usage $@
-  get_data
-  process_data
-  check_threshold
+  unique_realms
+
+  for i in ${realm_list[@]}  # iterate all realms
+  do
+    get_data $i
+    process_data
+    check_threshold $i
+  done
+
+  exit $retval
+}
+# =======================================================================================================
+# get unique realm list
+# =======================================================================================================
+function unique_realms()
+{
+  realm_list=()
+
+  for i in $(echo $realms | tr "," " ")
+  do
+    if [[ $(echo ${realm_list[@]} | grep $i) == "" ]]
+    then
+      realm_list+=($i)
+    fi
+  done
 }
 # =======================================================================================================
 # get current revision
@@ -30,6 +52,7 @@ function get_data()
 {
   local min
   local max
+  local realm=$1
 
   hostname="etlog.cesnet.cz"
   min=$(date -d "30 days ago" "+%Y-%m-%d")
@@ -76,18 +99,25 @@ function process_data()
 # =======================================================================================================
 function check_threshold()
 {
+  local realm=$1
+
   if [[ $total_count -gt 0 ]]
   then
     echo "CRITICAL: $total_count users compromised for realm $realm | $total_count"
     echo -e "stats:\n$stats"
-    exit 2
+    retval=2
+
   #elif [[ $total_count -ge $warning ]]
   #then
   #  echo "WARNING: $total_count users compromised for realm $realm | $total_count"
   #  exit 1
   else
     echo "OK: $total_count users compromised for realm $realm | $total_count"
-    exit 0
+
+    if [[ $retval -ne 2 ]]
+    then
+      retval=0
+    fi
   fi
 }
 # =======================================================================================================
@@ -99,13 +129,13 @@ function usage()
   then
     echo "usage: $0 realm time_diff"
     echo ""
-    echo "example: $0 cesnet.cz 60"
+    echo "example: $0 60 cesnet.cz,[test.cesnet.cz,...]"
     exit 1
   fi
 }
 # =======================================================================================================
-realm=$1
-time_diff=$2
+time_diff=$1
+realms=$2
 # =======================================================================================================
 main $@
 # =======================================================================================================

@@ -425,13 +425,13 @@ object CheckCommand "check_compromised" {
     command = [ PluginDir + "/compromised_users.sh" ]
     arguments += {
         "(no key)" = {
-            order = 1
+            order = 2
             required = true
             skip_key = true
-            value = "$service.vars.realm$"
+            value = "$host.vars.all_realms$"
         }
         "(no key.2)" = {
-            order = 2
+            order = 1
             required = true
             skip_key = true
             value = "60"

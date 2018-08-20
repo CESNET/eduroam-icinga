@@ -640,25 +640,36 @@ object CheckCommand "check_home_realm_alive" {
 ```
 object CheckCommand "check_institution_xml" {
     import "plugin-check-command"
-    command = [ PluginDir + "/check_http", "--onredirect=follow" ]
+    command = [ PluginDir + "/check_institution_xml.sh" ]
     arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$host.vars.realm_aliases$"
+        }
         "--sni" = {
+            order = 6
             required = false
             set_if = "$service.vars.xml_https$"
         }
         "-H" = {
+            order = 5
             required = true
             value = "$service.vars.xml_host$"
         }
         "-S" = {
+            order = 4
             required = false
             set_if = "$service.vars.xml_https$"
         }
         "-s" = {
+            order = 3
             required = true
             value = "inst_realm"
         }
         "-u" = {
+            order = 2
             required = true
             value = "$service.vars.xml_url_part$"
         }

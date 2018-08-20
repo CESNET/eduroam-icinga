@@ -25,7 +25,7 @@ function main()
   do
     if [[ $(echo "$out" | grep "<inst_realm>$i</inst_realm>") == "" ]]
     then
-      echo "string <inst_realm>$i</inst_realm> not found in output!"
+      echo "CRITICAL: string <inst_realm>$i</inst_realm> not found in institution.xml"
       exit 2;
     fi
   done

@@ -4,6 +4,7 @@
 # ========================================================================
 # params:
 # 1: realm list - realms must be separated by comma: 'realm1,realm2,...'
+# all other params are for check_http - see director for details
 # ========================================================================
 function main()
 {

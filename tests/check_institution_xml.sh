@@ -22,6 +22,10 @@ function main()
     exit $ret       # test not ok, exit
   fi
 
+  # strip html comments from out
+  out=$(echo "$out" | sed -e :a -re 's/<!--.*?-->//g;/<!--/N;//ba')
+
+  # check that all realm are available
   for i in $(echo $list | tr "," " ")
   do
     if [[ $(echo "$out" | grep "<inst_realm>$i</inst_realm>") == "" ]]
@@ -30,7 +34,28 @@ function main()
       exit 2;
     fi
   done
-  
+
+  # check that no realm more realms are available
+  for i in $(echo "$out" | grep '<inst_realm>' | cut -d ">" -f2 | cut -d "<" -f1)
+  do
+    matched=false
+
+    for j in $(echo $list | tr "," " ")
+    do
+      if [[ "$i" == "$j" ]]
+      then
+        matched=true
+      fi
+    done
+
+    if [[ $matched == false ]]
+    then
+      echo "CRITICAL: string <inst_realm>$i</inst_realm> found in institution.xml"
+      exit 2;
+    fi
+
+  done
+
   echo "$status"
   exit $ret
 }

@@ -160,6 +160,14 @@
                 "filter_expression": null,
                 "merge_policy": "merge",
                 "source": "ldap_to_icinga - hosts"
+            },
+            {
+                "source_expression": "${realm_cn}",
+                "destination_field": "vars.realm_aliases",
+                "priority": "13",
+                "filter_expression": null,
+                "merge_policy": "merge",
+                "source": "ldap_to_icinga - hosts"
             }
         ]
     },

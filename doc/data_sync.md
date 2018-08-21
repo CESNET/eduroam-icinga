@@ -114,21 +114,20 @@ table structure:
 | admin_dn | varchar(191) | NO   | PRI | NULL    |       |
 | admin_cn | varchar(191) | NO   |     | NULL    |       |
 | mail     | varchar(191) | NO   |     | NULL    |       |
-| uid      | varchar(191) | NO   |     | NULL    |       |
 +----------+--------------+------+-----+---------+-------+
 ```
 
 Example data:
 ```
-+----------------------------------------+----------------+-----------------------------+----------+
-| admin_dn                               | admin_cn       | mail                        | uid      |
-+----------------------------------------+----------------+-----------------------------+----------+
-| uid=user1,ou=People,dc=org,dc=cz       | John Doe       | user1-email@company.cz      | user1    |
-| uid=user2,ou=People,dc=org,dc=cz       | Jan Novak      | user2-email@company.cz      | user2    |
-| uid=user3,ou=People,dc=org,dc=cz       | Jane Doe       | user3-email@google.com      | user3    |
-| uid=user4,ou=People,dc=org,dc=cz       | Real User      | user4-email@yahoo.com       | user4    |
-| uid=user5,ou=People,dc=org,dc=cz       | Somebody Else  | user5-email@company.cz      | user5    |
-+----------------------------------------+----------------+-----------------------------+----------+
++----------------------------------------+----------------+-----------------------------+
+| admin_dn                               | admin_cn       | mail                        |
++----------------------------------------+----------------+-----------------------------+
+| uid=user1,ou=People,dc=org,dc=cz       | John Doe       | user1-email@company.cz      |
+| uid=user2,ou=People,dc=org,dc=cz       | Jan Novak      | user2-email@company.cz      |
+| uid=user3,ou=People,dc=org,dc=cz       | Jane Doe       | user3-email@google.com      |
+| uid=user4,ou=People,dc=org,dc=cz       | Real User      | user4-email@yahoo.com       |
+| uid=user5,ou=People,dc=org,dc=cz       | Somebody Else  | user5-email@company.cz      |
++----------------------------------------+----------------+-----------------------------+
 ```
 
 The column `admin_dn` is the primary key of this table. Is it also used to identify
@@ -138,10 +137,6 @@ The column `admin_cn` holds the user full name. It is advised to keep this in AS
 
 
 The column `admin_cmail` holds the user email address. This is used for notifications.
-
-The column `uid` holds user identifier. This is currently not used.
-TODO - is this really somehow used in icinga? SEMIK: No jak icinga zjisti kdo ma jaka prava?
-Vasek: Jaka prava k cemu?
 
 ##### table radius\_server
 

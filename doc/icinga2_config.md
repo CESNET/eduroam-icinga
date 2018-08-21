@@ -124,8 +124,24 @@ apply Notification "Send Mails for Services to their contact groups" to Service 
 
 `/etc/icingaweb2/modules/icinga2/notifications.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/notifications.conf)
 
-TODO - add notification example?
-TODO - info about custom info url variable used in services?
+
+Notification example:
+```
+***** Service Monitoring on monitor *****
+
+BIG-PACKET on charon.dopskopl.cz is CRITICAL!
+
+Info:    timeout; 50 sec
+
+When:    2018-08-04 21:16:31 +0200
+Service: BIG-PACKET
+Host:    charon.dopskopl.cz
+Url:     https://ermon2.cesnet.cz/monitoring/service/show?host=charon.dopskopl.cz&service=BIG-PACKET
+Docs:    https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#big-packet
+```
+
+Our notifications use custom variable `doc_url` which holds the url with specific information for each service.
+This is intended to help administrators in fixing the problem.
 
 ### Services
 Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.

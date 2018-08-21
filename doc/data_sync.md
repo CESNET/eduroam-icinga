@@ -173,10 +173,7 @@ This column is a foreing key to the realm table. The column refenced is `realm_d
 
 The column `inf_realm` is the realm for which this RADIUS server handles the requests.
 This column is a foreing key to the realm table. The column refenced is `realm_dn`.
-
-TODO - is this really somehow used in icinga? This is good question ;)
-TODO - tohle jeste probrat osobne - nikde v konfiguraci to zminene neni.
-pokud se to nepouziva, tak vyhodit
+This column is used to determine all expected values of Operator-Name attribute.
 
 The column `radius_manager` is the administrator of this RADIUS server.
 This column is a foreing key to the admin table. The column refenced is `admin_dn`.

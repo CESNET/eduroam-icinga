@@ -30,6 +30,3 @@ These tools are not a part of monitoring setup itself,
 but they provide additional valuable data in good form.
 All the tools are in separate [repository](https://github.com/CESNET/eduroam-monitor).
 
-## LICENSE
-
-TODO

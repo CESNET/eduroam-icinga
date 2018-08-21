@@ -88,7 +88,7 @@ function ldap_sync
     cp /tmp/ldap_sync /tmp/ldap_sync.old
   fi
   ./ldap_sync.js $1 > /tmp/ldap_sync
-  out=$(mysql ldap_to_icinga < /tmp/ldap_sync 2>&1)
+  out=$(mysql -u $icinga_db_user --password="$icinga_db_pass" ldap_to_icinga < /tmp/ldap_sync 2>&1)
   ret=$?
 
   if [[ $ret -ne 0 ]]

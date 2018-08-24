@@ -26,9 +26,6 @@ function deploy_config
   if [[ "$out" =~ "nothing to do" ]]            # no changes in deploy
   then
     exit 0
-  elif [[ "$out" =~ "has been deployed" ]]      # configuration has been deployed, no need to check startup log?
-  then
-    exit 0
   fi
 
   # wait for deploy to finish - 60 seconds max

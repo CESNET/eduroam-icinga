@@ -56,8 +56,27 @@ function main()
 
   done
 
+  check_invalid_encoding
+
   echo "$status"
   exit $ret
+}
+# ========================================================================
+# check invalid encoding of characters in document
+# ========================================================================
+function check_invalid_encoding()
+{
+  content=$(echo "$out" | sed -n '/<?xml version="1.0"/,/!/p' | head -n -2)
+  tmp=$(mktemp)
+  echo "$content" > $tmp
+  errors=$(grep -avx '.*' $tmp)
+  rm $tmp
+
+  if [[ "$errors" != "" ]]
+  then
+    echo -e "CRITICAL: invalid characters detected:\n$errors"
+    exit 2;
+  fi
 }
 # ========================================================================
 main "$@"

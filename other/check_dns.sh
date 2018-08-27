@@ -7,10 +7,13 @@ function main
 {
   failed_servers=$(icingacli monitoring list services --service="PING" --format='$host_name$,$service_state$,$service_output$'  --columns=host_name,service_state,service_output | grep "Invalid hostname")
 
-  for i in "$failed_servers"
-  do
-    notify "$(echo $i | cut -d ',' -f1) cannot be resolved"
-  done
+  if [[ "$failed_servers" != "" ]]
+  then
+    for i in "$failed_servers"
+    do
+      notify "$(echo $i | cut -d ',' -f1) cannot be resolved"
+    done
+  fi
 }
 # =====================================================================
 # notify admins about problem

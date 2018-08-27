@@ -20,5 +20,5 @@ function notify
   echo -e "$1" | mail -s "icinga2 - server out of DNS" $admin
 }
 # =====================================================================
-source ../sync/config/config.sh
+source sync/config/config.sh
 main

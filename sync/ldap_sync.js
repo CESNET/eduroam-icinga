@@ -642,7 +642,7 @@ function print_admins(data, callback)
         out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail + "')";  // the only mail
     }
     else {
-      out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '', '" + "')";  // no mail available, set it to empty string
+      out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '')";  // no mail available, set it to empty string
     }
 
     if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item

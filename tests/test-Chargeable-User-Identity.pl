@@ -56,7 +56,7 @@ $np->add_arg(
 
 $np->getopts;
 
-my $cmd = sprintf("%s -H %s -P %s -S %s -u '%s' -p '%s' -e PEAP -m WPA-EAP -i 'CUI test' -t 50 -O 1ermon.cesnet.cz -C -v",
+my $cmd = sprintf("%s -H %s -P %s -S %s -u '%s' -p '%s' -M %s -e PEAP -m WPA-EAP -i 'CUI test' -t 50 -O 1ermon.cesnet.cz -C -v",
 		  $eapol_test,
 		  $np->opts->hostname,
 		  $np->opts->port,

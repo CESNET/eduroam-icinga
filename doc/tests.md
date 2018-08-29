@@ -363,7 +363,8 @@ It is recommended to implement this attribute.
 
 Tests existence of the institution.xml file. The file is tested for existence of string "inst\_realm".
 
-Test is done by icinga standard plugin `check_http`. The command line is set as `check_http --onredirect=follow`.
+Test is done by [check_institution_xml.sh](https://github.com/CESNET/eduroam-icinga/blob/master/tests/check_institution_xml.sh).
+This check internally uses  icinga standard plugin `check_http`.
 
 This test is multiplied by number of home realms for first home server. So if the server has two home realms, it has the test for each of them.
 

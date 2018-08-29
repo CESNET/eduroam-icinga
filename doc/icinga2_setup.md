@@ -189,12 +189,12 @@ This is done by part of the configuration also mentioned above:
                   <RequireAll>
                     Require shibboleth
                     ShibRequestSetting requireSession 1
-                    Require shib-attr perunUniqueGroupName cesnet:members eduroam:eduroam-admin
+                    Require shib-attr perunUniqueGroupName cesnet:members eduroam:eduroam-admin einfra:eduroamAdmins
                   </RequireAll>
 ```
 
 This configuration sets up authorization in a way, that only users which provide sbibboleth attribute
-perunUniqueGroupName with value `cesnet:members` or `eduroam:eduroam-admin` are allowed in.
+perunUniqueGroupName with value `cesnet:members`, `eduroam:eduroam-admin` or `einfra:eduroamAdmins` are allowed in.
 
 #### icingaweb2 setup
 

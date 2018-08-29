@@ -380,8 +380,8 @@ function store_radius_server(data, key, ldap_object, disabled_realms)
 function search_radius_servers(client, data, disabled_realms, search_base, done)
 {
   var opts = {
-    //filter: '(objectClass=eduRoamRadius)',              // inactive servers are needed to filter realms!
-    filter: '(&(objectClass=eduRoamRadius)(eduroamIcingaEnabled=true))',              // inactive servers are needed to filter realms!, temporarily check if icinga enabled flag is present
+    filter: '(objectClass=eduRoamRadius)',              // inactive servers are needed to filter realms!
+    //filter: '(&(objectClass=eduRoamRadius)(eduroamIcingaEnabled=true))',              // inactive servers are needed to filter realms!, temporarily check if icinga enabled flag is present
     scope: 'sub',
     attributes: [ 'cn', 'eduroamInfRadiusSecret1', 'eduroamInfTransport', 'eduroamMonRadiusSecret', 'eduroamMonRealm', 'manager', 'eduroamInfRealm', 'radiusDisabled' ]
   };

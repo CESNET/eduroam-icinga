@@ -105,9 +105,11 @@ function ldap_sync
   if [[ $ret -ne 0 ]]
   then
     # import old data in case import of new data failed
-    mysql -u $icinga_db_user --password="$icinga_db_pass" ldap_to_icinga < /tmp/ldap_sync 2>&1
+    mysql -u $icinga_db_user --password="$icinga_db_pass" ldap_to_icinga < /tmp/ldap_sync_working 2>&1
     notify "database import problem:\n$out"
     exit 1
+  else
+    cp /tmp/ldap_sync /tmp/ldap_sync_working
   fi
 
   if [[ -f /tmp/ldap_sync && -f /tmp/ldap_sync.old ]]

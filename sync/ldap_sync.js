@@ -234,7 +234,8 @@ function search_realms(client, data, testing_ids, search_base, callback)
 
   var opts = {
     // only connected or in-process realms
-    filter: '(&(objectClass=eduRoamRealm)(|(eduroamConnectionStatus=connected)(eduroamConnectionStatus=in-process)))',
+    //filter: '(&(objectClass=eduRoamRealm)(|(eduroamConnectionStatus=connected)(eduroamConnectionStatus=in-process)))',
+    filter: '(&(objectClass=eduRoamRealm)(|(eduroamConnectionStatus=connected)(eduroamConnectionStatus=in-process)(eduroamConnectionStatus=disconnected)))',
     scope: 'sub',
     attributes: items
   };

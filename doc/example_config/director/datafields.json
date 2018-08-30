@@ -7,5 +7,41 @@
         "format": null,
         "originalId": "9",
         "settings": {}
+    },
+    {
+        "varname": "ping_cpl",
+        "caption": "ping critical packet loss threshold",
+        "description": "ping critical packet loss threshold",
+        "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeNumber",
+        "format": null,
+        "originalId": "10",
+        "settings": {}
+    },
+    {
+        "varname": "ping_wpl",
+        "caption": "ping warning packet loss threshold",
+        "description": "ping warning packet loss threshold",
+        "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeNumber",
+        "format": null,
+        "originalId": "11",
+        "settings": {}
+    },
+    {
+        "varname": "ping_wrta",
+        "caption": "ping warning round trip average",
+        "description": "ping warning round trip average",
+        "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeNumber",
+        "format": null,
+        "originalId": "12",
+        "settings": {}
+    },
+    {
+        "varname": "ping_crta",
+        "caption": "ping critical round trip average",
+        "description": "ping critical round trip average",
+        "datatype": "Icinga\\Module\\Director\\DataType\\DataTypeNumber",
+        "format": null,
+        "originalId": "13",
+        "settings": {}
     }
 ]

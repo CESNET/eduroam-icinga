@@ -11,6 +11,17 @@ This page sumarizes all the tests that used for czech eduroam monitoring.
 Uses the standard icinga2 `ping4` check. Tests whether the server is reachable by response to ICMP echo request.
 Ping is assigned to all RADIUS servers regardless of their role.
 
+The default threshould values were too sensitive for our environment.
+We used custom data fields to override these settings.
+The settings are applied to single host template used for all servers.
+The template specifies these variables:
+```
+vars.ping_cpl = 100
+vars.ping_crta = 2000
+vars.ping_wpl = 60
+vars.ping_wrta = 1500
+```
+
 ### dependencies
 
 - None

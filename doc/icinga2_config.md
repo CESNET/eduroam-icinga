@@ -148,13 +148,17 @@ Some of client services are defined in `/etc/icinga2/conf.d/services.conf`.
 Additional file contents:
 ```
 apply Service "CALLING-STATION-ID" {
-    import "calling station id template"
-    assign where host.vars.transport && host.vars.transport != "undefined"
+  import "calling station id template"
+  groups = [ "CALLING-STATION-ID" ]
+  vars.doc_url = "https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#calling-station-id"
+  assign where host.vars.transport && host.vars.transport != "undefined"
 }
 
 apply Service "OPERATOR-NAME" {
-
   import "operator name template"
+  groups = [ "OPERATOR-NAME" ]
+  enable_notifications = false          // notitifcations are temporarily disabled
+  vars.doc_url = "https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#operator-name"
   assign where host.vars.transport && host.vars.transport != "undefined"
 }
 
@@ -162,18 +166,24 @@ apply Service "OPERATOR-NAME" {
 // client services defined here
 
 apply Service "IPSEC" {
-    import "ipsec template"
-    assign where host.vars.transport == "IPSEC"
+  import "ipsec template"
+  groups = [ "IPSEC" ]
+  vars.doc_url = "https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#ipsec"
+  assign where host.vars.transport == "IPSEC"
 }
 
 apply Service "RADSEC" {
-    import "radsec template"
-    assign where host.vars.transport == "RADSEC" && host.vars.type != "SP"
+  import "radsec template"
+  groups = [ "RADSEC" ]
+  vars.doc_url = "https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#radsec"
+  assign where host.vars.transport == "RADSEC" && host.vars.type != "SP"
 }
 
 apply Service "RADSEC" {
-    import "radsec_sp_only template"
-    assign where host.vars.transport == "RADSEC" && host.vars.type == "SP"
+  import "radsec_sp_only template"
+  groups = [ "RADSEC" ]
+  vars.doc_url = "https://www.eduroam.cz/cs/spravce/monitoring/end2end_monitoring_new#radsec"
+  assign where host.vars.transport == "RADSEC" && host.vars.type == "SP"
 }
 ```
 

@@ -642,7 +642,7 @@ object CheckCommand "check_institution_xml" {
             order = 1
             required = true
             skip_key = true
-            value = "$host.vars.realm_aliases$"
+            value = "$service.vars.realm_aliases$"
         }
         "--sni" = {
             order = 6

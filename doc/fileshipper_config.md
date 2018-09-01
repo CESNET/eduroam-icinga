@@ -45,6 +45,7 @@ The value of the key is an object with keys:
 - `testing_password`
 - `xml_url`
 - `home_servers`
+- `realm_aliases`
 
 All values of these keys except `home_servers` are strings.
 Variable `home_servers` is always an array even if there is only one server.
@@ -52,11 +53,11 @@ Variable `home_servers` is always an array even if there is only one server.
 Sample of data from file:
 ```
 const realms = [
-	{ "cesnet.cz" =   { testing_id = "user@cesnet.cz",   testing_password = "password", xml_url = "http://eduroam.cesnet.cz/institution.xml",       home_servers = ["radius1.cesnet.cz", "radius2.cesnet.cz", ] } },
-	{ "fel.cvut.cz" = { testing_id = "user@fel.cvut.cz", testing_password = "password", xml_url = "http://eduroam.feld.cvut.cz/institution.xml",    home_servers = ["reu5.feld.cvut.cz", "radius.felk.cvut.cz", ] } },
-	{ "tul.cz" =      { testing_id = "user@tul.cz",      testing_password = "password", xml_url = "http://eduroam.tul.cz/institution.xml",          home_servers = ["radius1.tul.cz", "radius2.tul.cz", ] } },
-	{ "faf.cuni.cz" = { testing_id = "user@faf.cuni.cz", testing_password = "password", xml_url = "http://www.faf.cuni.cz/eduroam/institution.xml", home_servers = ["radius1.hknet.cz", "radius2.hknet.cz", ] } },
-	{ "prf.cuni.cz" = { testing_id = "user@prf.cuni.cz", testing_password = "password", xml_url = "http://eduroam.prf.cuni.cz/institution.xml",     home_servers = [ "eduroam.prf.cuni.cz" ]  } },
+	{ "cesnet.cz" =   { testing_id = "user@cesnet.cz",   testing_password = "password", xml_url = "http://eduroam.cesnet.cz/institution.xml",       home_servers = ["radius1.cesnet.cz", "radius2.cesnet.cz", ],                     realm_aliases = "cesnet.cz,cesnet.eu,guest.cesnet.cz" } },
+	{ "fel.cvut.cz" = { testing_id = "user@fel.cvut.cz", testing_password = "password", xml_url = "http://eduroam.feld.cvut.cz/institution.xml",    home_servers = ["reu5.feld.cvut.cz", "radius.felk.cvut.cz", ] .felk.cvut.cz", ], realm_aliases = "fel.cvut.cz" } },
+	{ "tul.cz" =      { testing_id = "user@tul.cz",      testing_password = "password", xml_url = "http://eduroam.tul.cz/institution.xml",          home_servers = ["radius1.tul.cz", "radius2.tul.cz", ]                            realm_aliases = "tul.cz" } },
+	{ "faf.cuni.cz" = { testing_id = "user@faf.cuni.cz", testing_password = "password", xml_url = "http://www.faf.cuni.cz/eduroam/institution.xml", home_servers = ["radius1.hknet.cz", "radius2.hknet.cz", ]     .hknet.cz", ],     realm_aliases = "faf.cuni.cz" } },
+	{ "prf.cuni.cz" = { testing_id = "user@prf.cuni.cz", testing_password = "password", xml_url = "http://eduroam.prf.cuni.cz/institution.xml",     home_servers = [ "eduroam.prf.cuni.cz" ]                      z" ],              realm_aliases = "prf.cuni.cz" } },
     .....
 ```
 

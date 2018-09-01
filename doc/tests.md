@@ -381,16 +381,18 @@ This test is multiplied by number of home realms for first home server. So if th
 
 ### parameters
 
-The script takes 5 parameters:
-- indication, that hostname extension support is needed. There is actually only key `--sni` at this parameter. Only set if service variable `xml_https` is set to 1.
-- (key -H) host name
-- indication, that https must be used. There is actually only key `-S` at this parameter. Only set if service variable `xml_https` is set to 1.
-- (key -s) string to search in downloaded file
+The script takes 6 parameters:
+- realm aliases
 - (key -u) part of the url after /
+- (key -s) string to search in downloaded file
+- indication, that https must be used. There is actually only key `-S` at this parameter. Only set if service variable `xml_https` is set to 1.
+- (key -H) host name
+- indication, that hostname extension support is needed. There is actually only key `--sni` at this parameter. Only set if service variable `xml_https` is set to 1.
 
-The second parameter uses service variable `xml_host`.
-The fourth parameter is fixed and is set to `inst_realm`.
-The fifth parameter uses service variable `xml_url_part`.
+The first parameter uses service variable `realm_aliases`
+The second parameter uses service variable `xml_url_part`.
+The third parameter is fixed and is set to `inst_realm`.
+The fifth parameter uses service variable `xml_host`.
 
 ### dependencies
 

@@ -239,6 +239,7 @@ template Service "cve-2017-9148 template" {
     max_check_attempts = "3"
     check_interval = 2d
     retry_interval = 3h
+    check_timeout = 75s
     enable_notifications = true
     enable_flapping = true
     command_endpoint = null

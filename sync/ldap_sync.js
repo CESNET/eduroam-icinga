@@ -81,6 +81,9 @@ function synchronize_data() {
       search_radius_servers(client, radius_servers, disabled_realms, config.search_base_radius, callback);
     },
     function(callback) {
+      fix_missing_radius_admins(radius_servers, admins, callback);
+    },
+    function(callback) {
       delete_disabled(realms, disabled_realms, testing_ids, callback);
     },
     function(callback) {
@@ -99,6 +102,31 @@ function synchronize_data() {
     });
   });
 };
+// --------------------------------------------------------------------------------------
+// delete dead radius servers' admins
+// --------------------------------------------------------------------------------------
+function fix_missing_radius_admins(radius_servers, admins, callback)
+{
+  for(var i in radius_servers) {
+    if(typeof(radius_servers[i].manager) === 'object') {
+      for(var j in radius_servers[i].manager) {
+        if(radius_servers[i].manager[j] !== undefined && !(radius_servers[i].manager[j].toLowerCase() in admins)) {
+          radius_servers[i].manager.splice(j, 1);       // delete admin, which is not available in admins
+          j = 0;    // reset index
+        }
+      }
+    }
+    else {
+      if(!(radius_servers[i].manager.toLowerCase() in admins))
+        radius_servers[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];        // subtitute dead admin
+    }
+
+    if(radius_servers[i].manager.length == 0)   // check if any admins are left
+      radius_servers[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];        // no admins left, set CESNET admins
+  }
+
+  callback();
+}
 // --------------------------------------------------------------------------------------
 // set realm admins to CESNET admistrators if there are no users for given specific realm
 // --------------------------------------------------------------------------------------

@@ -555,7 +555,7 @@ function search_admins(client, data, search_base, done)
   var admins = [];
   var opts = {
     // filtr musi byt schopen reflektovat odpojene realmy a disablovane radius servery
-    filter: '(&(manager=*)(|(&(objectClass=eduRoamRealm)(|(eduroamConnectionStatus=connected)(eduroamConnectionStatus=in-process)))(&(objectClass=eduRoamRadius)(!(radiusDisabled=*)))))',
+    filter: '(&(manager=*)(|(&(objectClass=eduRoamRealm)(|(eduroamConnectionStatus=connected)(eduroamConnectionStatus=in-process)(eduroamConnectionStatus=disconnected)))(&(objectClass=eduRoamRadius)(!(radiusDisabled=*)))))',
     scope: 'sub',
     attributes: [ 'manager' ]
   };

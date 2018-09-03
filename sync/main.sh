@@ -94,13 +94,20 @@ function sync_director
 # ===============================================================
 function ldap_sync
 {
-  if [[ -f /tmp/ldap_sync ]]
-  then
-    cp /tmp/ldap_sync /tmp/ldap_sync.old
-  fi
   ./ldap_sync.js $1 > /tmp/ldap_sync
-  out=$(mysql -u $icinga_db_user --password="$icinga_db_pass" ldap_to_icinga < /tmp/ldap_sync 2>&1)
   ret=$?
+
+  if [[ $ret -ne 1 ]]
+  then
+    return 0        # sync not needed, nothing to do
+  fi
+
+  # sync db only when output is non empty
+  if [[ -s /tmp/ldap_sync ]]
+  then
+    out=$(mysql -u $icinga_db_user --password="$icinga_db_pass" ldap_to_icinga < /tmp/ldap_sync 2>&1)
+    ret=$?
+  fi
 
   if [[ $ret -ne 0 ]]
   then

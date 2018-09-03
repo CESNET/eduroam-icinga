@@ -21,6 +21,7 @@ var latest_admin;
 var latest_radius;
 var first_byte = 0;
 var second_byte = 0;
+var sync_needed = 0;
 // --------------------------------------------------------------------------------------
 // main
 // --------------------------------------------------------------------------------------
@@ -100,6 +101,8 @@ function synchronize_data() {
     client.unbind(function(err) {
       assert.ifError(err);
     });
+
+    process.exit(sync_needed);
   });
 };
 // --------------------------------------------------------------------------------------
@@ -246,8 +249,10 @@ function check_ldap_changes(client, done)
   ],
   // optional callback
   function(err, results) {
-    if(force_sync)
+    if(force_sync) {
+      sync_needed = 1;
       done();
+    }
     else
       done("no error happened, sync is just NOT needed");         // signalize that force sync is NOT required
   });

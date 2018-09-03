@@ -809,10 +809,12 @@ function generate_realms(dest, realms, realms_radius)
         for(var j in realms_radius[primary_realm])
           fs.appendFileSync(dest, '"' + realms_radius[primary_realm][j] + '", ');
 
-      fs.appendFileSync(dest, ']');
+      fs.appendFileSync(dest, '], ');
     }
     else
-      fs.appendFileSync(dest, '"' + realms_radius[primary_realm] + '" ] ');
+      fs.appendFileSync(dest, '"' + realms_radius[primary_realm] + '" ], ');
+
+    fs.appendFileSync(dest, 'realm_aliases = "' + realms[i].cn + '"');
 
     fs.appendFileSync(dest, ' } },\n');
   }

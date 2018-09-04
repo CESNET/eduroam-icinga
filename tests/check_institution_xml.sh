@@ -56,7 +56,9 @@ function main()
 
   done
 
-  check_invalid_encoding
+  # disable checking of invalid encoding
+  # is does not correctly handle other than utf-8 encodings
+  #check_invalid_encoding
 
   echo "$status"
   exit $ret

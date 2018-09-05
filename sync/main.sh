@@ -94,12 +94,18 @@ function sync_director
 # ===============================================================
 function ldap_sync
 {
-  ./ldap_sync.js $1 > /tmp/ldap_sync
+  out=$(./ldap_sync.js $1 > /tmp/ldap_sync)
   ret=$?
 
   if [[ $ret -ne 1 ]]
   then
     return 0        # sync not needed, nothing to do
+  fi
+
+  if [[ $ret -ne 1 && $ret -ne 0 ]]
+  then
+    notify "synchronization failed:\n$out"
+    exit 1
   fi
 
   # sync db only when output is non empty

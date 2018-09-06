@@ -25,10 +25,10 @@
         ]
     },
     {
-        "source_name": "ldap_to_icinga - hosts",
+        "source_name": "ldap_to_icinga - monitored servers",
         "provider_class": "Icinga\\Module\\Director\\Import\\ImportSourceSql",
         "key_column": "radius_cn",
-        "description": "import source for hosts",
+        "description": "import source for hosts (based on mon realm)",
         "originalId": "5",
         "settings": {
             "column_cache": "radius_cn, group_concat(distinct inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url",
@@ -157,6 +157,116 @@
                     "pattern": "\/,.*$\/",
                     "replacement": "",
                     "when_empty": "empty_array"
+                }
+            }
+        ]
+    },
+    {
+        "source_name": "ldap_to_icinga - infrastructure servers",
+        "provider_class": "Icinga\\Module\\Director\\Import\\ImportSourceSql",
+        "key_column": "radius_cn",
+        "description": "import source for hosts (based on inf realm)",
+        "originalId": "9",
+        "settings": {
+            "column_cache": "radius_cn, group_concat(distinct inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url",
+            "query": "select radius_cn, group_concat(distinct inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), group_concat(distinct testing_id order by testing_id), group_concat(distinct password order by testing_id), member_type, xml_url from radius_server join realm on radius_server.inf_realm = realm.realm_dn left join testing_id on testing_id.id = realm.testing_id group by radius_cn;",
+            "resource": "ldap_to_icinga"
+        },
+        "modifiers": [
+            {
+                "property_name": "group_concat(distinct mon_realm order by mon_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "6",
+                "description": "transformace na pole v pripade, ze je na serveru monitorovano vice realmu",
+                "settings": {
+                    "delimiter": "=cz,cn=",
+                    "when_empty": "empty_array"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct mon_realm order by mon_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "9",
+                "description": "extrakce realmu - 1. cast",
+                "settings": {
+                    "pattern": "\/,.*$\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "group_concat(distinct mon_realm order by mon_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "10",
+                "description": "extrakce realmu - 2. cast",
+                "settings": {
+                    "pattern": "\/cn=\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "radius_cn",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierGetHostByName",
+                "target_property": "radius_ip",
+                "priority": "11",
+                "description": "ziskani ip adresy z dns nazvu",
+                "settings": {
+                    "on_failure": "null"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
+                "target_property": null,
+                "priority": "12",
+                "description": "transformace na pole v pripade, ze je na serveru vice infrastrukturnich realmu",
+                "settings": {
+                    "delimiter": "=cz,cn=",
+                    "when_empty": "empty_array"
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "13",
+                "description": "extrakce inf realmu - 1. cast",
+                "settings": {
+                    "pattern": "\/,.*$\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
+                "target_property": null,
+                "priority": "14",
+                "description": "extrakce inf realmu - 2. cast",
+                "settings": {
+                    "pattern": "\/cn=\/",
+                    "replacement": ""
+                }
+            },
+            {
+                "property_name": "group_concat(distinct inf_realm)",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierJoin",
+                "target_property": "inf_realms_str",
+                "priority": "15",
+                "description": "prevod pole na string",
+                "settings": {
+                    "glue": ","
+                }
+            },
+            {
+                "property_name": "inf_realms_str",
+                "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierCombine",
+                "target_property": "operator_names",
+                "priority": "16",
+                "description": "kombinaci inf realmu a vsech aliasu ziskame vsechny ocekavane hodnoty atributu Operator-Name",
+                "settings": {
+                    "pattern": "${inf_realms_str},${realm_cn}"
                 }
             }
         ]

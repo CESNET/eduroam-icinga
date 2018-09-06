@@ -115,6 +115,8 @@ function ldap_sync
     ret=$?
   fi
 
+  cp /tmp/ldap_sync /var/lib/nagios/sync_logs/ldap_sync_$(date "+%Y-%m-%d-%H-%M")
+
   if [[ $ret -ne 0 ]]
   then
     notify "database import problem:\n$out"

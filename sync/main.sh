@@ -157,11 +157,15 @@ function main
   then
     ldap_sync force
     sync_data
+    # TODO - problem s pravy
+    #./dashboard.sh              # set custom icingaweb2 dashboards
   else
     ldap_sync
     if [[ $? -ne 0 ]]
     then
       sync_data
+      # TODO - problem s pravy
+      #./dashboard.sh            # set custom icingaweb2 dashboards
     fi
   fi
 }

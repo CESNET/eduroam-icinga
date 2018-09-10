@@ -150,6 +150,11 @@ function sync_data
 # ===============================================================
 function main
 {
+  if [[ $DEBUG -eq 1 ]]
+  then
+    set -x
+  fi
+
   last=$(date -d "5 minutes ago" "+%Y-%m-%d")  # %Y-%m-%d 5 minutes ago
   current=$(date "+%Y-%m-%d")
 
@@ -174,6 +179,12 @@ function main
 source config/config.sh
 source config/secrets.sh
 # ===============================================================
-main
+if [[ $DEBUG -eq 1 ]]
+then
+  main &> /var/lib/nagios/sync_logs/sync_debug_$(date +%Y-%m-%d-%H-%M)
+else
+  main
+fi
+# ===============================================================
 
 

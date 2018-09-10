@@ -141,8 +141,8 @@
         "description": "import source for realms",
         "originalId": "8",
         "settings": {
-            "column_cache": "realm_cn, realm_dn, member_type, testing_id",
-            "query": "select realm_cn, realm_dn, member_type, testing_id from realm group by realm_cn ;",
+            "column_cache": "realm_cn, realm_dn, member_type",
+            "query": "select realm_cn, realm_dn, member_type from realm group by realm_cn ;",
             "resource": "ldap_to_icinga"
         },
         "modifiers": [

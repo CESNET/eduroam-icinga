@@ -161,16 +161,14 @@ function main
   if [[ "$last" != "$current" ]]               # force sync once a day
   then
     ldap_sync force
+    ./dashboard.sh              # set custom icingaweb2 dashboards
     sync_data
-    # TODO - problem s pravy
-    #./dashboard.sh              # set custom icingaweb2 dashboards
   else
     ldap_sync
     if [[ $? -ne 0 ]]
     then
+      ./dashboard.sh            # set custom icingaweb2 dashboards
       sync_data
-      # TODO - problem s pravy
-      #./dashboard.sh            # set custom icingaweb2 dashboards
     fi
   fi
 }

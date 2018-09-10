@@ -251,7 +251,6 @@ table structure:
 | member_type   | varchar(191) | NO   |     | NULL    |                |
 | xml_url       | varchar(191) | NO   |     | NULL    |                |
 | realm_manager | varchar(191) | NO   | MUL | NULL    |                |
-| testing_id    | varchar(191) | YES  | MUL | NULL    |                |
 +---------------+--------------+------+-----+---------+----------------+
 ```
 
@@ -273,9 +272,6 @@ All realms must provide institution.xml files with the information about eduroam
 The column `realm_manager` is the realm administrator.
 This column is a foreing key to the admin table. The column refenced is `admin_dn`.
 
-The column `testing_id` is the testing account for this realm.
-This column is a foreing key to the testin\_id table. The column refenced is `testing_id`.
-
 
 Example data:
 ```
@@ -287,7 +283,6 @@ Example data:
   member_type: IdPSP
       xml_url: http://eduroam.org.cz/institution.xml
 realm_manager: uid=admin1,ou=People,dc=org,dc=cz
-   testing_id: testing_id@org.cz
 *************************** 2. row ***************************
            id: 2
      realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
@@ -296,7 +291,6 @@ realm_manager: uid=admin1,ou=People,dc=org,dc=cz
   member_type: IdPSP
       xml_url: http://eduroam.org.cz/institution.xml
 realm_manager: uid=admin2,ou=People,dc=org,dc=cz
-   testing_id: testing_id@org.cz
 *************************** 3. row ***************************
            id: 3
      realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
@@ -305,7 +299,6 @@ realm_manager: uid=admin2,ou=People,dc=org,dc=cz
   member_type: IdPSP
       xml_url: http://eduroam.org.cz/institution.xml
 realm_manager: uid=admin3,ou=People,dc=org,dc=cz
-   testing_id: testing_id@org.cz
 *************************** 4. row ***************************
            id: 4
      realm_dn: cn=org.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
@@ -314,7 +307,6 @@ realm_manager: uid=admin3,ou=People,dc=org,dc=cz
   member_type: IdPSP
       xml_url: http://eduroam.org.cz/institution.xml
 realm_manager: uid=admin4,ou=People,dc=org,dc=cz
-   testing_id: testing_id@org.cz
 *************************** 5. row ***************************
            id: 5
      realm_dn: cn=university1.cz,ou=realms,o=eduroam,o=apps,dc=org,dc=cz
@@ -323,44 +315,12 @@ realm_manager: uid=admin4,ou=People,dc=org,dc=cz
   member_type: IdPSP
       xml_url: http://eduroam.university1.cz/institution.xml
 realm_manager: uid=admin5,ou=People,dc=org,dc=cz
-   testing_id: testing_id@university1.cz
 ```
 
 Each realm is stored individually for each administrator.
 This is done on purpose. This can be solved by better sql schema of the whole database.
 This was done just to ease the implementation.
 
-##### table testing\_id
-
-This table contains information about testing accounts.
-table structure:
-```
-+----------+--------------+------+-----+---------+-------+
-| Field    | Type         | Null | Key | Default | Extra |
-+----------+--------------+------+-----+---------+-------+
-| id       | varchar(191) | NO   | MUL | NULL    |       |
-| password | varchar(191) | NO   |     | NULL    |       |
-+----------+--------------+------+-----+---------+-------+
-```
-
-The column `id` identifies the testing id.
-It can be arbitrary username in the corresponding realm.
-
-The column `password` contains password for the testing id. The password is stored in plain text.
-We do not think that there are other possibilites how to store the password since it is used for tests.
-
-Example data:
-```
-+------------------------------------+------------------+
-| id                                 | password         |
-+------------------------------------+------------------+
-| testing_id@org.cz                  | password1        |
-| testing_id@university1.cz          | password2        |
-| testing_id@faculty1.university1.cz | password3        |
-| testing_id@faculty2.university1.cz | password4        |
-| testing_id@university2.cz          | password5        |
-+------------------------------------+------------------+
-```
 
 ## ER diagram
 

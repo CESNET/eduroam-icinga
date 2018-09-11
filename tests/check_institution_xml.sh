@@ -18,7 +18,7 @@ function main()
 
   if [[ $ret -ne 0 ]]
   then
-    echo "$status"
+    echo "$out"
     exit $ret       # test not ok, exit
   fi
 

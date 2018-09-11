@@ -646,24 +646,19 @@ object CheckCommand "check_institution_xml" {
             value = "$service.vars.realm_aliases$"
         }
         "--sni" = {
-            order = 6
+            order = 5
             required = false
             set_if = "$service.vars.xml_https$"
         }
         "-H" = {
-            order = 5
+            order = 4
             required = true
             value = "$service.vars.xml_host$"
         }
         "-S" = {
-            order = 4
+            order = 3
             required = false
             set_if = "$service.vars.xml_https$"
-        }
-        "-s" = {
-            order = 3
-            required = true
-            value = "inst_realm"
         }
         "-u" = {
             order = 2

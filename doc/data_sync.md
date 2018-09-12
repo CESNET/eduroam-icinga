@@ -326,8 +326,6 @@ This was done just to ease the implementation.
 
 ![entity relationship diagram](https://github.com/CESNET/eduroam-icinga/blob/master/doc/database_schema.png "ER diagram")
 
-![entity relationship diagram 2](https://github.com/CESNET/eduroam-icinga/blob/master/doc/database_schema2.png "ER diagram 2")
-
 ## director
 
 Data synchronization to director is done using combination of import sources and sync rules.

@@ -81,6 +81,9 @@ for i in $(dpkg -l | grep icinga | awk '{ print $2 }'); do apt-mark unhold $i; d
 
 After unholding the packages you can upgrade them and put them on hold again.
 
+In case you are using custom dashboards and icingaweb2 package is upgraded, [these](https://github.com/Icinga/icingaweb2/blob/master/modules/monitoring/configuration.php#L290-L369)
+lines need to be commented out to disable default dashboards.
+
 ### icingaweb2
 For simple interaction with icinga2 through web browser, icingaweb2 is needed. This package
 has been also taken from official icinga2 package repositories (see [icinga2 setup](#icinga2-setup)).

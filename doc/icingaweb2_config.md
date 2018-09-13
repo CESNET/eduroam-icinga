@@ -76,3 +76,14 @@ List of enabled modules:
 Icingaweb2 logging type is set to file.
 Logging level is set to Error.
 File path is set to `/var/log/icingaweb2/icingaweb2.log`.
+
+## custom dashboards
+
+In our setup we decided that it would be nice to have custom dashboard for every realm administator.
+This is done by [dashboard.sh](https://github.com/CESNET/eduroam-icinga/blob/master/sync/dashboard.sh) within the synchronization process.
+Created dashboards are working fine but there still were default dashroard which were displayed as default. To get rid of these
+(their information value did not seem valuable to us) some parts of icingaweb2 code needed to be commented out.
+These [lines](https://github.com/Icinga/icingaweb2/blob/master/modules/monitoring/configuration.php#L290-L369) need to be commented out.
+Using this approach means that anytime the icingaweb2 package is upgraded this breaks down and default dashboards will be displayed again.
+
+Use of custom dashboards is totally optional.

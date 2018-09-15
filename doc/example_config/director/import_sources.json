@@ -80,7 +80,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
                 "target_property": null,
                 "priority": "12",
@@ -91,7 +91,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
                 "target_property": null,
                 "priority": "13",
@@ -102,7 +102,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
                 "target_property": null,
                 "priority": "14",
@@ -113,7 +113,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierJoin",
                 "target_property": "inf_realms_str",
                 "priority": "15",
@@ -217,7 +217,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierSplit",
                 "target_property": null,
                 "priority": "12",
@@ -228,7 +228,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
                 "target_property": null,
                 "priority": "13",
@@ -239,7 +239,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierRegexReplace",
                 "target_property": null,
                 "priority": "14",
@@ -250,7 +250,7 @@
                 }
             },
             {
-                "property_name": "group_concat(distinct inf_realm)",
+                "property_name": "group_concat(distinct inf_realm order by inf_realm)",
                 "provider_class": "Icinga\\Module\\Director\\PropertyModifier\\PropertyModifierJoin",
                 "target_property": "inf_realms_str",
                 "priority": "15",

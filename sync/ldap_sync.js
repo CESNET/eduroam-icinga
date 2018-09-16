@@ -611,7 +611,7 @@ function save_admins(client, input, data, done)
   var opts = {
     filter: '(objectClass=*)',
     scope: 'sub',
-    attributes: [ 'dn', 'eduPersonPrincipalNames', 'cn', 'mail' ]                // TODO - EPPN
+    attributes: [ 'dn', 'eduPersonPrincipalNames', 'cn', 'mail', 'uid' ]                // TODO - EPPN
   };
 
   var admins = {};
@@ -665,12 +665,12 @@ function print_admins(data, callback)
 
     if(data[item].mail) {               // mail is defined
       if(typeof(data[item].mail) === 'object')
-        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail[0] + "')";  // first mail
+        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail[0] + "', '" + data[item].uid + "')";  // first mail
       else
-        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail + "')";  // the only mail
+        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail + "', '" + data[item].uid + "')";  // the only mail
     }
     else {
-      out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '')";  // no mail available, set it to empty string
+      out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '', '" + data[item].uid + "')";  // no mail available, set it to empty string
     }
 
     if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item
@@ -910,7 +910,7 @@ function create_db_structure(callback)
   // max varchar size set to 191 - because of https://stackoverflow.com/questions/1814532/1071-specified-key-was-too-long-max-key-length-is-767-bytes
   // 191 * 4 = 764
 
-  console.log("CREATE TABLE IF NOT EXISTS admin (admin_dn VARCHAR(191) NOT NULL, admin_cn VARCHAR(191) NOT NULL, mail VARCHAR(191) NOT NULL, PRIMARY KEY ( admin_dn ), INDEX admin_idx (admin_dn));");
+  console.log("CREATE TABLE IF NOT EXISTS admin (admin_dn VARCHAR(191) NOT NULL, admin_cn VARCHAR(191) NOT NULL, mail VARCHAR(191) NOT NULL, uid VARCHAR(191) NOT NULL, PRIMARY KEY ( admin_dn ), INDEX admin_idx (admin_dn));");
 
   //console.log("CREATE TABLE IF NOT EXISTS testing_id (id VARCHAR(191) NOT NULL, password VARCHAR(191) NOT NULL, INDEX testing_id_idx(id));");
 

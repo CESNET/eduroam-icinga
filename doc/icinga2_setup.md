@@ -177,7 +177,15 @@ With the configuration below, icingaweb2 is available at url /.
                     ShibRequestSetting requireSession 1
                     Require shib-attr perunUniqueGroupName cesnet:members eduroam:eduroam-admin
                   </RequireAll>
+                  ErrorDocument 401 /unauthorized.html
                 </Location>
+
+              # auth expcetion for error document
+              <Location "/unauthorized.html">
+                  AuthType shibboleth
+                  Require shibboleth
+                  ShibRequestSetting requireSession 0
+              </Location>
         </VirtualHost>
 </IfModule>
 

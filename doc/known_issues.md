@@ -11,3 +11,10 @@ If the administrator deploys new configuration right at the "incorrect" moment, 
 is being generated, it could result in a some state, when a lot of services is missing.
 When doing a manual deployment the administrator should always check that the current time is not same is cronjob run time.
 
+## mixing realm types
+When a server should handle different types of realms (eg. IdPSP and SP) at once, problems could arise.
+This is due to director synchronization for hosts from multiple sources.
+Custom host variable `type` must always have the the highest available value based on the priorities.
+The priorities are set as IdPSP > SP.
+There is an open [issue](https://github.com/Icinga/icingaweb2-module-director/issues/1636) for that.
+

@@ -24,6 +24,10 @@ They can also be used as a step by step guide to set up eduroam monitoring at na
 
 ## [tests](https://github.com/CESNET/eduroam-icinga/blob/master/doc/tests.md)
 
+## issues
+
+Since deployment we discovered some issues with our setup. Detailts in separate [page](https://github.com/CESNET/eduroam-icinga/blob/master/doc/known_issues.md)
+
 ## Auxiliary tools
 
 These tools are not a part of monitoring setup itself,

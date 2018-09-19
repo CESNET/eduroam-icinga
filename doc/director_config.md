@@ -868,13 +868,23 @@ object CheckCommand "check_visitors" {
 ## Notification templates
 
 We only use notifications for services.
-Only one notification template is used:
+One notification template is used for most services:
 
 ```
 template Notification "generic notification" {
     command = "mail-service-notification"
     interval = 1d
     states = [ Critical, OK, Unknown, Warning ]
+    types = [ Acknowledgement, Custom, Problem, Recovery ]
+}
+```
+
+For OPERATOR-NAME another template is used because notification should not be sent on warning state:
+```
+template Notification "operator name notification" {
+    command = "mail-service-notification"
+    interval = 1d
+    states = [ Critical, OK, Unknown ]
     types = [ Acknowledgement, Custom, Problem, Recovery ]
 }
 ```

@@ -28,6 +28,8 @@ function deploy_config
     exit 0
   fi
 
+  echo $(date) > /dev/null # just for debug
+
   # wait for deploy to finish - 60 seconds max
   while [[ $count -le 60 ]]
   do

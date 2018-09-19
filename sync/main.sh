@@ -30,8 +30,8 @@ function deploy_config
 
   echo $(date) > /dev/null # just for debug
 
-  # wait for deploy to finish - 60 seconds max
-  while [[ $count -le 60 ]]
+  # wait for deploy to finish - 120 seconds max
+  while [[ $count -le 120 ]]
   do
     # get deployed config state
     status=$(mysql -u $db_user -e 'select id,startup_succeeded from director_deployment_log order by id desc limit 1;' --password="$db_pass" director)

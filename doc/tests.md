@@ -378,15 +378,17 @@ Test is done by [check_institution_xml.sh](https://github.com/CESNET/eduroam-ici
 This check internally uses  icinga standard plugin `check_http`.
 
 This test is multiplied by number of home realms for first home server. So if the server has two home realms, it has the test for each of them.
+Check is forcibly done over IPv4.
 
 ### parameters
 
-The script takes 5 parameters:
+The script takes 6 parameters:
 - realm aliases
 - (key -u) part of the url after /
 - indication, that https must be used. There is actually only key `-S` at this parameter. Only set if service variable `xml_https` is set to 1.
 - (key -H) host name
 - indication, that hostname extension support is needed. There is actually only key `--sni` at this parameter. Only set if service variable `xml_https` is set to 1.
+- (key -4) there is no actual value for this key. This is used just to force test over IPv4.
 
 The first parameter uses service variable `realm_aliases`
 The second parameter uses service variable `xml_url_part`.

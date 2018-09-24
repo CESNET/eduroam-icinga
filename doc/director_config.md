@@ -650,6 +650,10 @@ object CheckCommand "check_institution_xml" {
             required = false
             set_if = "$service.vars.xml_https$"
         }
+        "-4" = {
+            order = 6
+            required = true
+        }
         "-H" = {
             order = 4
             required = true

@@ -22,6 +22,9 @@ vars.ping_wpl = 60
 vars.ping_wrta = 1500
 ```
 
+The check uses IPv4 address instead of DNS hostname to determine the host reachability over ICMP.
+This is because of strange behavior of `ping4` check. If the destinaton DNS name has AAAA records it uses them instead of A records.
+
 ### dependencies
 
 - None
@@ -34,7 +37,7 @@ vars.ping_wrta = 1500
 
 ### assign rule
 
-This service is assigned to all hosts which have host variable `name` set.
+This service is assigned to all hosts which have host variable `type` set.
 
 ### definition
 

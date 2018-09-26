@@ -33,8 +33,6 @@ function get_servers
   for i in ${admins_servers[@]}
   do
     admins_servers[$i]=$(mysql -u $icinga_db_user -e "select distinct radius_cn from radius_server where radius_manager='$i'" --password="$icinga_db_pass" ldap_to_icinga | tail -n +2) # strip table header
-    #echo "key: $i"
-    #echo "values: ${admins[$i]}"
   done
 }
 # ===============================================================

@@ -51,20 +51,20 @@ url = "/monitoring/list/hosts?' #(host=radius1.cesnet.cz|host=radius2.cesnet.cz)
   for i in $admins
   do
     local out=$template
-    if [[ -d "$path/${admins_uids[$i]}@cesnet.cz" && -e "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini" ]]
-    then
-      :     # preferences exist, do nothing
-    else
-      if [[ $(echo "${admins_servers[$i]}" | wc -w) -gt 1 ]]    # multiple servers
-      then
-        out=${out}"(host="$(echo ${admins_servers[$i]} | sed 's/ /\|host=/g')")\""
-      else      # one server
-        out=${out}"host=${admins_servers[$i]}\""
-      fi
 
-      # TODO
-      # chown ?
-      # vlastnictvi na www-data:icingaweb2
+    if [[ $(echo "${admins_servers[$i]}" | wc -w) -gt 1 ]]    # multiple servers
+    then
+      out=${out}"(host="$(echo ${admins_servers[$i]} | sed 's/ /\|host=/g')")\""
+    else      # one server
+      out=${out}"host=${admins_servers[$i]}\""
+    fi
+
+    # also check the content of the file
+    if [[ -d "$path/${admins_uids[$i]}@cesnet.cz" && -e "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini" && $(cat "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini") == "$out" ]]
+    then
+      :     # preferences exist and have correct content, do nothing
+    else
+
       mkdir "$path/${admins_uids[$i]}@cesnet.cz"
       chmod 2770 "$path/${admins_uids[$i]}@cesnet.cz"
       echo -e "$out" > "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini"

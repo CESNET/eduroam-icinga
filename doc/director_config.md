@@ -966,6 +966,6 @@ No special settings are set.
 ### Client setup
 
 Client setup may be done using script provided in icingaweb2.
-Download this script on client a run it.
+Download this script on client and run it.
 It should do all the work and the master and the client should be able to communicate.
 

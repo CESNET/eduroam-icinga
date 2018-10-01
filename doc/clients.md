@@ -30,7 +30,7 @@ Configuration synchronization is disabled in `/etc/icinga2/features-available/ap
 accept_config = false
 ```
 
-The notification on the client are disabled.
+The notifications on the client are disabled.
 Just the monitoring server itself should notify the administrators about service problems.
 This can be done by:
 ```

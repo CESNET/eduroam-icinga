@@ -84,17 +84,17 @@ After unholding the packages you can upgrade them and put them on hold again.
 In case you are using custom dashboards and icingaweb2 package is upgraded, [these](https://github.com/Icinga/icingaweb2/blob/master/modules/monitoring/configuration.php#L290-L369)
 lines need to be commented out to disable default dashboards.
 
-### icingaweb2
-For simple interaction with icinga2 through web browser, icingaweb2 is needed. This package
+### Icinga Web 2
+For simple interaction with Icinga 2 through web browser, Icinga Web 2 is needed. This package
 has been also taken from official icinga2 package repositories (see [icinga2 setup](#icinga2-setup)).
 
-To use icingaweb2 with Icinga 2 a database is also needed. Icingaweb2 supports mysql and postgresql.
+To use Icinga web 2 with Icinga 2 a database is also needed. Icinga Web 2 supports mysql and postgresql.
 Mysql has been chosen as database for our setup for historical reasons and compatilibity with other tools.
 
 Mysql has been installed from official debian repositories. Mysql setup is not covered in this guide.
 No specific settings have been set for mysql.
 
-For icingaweb2 icinga2 feature IDO needs to be enabled. You can do this by:
+For Icinga Web 2 Icinga 2 feature IDO needs to be enabled. You can do this by:
 ```
 icinga2 feature enable ido-mysql
 ```
@@ -103,8 +103,8 @@ icinga2 feature enable ido-mysql
 
 Apache is used as webserver because of it's support with shibboleth module.
 
-By default icingaweb2 is located at url /icingaweb2.
-With the configuration below, icingaweb2 is available at url /.
+By default Icinga Web 2 is located at url /icingaweb2.
+With the configuration below, Icinga Web 2 is available at url /.
 
 ```
 <VirtualHost *:80>
@@ -188,10 +188,10 @@ With the configuration below, icingaweb2 is available at url /.
 
 ```
 
-Sbibboleth module is used to handle authentication to icingaweb2.
+Sbibboleth module is used to handle authentication to Icinga Web 2.
 Sbibboleth setup is not covered in this guide.
 
-It is required that only specific users can access icingaweb2.
+It is required that only specific users can access Icinga Web 2.
 This is done by part of the configuration also mentioned above:
 ```
                   <RequireAll>
@@ -204,9 +204,9 @@ This is done by part of the configuration also mentioned above:
 This configuration sets up authorization in a way, that only users which provide sbibboleth attribute
 perunUniqueGroupName with value `cesnet:members`, `eduroam:eduroam-admin` or `einfra:eduroamAdmins` are allowed in.
 
-#### icingaweb2 setup
+#### Icinga Web 2 setup
 
-The setup is done by pointing the browser to your icingaweb2 instance and going through the wizard.
+The setup is done by pointing the browser to your Icinga Web 2 instance and going through the wizard.
 All the steps should be clear with the database correctly set up.
-After correctly setting icingaweb2, you should be able to access it.
+After correctly setting Icinga Web 2, you should be able to access it.
 

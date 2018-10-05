@@ -109,16 +109,14 @@ With the configuration below, Icinga Web 2 is available at url /.
 ```
 <VirtualHost *:80>
         ServerAdmin machv@cesnet.cz
-        ServerName ermon2.cesnet.cz
-        ServerAlias ermon.cesnet.cz
-        Redirect permanent "/" "https://ermon2.cesnet.cz/"
+        ServerName ermon.cesnet.cz
+        Redirect permanent "/" "https://ermon.cesnet.cz/"
 </VirtualHost>
 
 <IfModule mod_ssl.c>
         <VirtualHost _default_:443>
                 ServerAdmin machv@cesnet.cz
-                ServerName ermon2.cesnet.cz
-                ServerAlias ermon.cesnet.cz
+                ServerName ermon.cesnet.cz
                 DocumentRoot "/usr/share/icingaweb2/public"
 
                 ErrorLog ${APACHE_LOG_DIR}/ermon_error.log

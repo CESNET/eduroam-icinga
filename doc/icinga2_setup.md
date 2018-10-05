@@ -1,5 +1,5 @@
 ## icinga2 setup
-Icinga 2 is set up on server ermon2.cesnet.cz. The server is running Debian stretch (9.4).
+Icinga 2 is set up on server ermon.cesnet.cz. The server is running Debian stretch (9.4).
 Icinga 2 has been installed from official icinga2 package repositories ([documentation](https://www.icinga.com/docs/icinga2/latest/doc/02-getting-started/#package-repositories)).
 To add package repositories do:
 

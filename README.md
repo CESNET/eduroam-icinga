@@ -6,17 +6,17 @@ monitor their national eduroam infrastructure.
 All the links below should provide a decent understanding of the setup.
 They can also be used as a step by step guide to set up eduroam monitoring at national level.
 
-## [icinga2 setup](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_setup.md)
+## [Icinga 2 setup](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_setup.md)
 
-## [icingaweb2 modules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md)
+## [Icinga Web 2 modules](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_modules.md)
 
-## [icingaweb2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_config.md)
+## [Icinga Web 2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icingaweb2_config.md)
 
 ## [director configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md)
 
 ## [fileshipper configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/fileshipper_config.md)
 
-## [icinga2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_config.md)
+## [Icinga 2 configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/icinga2_config.md)
 
 ## [clients configuration](https://github.com/CESNET/eduroam-icinga/blob/master/doc/clients.md)
 

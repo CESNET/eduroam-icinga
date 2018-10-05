@@ -1,4 +1,4 @@
-## icinga2 setup
+## Icinga 2 setup
 Icinga 2 is set up on server ermon.cesnet.cz. The server is running Debian stretch (9.4).
 Icinga 2 has been installed from official icinga2 package repositories ([documentation](https://www.icinga.com/docs/icinga2/latest/doc/02-getting-started/#package-repositories)).
 To add package repositories do:
@@ -10,13 +10,13 @@ To add package repositories do:
 # apt-get install icinga2
 ```
 
-Be aware, that during installation some of icinga2 features are automatically enabled.
+Be aware, that during installation some of Icinga 2 features are automatically enabled.
 You can view enabled features by:
 ```
 icinga2 feature list
 ```
 
-We suggest that you turn off notifications before your icinga2 is fully set up and configured properly.
+We suggest that you turn off notifications before your Icinga 2 is fully set up and configured properly.
 You can do that by:
 ```
 icinga2 feature disable notification
@@ -41,7 +41,7 @@ php-icinga                           2.5.3-1.stretch
 ### Package versions
 
 We noticed, that in icinga-users mailing list several people complained about errors when
-using newest icinga2 packages from official icinga repositories.
+using newest Icinga 2 packages from official icinga repositories.
 Although we did not encouner any problems, we decided to mark all related packages as held.
 This ensured that when upgrading packages, these will stay on currently installed version.
 Marking packages for hold is done by:
@@ -88,7 +88,7 @@ lines need to be commented out to disable default dashboards.
 For simple interaction with icinga2 through web browser, icingaweb2 is needed. This package
 has been also taken from official icinga2 package repositories (see [icinga2 setup](#icinga2-setup)).
 
-To use icingaweb2 with icinga2 a database is also needed. Icingaweb2 supports mysql and postgresql.
+To use icingaweb2 with Icinga 2 a database is also needed. Icingaweb2 supports mysql and postgresql.
 Mysql has been chosen as database for our setup for historical reasons and compatilibity with other tools.
 
 Mysql has been installed from official debian repositories. Mysql setup is not covered in this guide.

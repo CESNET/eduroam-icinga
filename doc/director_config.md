@@ -1,17 +1,17 @@
 # director configuration
 
-Director is a config management module for icingaweb2.
-Icingaweb2 enhanched with director enables users to use it to create icinga2 configuration.
+Director is a config management module for Icinga Web 2 .
+Icinga Web 2 enhanced with director enables users to use it to create Icinga 2 configuration.
 
 This summarizes director configuration.
-All the configuration is done via icingaweb2 director section. 
-Because the configuration is done in gui, is is hard to document it. 
+All the configuration is done via Icinga Web 2 director section. 
+Because the configuration is done in gui, it is hard to document it. 
 Director provides an export and import features through icingacli which help documentation process a lot.
-Nevertheless it is also documented where to do this in icingaweb2.
+Nevertheless it is also documented where to do this in Icinga Web 2.
 
-![director module in icingaweb2](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director.png "director module in icingaweb2")
+![director module in Icinga Web 2](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director.png "director module in Icinga Web 2")
 
-Using director enables together with all tools in this setup enables
+Using director together with all tools in this setup enables
 the configuration to be fully automated.
 This means that when the source data changes,
 it propagates all the changes to whole monitoring setup and deploys the changes made without any human interaction.
@@ -30,7 +30,7 @@ Import sources are available in the automation section in director section.
 ![import sources](https://github.com/CESNET/eduroam-icinga/blob/master/doc/import_sources.png "import sources")
 
 Import sources are the most important part of director configuration.
-Import sources define a source (icingaweb2 resource).
+Import sources define a source (Icinga Web 2 resource).
 Import source type can be ldap, sql, core api or fileshipper.
 After defining the import source define a sync rule which used to synchronize the data.
 
@@ -102,7 +102,7 @@ This import source defines source data for synchronization of users.
 
 ## Sync rules
 
-Sync rules define how data from import sources are mapped to icinga2 objects.
+Sync rules define how data from import sources are mapped to Icinga 2 objects.
 The mapping is done for every row from the import source data.
 For each row from import source data an object of selected type is created.
 Object properties can be filled by selecting mapping of fields from import source data.
@@ -410,8 +410,8 @@ Commands represent the plugins used for checks.
 There is currently no way that this configuration can be exported or imported,
 so this has to be done manually in the director.
 
-Some of the commands will show that they are not used when viewed in icingaweb2.
-This is because they are used in icinga2 configuration. Director has no way of knowing this.
+Some of the commands will show that they are not used when viewed in Icinga Web 2.
+This is because they are used in Icinga 2 configuration. Director has no way of knowing this.
 
 All the used commands are defined below.
 

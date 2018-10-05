@@ -1,11 +1,11 @@
-# icingaweb2 configuration
+# Icinga Web 2 configuration
 
-This summarizes whole icingaweb2 configuration.
-A lot of configuration is also done in icingaweb2, but that configuration is part of [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md).
+This summarizes whole Icinga Web 2 configuration.
+A lot of configuration is also done in Icinga Web 2, but that configuration is part of [director](https://github.com/CESNET/eduroam-icinga/blob/master/doc/director_config.md).
 
 ## roles
 
-Icingaweb2 enables administrators to setup roles to determine what users can do.
+Icinga Web 2 enables administrators to setup roles to determine what users can do.
 For more information about this, see [official documentation](https://www.icinga.com/docs/icingaweb2/latest/doc/06-Security/#security-roles).
 Roles are defined in `/etc/icingaweb2/roles.ini`
 
@@ -33,7 +33,7 @@ permissions = "module/monitoring, monitoring/command/schedule-check, monitoring/
 ## protected variables
 
 Some of our services contain custom variables with sensitive data.
-We decided that we want to protect all sensitive data, because everyone who is able to log in to icingaweb2 is able to see any service.
+We decided that we want to protect all sensitive data, because everyone who is able to log in to Icinga Web 2 is able to see any service.
 Configuration is done in `/etc/icingaweb2/modules/monitoring/config.ini`
 
 The configuration is:
@@ -42,14 +42,14 @@ The configuration is:
 protected_customvars = "*pw*,*pass*,community,*secret*"
 ```
 
-All variables' names that match these definitions will be masked in icingaweb2.
+All variables' names that match these definitions will be masked in Icinga Web 2.
 
 ## resources
 
 These are several resources set up:
 - director database
-- icinga IDO database
-- icingaweb2 database
+- Icinga IDO database
+- Icinga Web 2 database
 - database for data synchronization
 
 All these database resoures us local mysql database server.
@@ -61,7 +61,7 @@ This authentication backend is actually not usable because of webserver setup.
 
 The second user backend is set as External.
 External user backends are based on REMOTE\_USER environment variable. 
-If the request to icingaweb2 provide this variable, user can access it with this type of authentication set up.
+If the request to Icinga Web 2 provides this variable, user can access it with this type of authentication set up.
 The user backend itself does not handle any rules or restrictions for users.
 
 ## enabled modules
@@ -73,7 +73,7 @@ List of enabled modules:
 
 ## logging
 
-Icingaweb2 logging type is set to file.
+Icinga Web 2 logging type is set to file.
 Logging level is set to Error.
 File path is set to `/var/log/icingaweb2/icingaweb2.log`.
 
@@ -82,7 +82,7 @@ File path is set to `/var/log/icingaweb2/icingaweb2.log`.
 In our setup we decided that it would be nice to have custom dashboard for every realm administator.
 This is done by [dashboard.sh](https://github.com/CESNET/eduroam-icinga/blob/master/sync/dashboard.sh) within the synchronization process.
 Created dashboards are working fine but there still were default dashroard which were displayed as default. To get rid of these
-(their information value did not seem valuable to us) some parts of icingaweb2 code needed to be commented out.
+(their information value did not seem valuable to us) some parts of Icinga Web 2 code needed to be commented out.
 These [lines](https://github.com/Icinga/icingaweb2/blob/master/modules/monitoring/configuration.php#L290-L369) need to be commented out.
 Using this approach means that anytime the icingaweb2 package is upgraded this breaks down and default dashboards will be displayed again.
 

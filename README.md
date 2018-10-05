@@ -1,6 +1,6 @@
 # eduroam-icinga
-This repository contains all the auxiliary tools for monitoring of czech eduroam infrastructure.
-The core of monitoring is icinga2. This is intended as a complete guide on how to setup up eduroam monitoring for any other NRENs wishing to 
+This repository provides an overview of monitoring of czech eduroam infrastructure.
+The core of monitoring is Icinga 2. This is intended as a complete guide on how to setup up eduroam monitoring for any other NRENs wishing to
 monitor their national eduroam infrastructure.
 
 All the links below should provide a decent understanding of the setup.

@@ -8,7 +8,7 @@ This page sumarizes all the tests that used for czech eduroam monitoring.
 
 ## PING
 
-Uses the standard icinga2 `ping4` check. Tests whether the server is reachable by response to ICMP echo request.
+Uses the standard Icinga 2 `ping4` check. Tests whether the server is reachable by response to ICMP echo request.
 Ping is assigned to all RADIUS servers regardless of their role.
 
 The default threshould values were too sensitive for our environment.
@@ -72,7 +72,7 @@ When there is not enough monitoring activity, it could result in an incorrect te
 A solution for this could be to write some better test which could hold information for each server
 for last hour or so and test this. TODO - depends on possible implementation of new/improved test.
 
-The command in icinga2 is set in two variants - for IdP+SP servers and for SP only servers (see parameters below).
+The command in Icinga 2 is set in two variants - for IdP+SP servers and for SP only servers (see parameters below).
 
 Test is done by [check_radsec.pl](https://github.com/CESNET/eduroam-icinga/blob/master/tests/check_radsec.pl).
 
@@ -757,7 +757,7 @@ Notification interval it set to 24 hours.
 
 This test was created just to represent state of home realm authentication on all home servers.
 It has no other actual usefull value than as a dependency parent service.
-The test was designed because icinga2 can not deal with multi parent dependencies.
+The test was designed because Icinga 2 can not deal with multi parent dependencies.
 These dependencies need to be evaluated with use of or logic. Icinga2 is not able to do that at the moment.
 
 Test is done by [home_realm_alive.sh](https://github.com/CESNET/eduroam-icinga/blob/master/tests/home_realm_alive.sh).

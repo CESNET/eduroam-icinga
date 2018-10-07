@@ -910,7 +910,7 @@ mean solving current problems in new manner and maybe twice for both ipv4 and ip
 Most of the tests use host variable `radius_ip` which is filled by icinga-director import source.
 This variable is filled by director get host by name property modifier.
 Director uses PHP function gethotbyname in the [modifier](https://github.com/Icinga/icingaweb2-module-director/blob/master/library/Director/PropertyModifier/PropertyModifierGetHostByName.php#L32).
-According to the documentation, the function returns IPv4 address, to this should be totally safe.
+According to the documentation, the function returns IPv4 address, so this should be totally safe.
 
 In case the situation changes a modifier for getting specific DNS record could be used.
 

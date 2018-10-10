@@ -11,6 +11,15 @@ If the administrator deploys new configuration right at the "incorrect" moment, 
 is being generated, it could result in a some state, when a lot of services is missing.
 When doing a manual deployment the administrator should always check that the current time is not same is cronjob run time.
 
+### notification about deployment problems
+
+When the deploy fails or there are warnings in the startup log, the administators should be notified about this.
+This is done [here](https://github.com/CESNET/eduroam-icinga/blob/master/sync/main.sh#L55)
+and [here](https://github.com/CESNET/eduroam-icinga/blob/master/sync/main.sh#L61).
+Notifications about failed deploy sometimes contain just empty mail body because the information
+if Icinga 2 started up successfully is not available in the database (see [this](https://github.com/CESNET/eduroam-icinga/blob/master/sync/main.sh#L42))
+before deploy timer expires. It is not clear why this happens. Further debug is needed to resolve this issue.
+
 ## mixing realm types
 When a server should handle different types of realms (eg. IdPSP and SP) at once, problems could arise.
 This is due to director synchronization for hosts from multiple sources.

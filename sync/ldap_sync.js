@@ -827,7 +827,10 @@ function generate_realms(dest, realms, realms_radius)
 
     fs.appendFileSync(dest, '\t{ "' + primary_realm + '" = { ');
     fs.appendFileSync(dest, 'testing_id = "' + realms[i].eduroamTestingId + '", ');
-    fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword + '", ');
+    if(realms[i].eduroamTestingPassword)
+      fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword.replace('\\', '\\\\') + '", ');
+    else
+      fs.appendFileSync(dest, 'testing_password = "' + realms[i].eduroamTestingPassword + '", ');
     fs.appendFileSync(dest, 'xml_url = "' + realms[i].labeledUri + '", ');
 
     fs.appendFileSync(dest, 'home_servers = [ ');        // always an array !

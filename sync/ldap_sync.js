@@ -818,8 +818,6 @@ function generate_realms(dest, realms, realms_radius)
   fs.writeFileSync(dest, 'const realms = [ \n');
 
   for(var i in realms) {
-    //fs.appendFileSync(dest, '\t{ ');
-
     if(typeof(realms[i].cn) === 'object')
       primary_realm = realms[i].cn[0];
     else

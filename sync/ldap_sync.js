@@ -742,10 +742,16 @@ function reverse_mapping(mon_realm, realms_radius)
       var key = mon_realm[i];
 
       if(key in realms_radius) {   // key exists, convert to array and append to it
-        var tmp = realms_radius[key];
-        realms_radius[key] = [];
-        realms_radius[key].push(tmp);
-        realms_radius[key].push(i);
+        var tmp = realms_radius[key];   // original value
+        realms_radius[key] = [];        // new value is an array
+
+        if(typeof(tmp) === 'object')    // original could have been an array
+          for(j in tmp)
+            realms_radius[key].push(tmp[j]);    // add all values separately as strings!
+        else                            // or only string
+          realms_radius[key].push(tmp);         // add original string
+
+        realms_radius[key].push(i);     // add new value
       }
       else
         realms_radius[key] = i;

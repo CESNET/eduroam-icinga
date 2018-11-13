@@ -55,6 +55,8 @@ function parse_errors
 
   lines=$(echo "$props" | wc -l)
 
+  echo "JSON available at: https://monitor.eduroam.cz/json/$2/institution.json"
+
   for((i = 1; i <= $lines; i++))
   do
     echo "$props" | sed -n "${i}p"

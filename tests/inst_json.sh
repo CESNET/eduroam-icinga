@@ -11,7 +11,7 @@ function main
 {
   dir=$(mktemp -d)      # temp dir
 
-  out=$(wget -4 $1 -O $dir/${2}.xml 2>&1) # get xml
+  out=$(wget --no-check-certificate -4 "$1" -O $dir/${2}.xml 2>&1) # get xml
 
   if [[ $? -ne 0 ]]
   then

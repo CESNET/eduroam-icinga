@@ -32,7 +32,7 @@
         "originalId": "5",
         "settings": {
             "column_cache": "radius_cn, group_concat(distinct inf_realm order by inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), member_type, xml_url, realm_cn",
-            "query": "select radius_cn, group_concat(distinct inf_realm order by inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), member_type, xml_url, realm_cn from radius_server left join realm on radius_server.mon_realm = realm.realm_dn group by radius_cn;",
+            "query": "select radius_cn, group_concat(distinct inf_realm order by inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), member_type, xml_url, realm_cn from radius_server left join realm on radius_server.mon_realm = realm.realm_dn group by radius_cn order by case member_type when NULL then 1 when 'IdP' then 2 when 'SP' then 3 when 'IdPSP' then 4 end;",
             "resource": "ldap_to_icinga"
         },
         "modifiers": [
@@ -169,7 +169,7 @@
         "originalId": "9",
         "settings": {
             "column_cache": "radius_cn, group_concat(distinct inf_realm order by inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), member_type, xml_url",
-            "query": "select radius_cn, group_concat(distinct inf_realm order by inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), member_type, xml_url from radius_server join realm on radius_server.inf_realm = realm.realm_dn group by radius_cn;",
+            "query": "select radius_cn, group_concat(distinct inf_realm order by inf_realm), mon_radius_secret, radius_dn, transport, group_concat(distinct mon_realm order by mon_realm), member_type, xml_url from radius_server join realm on radius_server.inf_realm = realm.realm_dn group by radius_cn order by case member_type when NULL then 1 when 'IdP' then 2 when 'SP' then 3 when 'IdPSP' then 4 end;",
             "resource": "ldap_to_icinga"
         },
         "modifiers": [

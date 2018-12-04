@@ -27,7 +27,7 @@ function main()
 
   # ==========================================================================================
   # check info_URL against CESNET info_URL for realms that are not cesnet.cz or eduroom.cesnet.cz
-  if [[ ! $list ~ "cesnet.cz" && ! ~ list ~ "eduroroom.cesnet.cz" ]]
+  if [[ ! $list =~ "cesnet.cz" && ! list =~ "eduroroom.cesnet.cz" ]]
   then
     if [[ $(echo "$out" | grep "http://eduroam.cesnet.cz/en/procizi/index.html") != "" ]]
     then

@@ -25,6 +25,25 @@ function main()
   # strip html comments from out
   out=$(echo "$out" | sed -e :a -re 's/<!--.*?-->//g;/<!--/N;//ba')
 
+  # ==========================================================================================
+  # check info_URL against CESNET info_URL for realms that are not cesnet.cz or eduroom.cesnet.cz
+  if [[ ! $list ~ "cesnet.cz" && ! ~ list ~ "eduroroom.cesnet.cz" ]]
+  then
+    if [[ $(echo "$out" | grep "http://eduroam.cesnet.cz/en/procizi/index.html") != "" ]]
+    then
+      echo "CRITICAL: bad info_URL http://eduroam.cesnet.cz/en/procizi/index.html"
+      exit 2;
+    fi
+
+    if [[ $(echo "$out" | grep "http://eduroam.cesnet.cz/cz/procizi/index.html") != "" ]]
+    then
+      echo "CRITICAL: bad info_URL http://eduroam.cesnet.cz/cz/procizi/index.html"
+      exit 2;
+    fi
+  fi
+
+
+  # ==========================================================================================
   # check that all realm are available
   for i in $(echo $list | tr "," " ")
   do
@@ -35,6 +54,7 @@ function main()
     fi
   done
 
+  # ==========================================================================================
   # check that no realm more realms are available
   for i in $(echo "$out" | grep '<inst_realm>' | cut -d ">" -f2 | cut -d "<" -f1)
   do

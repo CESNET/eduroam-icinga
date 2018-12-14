@@ -16,6 +16,7 @@ function main
   if [[ $? -ne 0 ]]
   then
     echo "$out" | grep -i "failed\|error"
+    rm -r $dir
     exit 2
   fi
 
@@ -24,6 +25,7 @@ function main
 
   if [[ $? -ne 0 ]]
   then
+    rm -r $dir
     exit 2
   fi
 
@@ -36,14 +38,14 @@ function main
   if [[ "$out" == "JSON validates OK" ]]
   then
     echo "JSON validates OK"
+    rm -r $dir
     exit 0
   else
     echo "Errors during JSON validation:"
     parse_errors "$out" $2
+    rm -r $dir
     exit 2
   fi
-
-  rm -r $dir
 }
 # ========================================================================
 # parse error output

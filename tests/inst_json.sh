@@ -29,7 +29,7 @@ function main
     exit 2
   fi
 
-  /home/eduroamdb/eduroam-db/convertor/inst_json.sh /var/www/json/$2 /var/www/json/$2/institution.json # create institution.json from converted json
+  /home/eduroamdb/eduroam-db/converter/inst_json.sh /var/www/json/$2 /var/www/json/$2/institution.json # create institution.json from converted json
 
   # validate
   out=$(wget -4 -q -O - https://monitor.eduroam.org/eduroam-database/v2/scripts/json_validation_test.php?url=https://monitor.eduroam.cz/json/$2/institution.json 2>/dev/null)

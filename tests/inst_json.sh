@@ -21,7 +21,7 @@ function main
   fi
 
   mkdir /var/www/json/$2 2>/dev/null       # create realm directory for json
-  /home/eduroamdb/eduroam-db/convertor/converter.py -fc $dir /var/www/json/$2   # convert xml to json
+  /home/eduroamdb/eduroam-db/converter/converter.py -fc $dir /var/www/json/$2   # convert xml to json
 
   if [[ $? -ne 0 ]]
   then

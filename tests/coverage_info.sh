@@ -60,7 +60,7 @@ function check_mapping()
 # =============================================================================
 function validate_json()
 {
-  errors=$(jq -S -s '{ "schema_version": 2, "institutions": { "institution": . } }' "/home/eduroamdb/eduroam-db/web/coverage/coverage_files/$mapping.json" | ./validate_inst_json.py 2>&1)
+  errors=$(jq -S -s '{ "schema_version": 2, "institutions": { "institution": . } }' "/home/eduroamdb/eduroam-db/web/coverage/coverage_files/$mapping.json" | /usr/lib/nagios/plugins/validate_inst_json.py 2>&1)
 
   if [[ $? -ne 0 ]]
   then

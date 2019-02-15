@@ -25,6 +25,7 @@ function main()
   fi
 
   check_urls
+
   if [[ $? -ne 0 ]]
   then
     echo "CRITICAL: Nespravne informacni URL $bad_url"
@@ -74,7 +75,7 @@ function check_urls()
 {
   urls=$(jq '.info_URL[0].data , .location[].info_URL[0].data' "/home/eduroamdb/eduroam-db/web/coverage/coverage_files/$mapping.json" | tr -d '"')
 
-  if [[ CESNET =~ $mapping ]]   # do not check urls for CESNET
+  if [[ $mapping =~ CESNET ]]   # do not check urls for CESNET
   then
     return 0
   fi

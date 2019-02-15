@@ -19,7 +19,7 @@ function main()
 
   if [[ $? -ne 0 ]]
   then
-    echo "CRITICAL: Chybi pri validaci dat o pokryti"
+    echo "CRITICAL: Chyby pri validaci dat o pokryti"
     echo "$errors"
     exit 2
   fi

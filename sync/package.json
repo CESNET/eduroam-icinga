@@ -1,0 +1,26 @@
+{
+  "name": "eduroam-icinga-sync",
+  "version": "1.0.0",
+  "description": "sync ulitily for eduroam.cz monitoring",
+  "main": "main.sh",
+  "dependencies": {
+    "async": "^2.6.2",
+    "ldap2date": "^1.0.0",
+    "ldapjs": "^1.0.2",
+    "mysql": "^2.15.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CESNET/eduroam-icinga.git"
+  },
+  "author": "machv@cesnet.cz",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/CESNET/eduroam-icinga/issues"
+  },
+  "homepage": "https://github.com/CESNET/eduroam-icinga#readme"
+}

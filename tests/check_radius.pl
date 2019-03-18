@@ -3,6 +3,7 @@
 # check_radius.pl - Nagios Plugin
 #
 # Copyright (C) 2009 Carlos Vicente.  University of Oregon.
+# Copyright (c) 2019 CESNET, Jan Tomasek
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,17 +19,15 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #
-#
-# Report bugs to:
-#
-# Carlos Vicente <cvicente@ns.uoregon.edu>
-# 
-#
+
+# dependency libauthen-radius-perl
+
 use strict;
 use Authen::Radius;
+use Data::Dumper;
 use Getopt::Long qw(:config no_ignore_case);
 
-my ($status, $host, $username, $password, $secret, $nas, $port, $timeout);
+my ($status, $host, $username, $password, $secret, $nas, $port, $timeout, $status_server);
 my $VERSION = 0.2;
 my $HELP    = 0;
 # Default values
@@ -68,9 +67,11 @@ Options:
     Radius secret
  -t, --timeout=INTEGER
     Seconds before connection times out (default: $timeout)
+ -S, --status-server
+    Do Status-Server verification instead of username/password
 
 This plugin checks if a username/password can be authenticated against a 
-Radius Server. 
+Radius Server. Or it check Status-Servery by special attribute, RFC 5997.
 
 The password option presents a substantial security issue because the
 password can be determined by careful watching of the command line in
@@ -83,14 +84,15 @@ EOF
 
 
 # handle cmdline args
-my $result = GetOptions( "H|host=s"      => \$host,
-			 "u|username=s"  => \$username,
-			 "p|password=s"  => \$password,
-			 "s|secret=s"    => \$secret,
-			 "n|nas-ip:s"    => \$nas,
-			 "P|port:i"      => \$port,
-			 "t|timeout:i"   => \$timeout,
-			 "h|help"        => \$HELP,
+my $result = GetOptions( "H|host=s"        => \$host,
+			 "u|username=s"    => \$username,
+			 "p|password=s"    => \$password,
+			 "s|secret=s"      => \$secret,
+			 "n|nas-ip:s"      => \$nas,
+			 "P|port:i"        => \$port,
+			 "t|timeout:i"     => \$timeout,
+			 "S|status-server" => \$status_server,
+			 "h|help"          => \$HELP,
 			 );
 
 if( ! $result ) {
@@ -103,33 +105,72 @@ if( $HELP ) {
     exit($STATUSCODE{'UNKNOWN'});
 }
 
-if ( !($host && $username && $password && $secret) ){
+if ( !(($host && $username && $password && $secret) or ($host && $status_server)) ){
     print "ERROR: Missing required arguments\n";
     print $usage;
     exit($STATUSCODE{'UNKNOWN'});
 }
 
 $host = "$host:$port" if $port;
-if (!(my $radius = Authen::Radius->new(Host => $host, Secret => $secret, TimeOut => $timeout))){
+
+if (!(my $radius = Authen::Radius->new(Host => $host,
+				       Secret => $secret,
+				       TimeOut => $timeout,
+				       #Debug => 1
+      ))){
     my $err = "Could not connect to $host";
     $err .= ": " . Authen::Radius::strerror if (Authen::Radius::strerror);
     print $err, "\n";
     $status = &set_status(0);
-}else{
-    my $answer = $radius->check_pwd($username, $password, $nas);
-    $status = &set_status($answer);
-}
+} else {
+    my $answer;
 
-exit($STATUSCODE{$status});
+    # dictionary is tricky, Authen::Radius on debian comes with
+    # dictionary within
+    # /usr/share/doc/libauthen-radius-perl/raddb/dictionary and
+    # attempt to load it ends with error: Can't open dictionary
+    # '/usr/share/doc/libauthen-radius-perl/raddb/dictionary.usr' (No
+    # such file or directory) that is because usr is shipped as
+    # compresed file. Test works without dict, so it is disabled.
 
-sub set_status {
-    my $res = shift;
-    my $status;
-    if ($res) {
-	$status = "OK";
-    }else {
-	$status = "CRITICAL";
+    # $radius->load_dictionary('/usr/share/doc/libauthen-radius-perl/raddb/dictionary');
+
+    if ($status_server) {
+	$radius->add_attributes({'Name' => 80, #'Message-Authenticator',
+				 'Value' => 0x00,
+				 'Type' => 'integer'});
+	$answer = $radius->send_packet(STATUS_SERVER);
+	my $type = $radius->recv_packet();
+	if (defined($type) && $type == ACCESS_ACCEPT) {
+	    print "OK ";
+	    print "Server-Status response is Access-Accept ($type)\n";
+
+	    # without dictionary we are missing human readable
+	    # attribute names
+
+	    #for $a ($radius->get_attributes()) {
+	    #	print "$a->{'Name'} = $a->{'Value'}\n";
+	    #}
+	    exit($STATUSCODE{'OK'});
+	}
+
+	print "CRITICAL ". $radius->strerror."\n";
+	exit($STATUSCODE{'CRITICAL'});
     }
-    print "$status\n";
-    return($status);
-}
+
+    $answer = $radius->check_pwd($username, $password, $nas);
+    if ($answer) {
+	print "OK\n";
+	exit($STATUSCODE{'OK'});
+    } else {
+	my $msg = $radius->strerror;
+	$msg = 'bad username/password' if ($msg eq 'none');
+	print "CRITICAL $msg\n";
+	exit($STATUSCODE{'CRITICAL'});
+    };
+};
+
+# never should reach this point
+
+print "UNKNOWN\n";
+exit($STATUSCODE{'UNKNOWN'});

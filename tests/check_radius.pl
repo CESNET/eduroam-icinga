@@ -143,7 +143,7 @@ if (!(my $radius = Authen::Radius->new(Host => $host,
 	my $type = $radius->recv_packet();
 	if (defined($type) && $type == ACCESS_ACCEPT) {
 	    print "OK ";
-	    print "Server-Status response is Access-Accept ($type)\n";
+	    print "Status-Server response is Access-Accept ($type)\n";
 
 	    # without dictionary we are missing human readable
 	    # attribute names

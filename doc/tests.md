@@ -497,7 +497,7 @@ Test is done by [rad_eap_test](https://github.com/CESNET/eduroam-icinga/blob/mas
 
 ### parameters
 
-The script takes 10 parameters:
+The script takes 11 parameters:
 - (key -H) RADIUS server ip address
 - (key -M) MAC address
 - (key -P) port number, set to '1812'
@@ -508,6 +508,7 @@ The script takes 10 parameters:
 - (key -p) user password
 - (key -t) timeout, set to '50'
 - (key -u) username
+- (key -b) key takes no parameter
 
 The first parameter uses host variable `radius_ip`.
 The second parameter uses service variable `mac_address`.
@@ -519,6 +520,7 @@ The seventh parameter is fixed and is set to `WPA-EAP`.
 The eighth parameter uses service variable `testing_password`.
 The ninth parameter is fixed and is set to `50`.
 The tenth parameter uses service variable `testing_id`.
+The eleventh parameter takes no value, the parameter makes `rad_eap_test` print certificate info.
 
 The configuration must assure that two tests with with the same username must always have different MAC address (-M key).
 Timeouts also apply in this condition.

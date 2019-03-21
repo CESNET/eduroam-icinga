@@ -373,57 +373,6 @@ It is recommended to implement this attribute.
 # ==========================================================================================================================================
 -->
 
-## INSTITUTION-XML
-
-Tests existence of the institution.xml file.
-
-Test is done by [check_institution_xml.sh](https://github.com/CESNET/eduroam-icinga/blob/master/tests/check_institution_xml.sh).
-This check internally uses  icinga standard plugin `check_http`.
-
-This test is multiplied by number of home realms for first home server. So if the server has two home realms, it has the test for each of them.
-Check is forcibly done over IPv4.
-
-### parameters
-
-The script takes 6 parameters:
-- realm aliases
-- (key -u) part of the url after /
-- indication, that https must be used. There is actually only key `-S` at this parameter. Only set if service variable `xml_https` is set to 1.
-- (key -H) host name
-- indication, that hostname extension support is needed. There is actually only key `--sni` at this parameter. Only set if service variable `xml_https` is set to 1.
-- (key -4) there is no actual value for this key. This is used just to force test over IPv4.
-
-The first parameter uses service variable `realm_aliases`
-The second parameter uses service variable `xml_url_part`.
-The fourth parameter uses service variable `xml_host`.
-
-### dependencies
-
-- depends on ping (defined in [dependencies.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/dependencies.conf#L171))
-
-### check intervals
-
-- normal check period is 24 hours
-- check period is 3 hours in case of outage
-- CRITICAL-HARD state is reached after 3 failed checks
-
-### assign rule
-
-This service is assigned to every first server (or the only one) which is set as monitoring server in our evidence for one or more realms.
-
-### definition
-
-This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L15).
-
-### notifications
-
-Notifications for this test are enabled.
-Notification interval it set to 24 hours.
-
-<!--
-# ==========================================================================================================================================
--->
-
 ## FAKE-UID
 
 Tests if the organization forces inner and outer identity to be equal. Randomized identity is used as outer idenity.

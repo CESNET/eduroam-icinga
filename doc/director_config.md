@@ -269,17 +269,6 @@ template Service "home realm alive template" {
 }
 ```
 
-### INSTITUTION-XML
-```
-template Service "institution xml template" {
-    check_command = "check_institution_xml"
-    max_check_attempts = "3"
-    check_interval = 1d
-    retry_interval = 3h
-    enable_notifications = true
-}
-```
-
 ### PING
 ```
 template Service "ping template" {
@@ -628,46 +617,6 @@ object CheckCommand "check_home_realm_alive" {
             required = true
             skip_key = true
             value = "$service.vars.home_servers$"
-        }
-    }
-}
-```
-
-### INSTITUTION-XML
-```
-object CheckCommand "check_institution_xml" {
-    import "plugin-check-command"
-    command = [ PluginDir + "/check_institution_xml.sh" ]
-    arguments += {
-        "(no key)" = {
-            order = 1
-            required = true
-            skip_key = true
-            value = "$service.vars.realm_aliases$"
-        }
-        "--sni" = {
-            order = 5
-            required = false
-            set_if = "$service.vars.xml_https$"
-        }
-        "-4" = {
-            order = 6
-            required = true
-        }
-        "-H" = {
-            order = 4
-            required = true
-            value = "$service.vars.xml_host$"
-        }
-        "-S" = {
-            order = 3
-            required = false
-            set_if = "$service.vars.xml_https$"
-        }
-        "-u" = {
-            order = 2
-            required = true
-            value = "$service.vars.xml_url_part$"
         }
     }
 }

@@ -245,10 +245,6 @@ object ServiceGroup "OPERATOR-NAME" {
   display_name = "OPERATOR-NAME"
 }
 
-object ServiceGroup "INSTITUTION-XML" {
-  display_name = "INSTITUTION-XML"
-}
-
 object ServiceGroup "CVE-2017-9148" {
   display_name = "CVE-2017-9148"
 }

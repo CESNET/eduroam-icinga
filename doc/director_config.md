@@ -334,6 +334,28 @@ template Service "operator name template" {
 }
 ```
 
+### COVERAGE-INFO
+```
+template Service "coverage info template" {
+    check_command = "check_coverage_info"
+    max_check_attempts = "3"
+    check_interval = 1d
+    retry_interval = 3h
+    command_endpoint = null
+}
+```
+
+### CAT
+```
+template Service "eduroam cat template" {
+    check_command = "check_eduroam_cat"
+    max_check_attempts = "3"
+    check_interval = 1d
+    retry_interval = 1d
+    command_endpoint = null
+}
+```
+
 ## Service groups
 
 Most of the service groups are defined in [groups.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/groups.conf).

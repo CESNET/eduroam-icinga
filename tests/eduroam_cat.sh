@@ -40,6 +40,7 @@ function find_inst()
     if [[ "$profile" == true ]]
     then
       get_profile
+      echo "$profile_id"
     fi
 
     if [[ "$download" == true ]]

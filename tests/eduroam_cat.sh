@@ -4,7 +4,8 @@
 # params: 
 # 1) realm
 # options:
-# -v - print output about identity provider for possible further processing
+# -i - print info about idp
+# -p - print profile id
 # =============================================================================
 # check realm to inst mapping
 # =============================================================================
@@ -26,11 +27,13 @@ function get_inst_name()
 function find_inst()
 {
   # TODO - what happens if API is unavailable?
+  # TODO this should be handled somehow
 
   inst=$(curl "${API_url}?action=listIdentityProviders&federation=CZ" 2>/dev/null | jq --arg inst_name "$inst_name" '.data[] | select(.display == $inst_name)')
 
   if [[ -n "$inst" ]]
   then
+    get_profile $1       # if institution is listed, always download its profile
 
     if [[ "$idp" == true ]]
     then
@@ -39,36 +42,38 @@ function find_inst()
 
     if [[ "$profile" == true ]]
     then
-      get_profile
       echo "$profile_id"
     fi
 
-    if [[ "$download" == true ]]
-    then
-      get_profile
-
-      if [[ ! -e $db/${1}_${profile_id}_eap_config.xml ]]      # no eap config exists, write it directly
-      then
-        wget "${API_url}?action=downloadInstaller&profile=${profile_id}&device=eap-config" -O $db/${1}_${profile_id}_eap_config.xml 2>/dev/null
-      else      # config exists, overwrite it only it if differs
-        tmp=$(mktemp)
-        wget "${API_url}?action=downloadInstaller&profile=${profile_id}&device=eap-config" -O $tmp 2>/dev/null
-
-        diff -q $tmp $db/${1}_${profile_id}_eap_config.xml &>/dev/null     # diff files
-
-        if [[ $? -ne 0 ]]
-        then
-          cp $tmp $db/${1}_${profile_id}_eap_config.xml    # copy tmp to dest
-        fi
-
-        rm $tmp
-      fi
-
-    fi
 
     return 0
   else
     return 1
+  fi
+}
+# =============================================================================
+# download_profile
+# params:
+# 1) realm
+# 2) profile id
+# =============================================================================
+function download_profile()
+{
+  if [[ ! -e $db/${1}_${2}_eap_config.xml ]]      # no eap config exists, write it directly
+  then
+    wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $db/${1}_${2}_eap_config.xml 2>/dev/null
+  else      # config exists, overwrite it only it if differs
+    tmp=$(mktemp)
+    wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $tmp 2>/dev/null
+
+    diff -q $tmp $db/${1}_${2}_eap_config.xml &>/dev/null     # diff files
+
+    if [[ $? -ne 0 ]]
+    then
+      cp $tmp $db/${1}_${2}_eap_config.xml    # copy tmp to dest
+    fi
+
+    rm $tmp
   fi
 }
 # =============================================================================
@@ -83,7 +88,18 @@ function get_profile()
 
   if [[ -z "$profile_id" ]]                # profile_id
   then
-    profile_id=$(curl "${API_url}?action=listProfiles&idp=$id" 2>/dev/null | jq '.data[0].id' | tr -d '"')      # TODO - process all profiles for given inst?
+    all_profiles=$(curl "${API_url}?action=listProfiles&idp=$id" 2>/dev/null | jq '.data[].id' | tr -d '"')
+
+    # iterate all profiles
+    for i in $all_profiles
+    do
+      download_profile $1 $i
+
+      if [[ "$(grep "\"$1\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
+      then
+        profile_id=$i       # this is the correct profile
+      fi
+    done
   fi
 }
 # =============================================================================
@@ -91,14 +107,12 @@ function get_profile()
 # =============================================================================
 function check_inst_state()
 {
-  :
   # TODO
-
+  :
 
   # C = enough Configuration uploaded to create installers
   # V = installers are visible on the download page
   # (nothing) = not enough info in the system to create installers
-
 
   # =>
   # CV - (OK)
@@ -112,7 +126,6 @@ function main()
 {
   get_inst_name $1
   find_inst $1
-
 
   if [[ $? -eq 0 ]]     # inst found in CAT, do furher checks
   then
@@ -134,7 +147,6 @@ db="/var/lib/nagios/eap_cert_db"
 # global variables
 declare -g idp
 declare -g profile
-declare -g download
 # =============================================================================
 # process command line options
 while getopts ":ipd" opt
@@ -145,9 +157,6 @@ while getopts ":ipd" opt
         ;;
       p)
         profile=true;      # print profile ID
-        ;;
-      d)
-        download=true;      # download installer
         ;;
     esac
 done

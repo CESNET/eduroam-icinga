@@ -25,14 +25,44 @@ function get_inst_name()
 # =============================================================================
 function find_inst()
 {
+  # TODO - what happens if API is unavailable?
+
   inst=$(curl "${API_url}?action=listIdentityProviders&federation=CZ" 2>/dev/null | jq --arg inst_name "$inst_name" '.data[] | select(.display == $inst_name)')
 
   if [[ -n "$inst" ]]
   then
 
-    if [[ "$verbose" == true ]]
+    if [[ "$idp" == true ]]
     then
       echo "$inst"
+    fi
+
+    if [[ "$profile" == true ]]
+    then
+      get_profile
+    fi
+
+    if [[ "$download" == true ]]
+    then
+      get_profile
+
+      if [[ ! -e $db/${1}_${profile_id}_eap_config.xml ]]      # no eap config exists, write it directly
+      then
+        wget "${API_url}?action=downloadInstaller&profile=${profile_id}&device=eap-config" -O $db/${1}_${profile_id}_eap_config.xml 2>/dev/null
+      else      # config exists, overwrite it only it if differs
+        tmp=$(mktemp)
+        wget "${API_url}?action=downloadInstaller&profile=${profile_id}&device=eap-config" -O $tmp 2>/dev/null
+
+        diff -q $tmp $db/${1}_${profile_id}_eap_config.xml &>/dev/null     # diff files
+
+        if [[ $? -ne 0 ]]
+        then
+          cp $tmp $db/${1}_${profile_id}_eap_config.xml    # copy tmp to dest
+        fi
+
+        rm $tmp
+      fi
+
     fi
 
     return 0
@@ -41,15 +71,27 @@ function find_inst()
   fi
 }
 # =============================================================================
+# get institution's CAT profile
+# =============================================================================
+function get_profile()
+{
+  if [[ -z "$id" ]]
+  then
+    id=$(echo "$inst" | jq '.id')       # inst_id
+  fi
+
+  if [[ -z "$profile_id" ]]                # profile_id
+  then
+    profile_id=$(curl "${API_url}?action=listProfiles&idp=$id" 2>/dev/null | jq '.data[0].id' | tr -d '"')      # TODO - process all profiles for given inst?
+  fi
+}
+# =============================================================================
 # check state of institution's profile in eduroam CAT
 # =============================================================================
 function check_inst_state()
 {
-  #echo "$inst" | 
   :
   # TODO
-
-
 
 
   # C = enough Configuration uploaded to create installers
@@ -68,7 +110,8 @@ function check_inst_state()
 function main()
 {
   get_inst_name $1
-  find_inst
+  find_inst $1
+
 
   if [[ $? -eq 0 ]]     # inst found in CAT, do furher checks
   then
@@ -81,16 +124,33 @@ function main()
   fi
 }
 # =============================================================================
+# script config
 config="/home/eduroamdb/eduroam-db/web/coverage/config/realm_to_inst.js"
 coverage_files="/home/eduroamdb/eduroam-db/web/coverage/coverage_files/"
 API_url="https://cat.eduroam.org/user/API.php"
+db="/var/lib/nagios/eap_cert_db"
+# =============================================================================
+# global variables
+declare -g idp
+declare -g profile
+declare -g download
 # =============================================================================
 # process command line options
-while getopts ":v" opt; do
-  case ${opt} in
-    v ) verbose=true; shift;;
-  esac
+while getopts ":ipd" opt
+  do
+    case ${opt} in
+      i)
+        idp=true;          # print info about idp
+        ;;
+      p)
+        profile=true;      # print profile ID
+        ;;
+      d)
+        download=true;      # download installer
+        ;;
+    esac
 done
+shift "$((OPTIND-1))"
 # =============================================================================
 main "$@"
 

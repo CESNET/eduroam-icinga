@@ -38,18 +38,6 @@ function find_inst()
   if [[ -n "$inst" ]]
   then
     get_profile $1       # if institution is listed, always download its profile
-
-    if [[ "$idp" == true ]]
-    then
-      echo "$inst"
-    fi
-
-    if [[ "$profile" == true ]]
-    then
-      echo "$profile_id"
-    fi
-
-
     return 0
   else
     return 1
@@ -104,13 +92,60 @@ function get_profile()
   done
 }
 # =============================================================================
+# print additional ouput based on script options
+# =============================================================================
+function verbose_output()
+{
+  if [[ "$idp" == true ]]
+  then
+    echo "$inst"
+  fi
+
+  if [[ "$profile" == true && -n "$profile_id" ]]
+  then
+    echo "$profile_id"
+  fi
+}
+# =============================================================================
+# check institution's profile
+# params:
+# 1) realm
+# =============================================================================
+function check_profile()
+{
+  if [[ -z "$profile_id" ]] # profile_id is not set, something is most likely set incorrectly in institution's eap_config.xml
+  then
+    for i in $all_profiles
+    do
+      provider_id=$(echo -n "$db/${1}_${i}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
+
+      profile_out=$(
+        echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i" ;
+        echo "should be set to: \"$1\" if this is the correct profile for realm $1"
+      )
+    done
+
+    return 1
+  fi
+}
+# =============================================================================
 # check state of institution's profile in eduroam CAT
+# params:
+# 1) realm
 # =============================================================================
 function check_inst_state()
 {
-  # TODO
-  :
+  check_profile $1
 
+  if [[ $? -ne 0 ]]
+  then
+    echo "WARNING: someting is wrong with the profile of $1"
+    echo "$profile_out"
+    exit 1
+  fi
+
+
+  # TODO
   # C = enough Configuration uploaded to create installers
   # V = installers are visible on the download page
   # (nothing) = not enough info in the system to create installers
@@ -132,9 +167,9 @@ function main()
 
   if [[ $? -eq 0 ]]     # inst found in CAT, do furher checks
   then
+    check_inst_state $1
     echo "OK: $1 present in eduroam CAT"
-    # TODO
-    #check_inst_state
+    verbose_output
   else                  # NOT found
     echo "CRITICAL: $1 not found in eduroam CAT"
     exit 2

@@ -81,26 +81,21 @@ function download_profile()
 # =============================================================================
 function get_profile()
 {
-  if [[ -z "$id" ]]
-  then
-    id=$(echo "$inst" | jq '.id')       # inst_id
-  fi
+  # get inst_id
+  id=$(echo "$inst" | jq '.id')       # inst_id
 
-  if [[ -z "$profile_id" ]]                # profile_id
-  then
-    all_profiles=$(curl "${API_url}?action=listProfiles&idp=$id" 2>/dev/null | jq '.data[].id' | tr -d '"')
+  all_profiles=$(curl "${API_url}?action=listProfiles&idp=$id" 2>/dev/null | jq '.data[].id' | tr -d '"')
 
-    # iterate all profiles
-    for i in $all_profiles
-    do
-      download_profile $1 $i
+  # iterate all profiles
+  for i in $all_profiles
+  do
+    download_profile $1 $i
 
-      if [[ "$(grep "\"$1\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
-      then
-        profile_id=$i       # this is the correct profile
-      fi
-    done
-  fi
+    if [[ "$(grep "\"$1\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
+    then
+      profile_id=$i       # this is the correct profile
+    fi
+  done
 }
 # =============================================================================
 # check state of institution's profile in eduroam CAT

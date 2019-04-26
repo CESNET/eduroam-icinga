@@ -139,7 +139,7 @@ function check_inst_state()
 
   if [[ $? -ne 0 ]]
   then
-    echo "WARNING: someting is wrong with the profile of $1"
+    echo "WARNING: something is wrong with the profile of $1"
     echo "$profile_out"
     exit 1
   fi

@@ -113,6 +113,7 @@ function verbose_output()
 # =============================================================================
 function check_profile()
 {
+  # no profile_id set - check EAPIdentityProvider ID value
   if [[ -z "$profile_id" ]] # profile_id is not set, something is most likely set incorrectly in institution's eap_config.xml
   then
     for i in $all_profiles
@@ -125,6 +126,16 @@ function check_profile()
       )
     done
 
+    return 1
+  fi
+
+  # check that cert is present in eap_config.xml
+  out=$(echo -n "$db/${1}_${profile_id}_eap_config.xml" | $plugin_path/parse_eap_config.py)
+  ret=$?
+
+  if [[ $ret -ne 0 ]]
+  then
+    profile_out="$out"
     return 1
   fi
 }
@@ -181,6 +192,7 @@ config="/home/eduroamdb/eduroam-db/web/coverage/config/realm_to_inst.js"
 coverage_files="/home/eduroamdb/eduroam-db/web/coverage/coverage_files/"
 API_url="https://cat.eduroam.org/user/API.php"
 db="/var/lib/nagios/eap_cert_db"
+plugin_path="/usr/lib/nagios/plugins"
 # =============================================================================
 # global variables
 declare -g idp

@@ -19,8 +19,18 @@ function get_inst_name()
   then
     inst_name=$(jq '.inst_name[1].data' "$coverage_files/$mapping.json" | tr -d '"')
   else        # no mapping available or file does not exist
-    echo "CRITICAL: $1 not found in eduroam CAT"        # not even possible to be in CAT
-    exit 2
+    # realm alias does not have a direct mapping, check it
+
+    mapping=$(grep -l "\"$1\"" ${coverage_files}*)
+
+    # TODO - proper checks in matching file?
+    if [[ $? -eq 0 && $(echo "$mapping" | wc -l) -eq 1 ]]
+    then
+      inst_name=$(basename $mapping | sed 's/\.json//g')
+    else
+      echo "CRITICAL: $1 not found in eduroam CAT"        # not even possible to be in CAT
+      exit 2
+    fi
   fi
 }
 # =============================================================================

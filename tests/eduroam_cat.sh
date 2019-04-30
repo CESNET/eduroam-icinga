@@ -27,6 +27,9 @@ function get_inst_name()
     if [[ $? -eq 0 && $(echo "$mapping" | wc -l) -eq 1 ]]
     then
       inst_name=$(jq '.inst_name[1].data' $mapping | tr -d '"')
+      # we also need to determine "primary" realm here, assuming the $1 is only alias for the "primary" realm
+      # TODO - is primary realm always the first?
+      primary_realm=$(jq -c '.inst_realm' $mapping | cut -d "," -f1 | tr -d '[' | tr -d '"' )
     else
       echo "CRITICAL: $1 not found in eduroam CAT"        # not even possible to be in CAT
       exit 2
@@ -100,6 +103,24 @@ function get_profile()
       profile_id=$i       # this is the correct profile
     fi
   done
+
+  # profile id still not set after iterating all available profiles so
+  # script was probably called with realm alias - we set the profile id to the profile of primary realm
+  if [[ -z "$profile_id" ]]
+  then
+    # iterate all profiles
+    for i in $all_profiles
+    do
+      if [[ "$(grep "\"$primary_realm\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
+      then
+        profile_id=$i       # this is the correct profile
+        # link alias to "primary" realm
+
+        # TODO - what if the file exists?
+        ln -sf "$db/${primary_realm}_${i}_eap_config.xml" "$db/${1}_${i}_eap_config.xml"
+      fi
+    done
+  fi
 }
 # =============================================================================
 # print additional ouput based on script options
@@ -124,18 +145,24 @@ function verbose_output()
 function check_profile()
 {
   # no profile_id set - check EAPIdentityProvider ID value
+
   if [[ -z "$profile_id" ]] # profile_id is not set, something is most likely set incorrectly in institution's eap_config.xml
   then
+
+    # This part requires that all realm aliases would be explicitly set in CAT, otherwise it does not make sense
+    # Is it even possible to set it in CAT or by hand?
+
     for i in $all_profiles
     do
       provider_id=$(echo -n "$db/${1}_${i}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
 
       profile_out=$(
-        echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i" ;
-        echo "should be set to: \"$1\" if this is the correct profile for realm $1"
+        echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i\n" ;
+        #echo "should be set to: \"$1\" if this is the correct profile for realm $1"
       )
     done
 
+    profile_out=$profile_out"\ncannot determine profile id for $1"
     return 1
   fi
 
@@ -189,7 +216,12 @@ function main()
   if [[ $? -eq 0 ]]     # inst found in CAT, do furher checks
   then
     check_inst_state $1
-    echo "OK: $1 present in eduroam CAT"
+    if [[ -n "$primary_realm" ]]
+    then
+      echo "OK: assuming $1 is present eduroam CAT as $primary_realm"
+    else
+      echo "OK: $1 present in eduroam CAT"
+    fi
     verbose_output
   else                  # NOT found
     echo "CRITICAL: $1 not found in eduroam CAT"

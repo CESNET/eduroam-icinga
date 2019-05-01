@@ -10,6 +10,7 @@ import lxml.etree
 # ==============================================================================
 f = sys.stdin.read()
 data = lxml.objectify.parse(f).getroot()
+realm = os.path.basename(f).split("_")[0]
 
 # check all auth methods present
 for i in data.EAPIdentityProvider.AuthenticationMethods:
@@ -25,5 +26,5 @@ for i in data.EAPIdentityProvider.AuthenticationMethods:
         print(lxml.etree.tostring(i.AuthenticationMethod.ServerSideCredential.CA).decode('utf-8'))
 
       else:
-        print("No certificate present in profile " + os.path.basename(f) + " for AuthenticationMethod " + i.AuthenticationMethod.EAPMethod.Type.text)
+        print("No certificate present in profile " + os.path.basename(f) + " for AuthenticationMethod " + i.AuthenticationMethod.EAPMethod.Type.text + " for realm " + realm)
         sys.exit(1)

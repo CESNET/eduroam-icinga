@@ -40,7 +40,6 @@ function main()
 # =============================================================================
 function check_mapping()
 {
-
   mapping=$(grep "\"$1\"" /home/eduroamdb/eduroam-db/web/coverage/config/realm_to_inst.js | cut -d ":" -f2 | tr -d '"' | tr -d ',' | tr -d ' ')
 
   if [[ "$mapping" != "" && -e "/home/eduroamdb/eduroam-db/web/coverage/coverage_files/$mapping.json" ]]

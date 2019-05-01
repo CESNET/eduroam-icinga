@@ -21,9 +21,9 @@ function get_inst_name()
   else        # no mapping available or file does not exist
     # realm alias does not have a direct mapping, check it
 
-    mapping=$(grep -l "\"$1\"" ${coverage_files}*)
+    mapping=$(grep -l "\"$1\"" ${coverage_files}*)  # ldap should always guarantee that any realm or alias is present only for no more than institution
+    # so result of this should not me more than one line
 
-    # TODO - proper checks in matching file?
     if [[ $? -eq 0 && $(echo "$mapping" | wc -l) -eq 1 ]]
     then
       inst_name=$(jq '.inst_name[1].data' $mapping | tr -d '"')
@@ -66,9 +66,15 @@ function download_profile()
 {
   if [[ ! -e $db/${1}_${2}_eap_config.xml ]]      # no eap config exists, write it directly
   then
+    # TODO - what happens if API is unavailable?
+    # TODO this should be handled somehow
+
     wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $db/${1}_${2}_eap_config.xml 2>/dev/null
   else      # config exists, overwrite it only it if differs
     tmp=$(mktemp)
+
+    # TODO - what happens if API is unavailable?
+    # TODO this should be handled somehow
     wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $tmp 2>/dev/null
 
     diff -q $tmp $db/${1}_${2}_eap_config.xml &>/dev/null     # diff files
@@ -167,6 +173,7 @@ function check_profile()
   fi
 
   # check that cert is present in eap_config.xml
+  # some EAP methods do not even require cert
   out=$(echo -n "$db/${1}_${profile_id}_eap_config.xml" | $plugin_path/parse_eap_config.py)
   ret=$?
 

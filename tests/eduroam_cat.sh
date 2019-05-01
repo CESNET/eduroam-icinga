@@ -162,13 +162,10 @@ function check_profile()
     do
       provider_id=$(echo -n "$db/${1}_${i}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
 
-      profile_out=$(
-        echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i\n" ;
-        #echo "should be set to: \"$1\" if this is the correct profile for realm $1"
-      )
+      profile_out=$profile_out"EAPIdentityProvider ID: \"$provider_id\" for profile $i\n"
     done
 
-    profile_out=$profile_out"\ncannot determine profile id for $1"
+    profile_out=$profile_out"cannot determine profile id for realm $1"
     return 1
   fi
 
@@ -184,6 +181,19 @@ function check_profile()
   fi
 }
 # =============================================================================
+# get download links for all profiles of inst
+# =============================================================================
+function get_profile_links()
+{
+  echo ""
+  echo "links for all profiles related to realm $1 for further investigation:"
+
+  for i in $all_profiles
+  do
+    echo "${API_url}?action=downloadInstaller&profile=${i}&device=eap-config"
+  done
+}
+# =============================================================================
 # check state of institution's profile in eduroam CAT
 # params:
 # 1) realm
@@ -196,6 +206,7 @@ function check_inst_state()
   then
     echo "WARNING: something is wrong with the profile of $1"
     echo "$profile_out"
+    get_profile_links $1
     exit 1
   fi
 

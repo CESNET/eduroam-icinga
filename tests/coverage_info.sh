@@ -12,6 +12,7 @@ function main()
   if [[ $? -ne 0 ]]
   then
     echo "CRITICAL: Nejsou dostupne zadne informace o pokryti"
+    echo "doplnte informace na adrese https://pokryti.eduroam.cz/$1"
     exit 2
   fi
 

@@ -187,7 +187,7 @@ function check_profile()
 
     for i in $all_profiles
     do
-      provider_id=$(echo -n "$db/${1}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
+      provider_id=$(echo -n "$db/${instid}_${i}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
 
       profile_out=$profile_out$(
         echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i" ;
@@ -213,12 +213,18 @@ function check_profile()
 
   # check that cert is present in eap_config.xml
   # some EAP methods do not even require cert
-  out=$(echo -n "$db/${1}_eap_config.xml" | $plugin_path/parse_eap_config.py)
-  ret=$?
-
-  if [[ $ret -ne 0 ]]
+  if [[ -e "$db/${1}_eap_config.xml" ]]
   then
-    profile_out="$out"
+    out=$(echo -n "$db/${1}_eap_config.xml" | $plugin_path/parse_eap_config.py)
+    ret=$?
+
+    if [[ $ret -ne 0 ]]
+    then
+      profile_out="$out"
+      return 1
+    fi
+  else      # fallback when other checks fail
+    profile_out="cannot determine profile id for realm $1\n"
     return 1
   fi
 }

@@ -58,7 +58,7 @@ function find_inst()
 
   if [[ -n "$inst" ]]
   then
-    get_profile $1       # if institution is listed, always download its profile
+    get_profile $1 "$inst"      # if institution is listed, always download its profile
     return 0
   else
     return 1
@@ -69,6 +69,7 @@ function find_inst()
 # params:
 # 1) realm
 # 2) profile id
+# 3) name of the institution the profile is belonging to
 # =============================================================================
 function download_profile()
 {
@@ -78,6 +79,7 @@ function download_profile()
     # TODO this should be handled somehow
 
     wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $db/${1}_${2}_eap_config.xml 2>/dev/null
+    commit_changes "added CAT profile for $3"  "${1}_${2}_eap_config.xml"
   else      # config exists, overwrite it only it if differs
     tmp=$(mktemp)
 
@@ -90,6 +92,7 @@ function download_profile()
     if [[ $? -ne 0 ]]
     then
       cp $tmp $db/${1}_${2}_eap_config.xml    # copy tmp to dest
+      commit_changes "changed CAT profile for $3"  "${1}_${2}_eap_config.xml"
     fi
 
     rm $tmp
@@ -99,6 +102,7 @@ function download_profile()
 # get institution's CAT profile
 # params:
 # 1) realm
+# 2) name of the institution
 # =============================================================================
 function get_profile()
 {
@@ -110,7 +114,7 @@ function get_profile()
   # iterate all profiles
   for i in $all_profiles
   do
-    download_profile $1 $i
+    download_profile $1 $i "$2"
 
     if [[ "$(grep "\"$1\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
     then
@@ -135,7 +139,7 @@ function get_profile()
         then
           # TODO - what if the file already exists and is not a link?
           ln -sf "$db/${primary_realm}_${i}_eap_config.xml" "$db/${1}_${i}_eap_config.xml"
-
+          commit_changes "linked CAT profile for alias $1 to realm $primary_realm" "${1}_${i}_eap_config.xml"
           primary_realm_profile="$db/${primary_realm}_${i}_eap_config.xml"
         fi
       fi
@@ -255,6 +259,19 @@ function check_inst_state()
   # CV - (OK)
   # C - no installers visible on download page (WARN)
   # (nothing) = not enough info in the system to create installers (WARN)
+}
+# ======================================================================
+# commit all changes
+# params:
+# 1) commit message
+# 2) file to add
+# ======================================================================
+function commit_changes()
+{
+  cd $db
+  git add "$2"
+  git commit -m "$1" --author "info@eduroam.cz <info@eduroam.cz>" &>/dev/null
+  cd -
 }
 # =============================================================================
 # main function

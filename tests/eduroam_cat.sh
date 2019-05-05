@@ -58,7 +58,7 @@ function find_inst()
 
   if [[ -n "$inst" ]]
   then
-    get_profile $1 "$inst"      # if institution is listed, always download its profile
+    get_profile $1       # if institution is listed, always download its profile
     return 0
   else
     return 1
@@ -102,7 +102,6 @@ function download_profile()
 # get institution's CAT profile
 # params:
 # 1) realm
-# 2) name of the institution
 # =============================================================================
 function get_profile()
 {
@@ -114,7 +113,7 @@ function get_profile()
   # iterate all profiles
   for i in $all_profiles
   do
-    download_profile $1 $i "$2"
+    download_profile $1 $i "$inst_name"
 
     if [[ "$(grep "\"$1\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
     then

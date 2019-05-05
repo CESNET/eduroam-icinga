@@ -125,13 +125,19 @@ function get_profile()
     # iterate all profiles
     for i in $all_profiles
     do
-      if [[ "$(grep "\"$primary_realm\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
+      if [[ "$(grep "\"$primary_realm\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep primary realm in config
       then
         profile_id=$i       # this is the correct profile
-        # link alias to "primary" realm
+        linked=true         # set linked variable for further processing
 
-        # TODO - what if the file exists?
-        ln -sf "$db/${primary_realm}_${i}_eap_config.xml" "$db/${1}_${i}_eap_config.xml"
+        # link alias to "primary" realm
+        if [[ -e "$db/${primary_realm}_${i}_eap_config.xml" ]]
+        then
+          # TODO - what if the file already exists and is not a link?
+          ln -sf "$db/${primary_realm}_${i}_eap_config.xml" "$db/${1}_${i}_eap_config.xml"
+
+          primary_realm_profile="$db/${primary_realm}_${i}_eap_config.xml"
+        fi
       fi
     done
   fi
@@ -166,14 +172,36 @@ function check_profile()
     # This part requires that all realm aliases would be explicitly set in CAT, otherwise it does not make sense
     # Is it even possible to set it in CAT or by hand?
 
+    if [[ "$1" == "$primary_realm" ]]
+    then
+      profile_out="cannot determine profile id for primary realm $1, does it exist?\n"
+    else
+      profile_out="cannot determine profile id for alias $1 of primary realm $primary_realm, does it exist?\n"
+    fi
+
     for i in $all_profiles
     do
       provider_id=$(echo -n "$db/${1}_${i}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
 
-      profile_out=$profile_out"EAPIdentityProvider ID: \"$provider_id\" for profile $i\n"
+      profile_out=$profile_out$(
+        echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i" ;
+
+        if [[ "$all_realms_plain" =~ "$provider_id" && "$provider_id" != "$primary_realm" ]]
+        then
+          for j in $all_realms_plain
+          do
+            if [[ "$j" == "$provider_id" ]]
+            then
+              echo "EAPIdentityProvider ID of profile $i exactly matches alias $j of primary realm $primary_realm\n"
+            fi
+          done
+
+        else
+         echo "EAPIdentityProvider should be set to one of values: $all_realms\n"
+        fi
+      )
     done
 
-    profile_out=$profile_out"cannot determine profile id for realm $1"
     return 1
   fi
 
@@ -193,7 +221,6 @@ function check_profile()
 # =============================================================================
 function get_profile_links()
 {
-  echo ""
   echo "links for all profiles related to realm $1 for further investigation:"
 
   for i in $all_profiles
@@ -213,7 +240,7 @@ function check_inst_state()
   if [[ $? -ne 0 ]]
   then
     echo "WARNING: something is wrong with the profile of $1"
-    echo "$profile_out"
+    echo -e "$profile_out"
     get_profile_links $1
     exit 1
   fi
@@ -241,13 +268,23 @@ function main()
 
   if [[ $? -eq 0 ]]     # inst found in CAT, do furher checks
   then
-    check_inst_state $1
-    if [[ -n "$primary_realm" ]]
+    check_inst_state $1     # causes premature exit on errors
+
+    if [[ -n "$linked" ]]   # $1 linked to primary realm
     then
-      echo "OK: assuming $1 is present eduroam CAT as $primary_realm"
-    else
+      if [[ -e "$primary_realm_profile" ]]    # config for primary realm is present
+      then
+        echo "OK: assuming $1 is present eduroam CAT as $primary_realm"
+      else      # realm alias is OK, but the config for primary realm is not present
+        echo "WARNING: assuming $1 is present eduroam CAT as $primary_realm, but $primary_realm is not present"
+        get_profile_links $1
+        exit 1
+      fi
+
+    else    # primary realm or alias present in CAT
       echo "OK: $1 present in eduroam CAT"
     fi
+
     verbose_output
   else                  # NOT found
     echo "CRITICAL: $1 not found in eduroam CAT"

@@ -278,6 +278,14 @@ function commit_changes()
 {
   cd $db
   git add "$2"
+
+  count=0
+  while [[ -e ".git/index.lock" && count -lt 30 ]]      # wait for other git processes to finish
+  do
+    sleep 1
+    ((count++))
+  done
+
   git commit -m "$1" --author "info@eduroam.cz <info@eduroam.cz>" &>/dev/null
   cd - &>/dev/null
 }

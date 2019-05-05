@@ -270,7 +270,7 @@ function commit_changes()
   cd $db
   git add "$2"
   git commit -m "$1" --author "info@eduroam.cz <info@eduroam.cz>" &>/dev/null
-  cd -
+  cd - &>/dev/null
 }
 # =============================================================================
 # main function

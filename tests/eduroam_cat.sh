@@ -39,6 +39,7 @@ function get_inst_name()
   # determine all the variables needed to further processing
 
   inst_name=$(jq '.inst_name[1].data' $mapping | tr -d '"')
+  instid=$(jq '.instid' $mapping | tr -d '"')       # inst indentifier as present in JSON files
   # we also need to determine "primary" realm here, assuming the $1 is only alias for the "primary" realm
   primary_realm=$(jq -c '.inst_realm' $mapping | cut -d "," -f1 | tr -d '["]')      # primary realm should always be the first one
   all_realms=$(jq -c '.inst_realm' "$mapping" | tr -d '[]')
@@ -73,13 +74,13 @@ function find_inst()
 # =============================================================================
 function download_profile()
 {
-  if [[ ! -e $db/${1}_${2}_eap_config.xml ]]      # no eap config exists, write it directly
+  if [[ ! -e $db/${instid}_${2}_eap_config.xml ]]      # no eap config exists, write it directly
   then
     # TODO - what happens if API is unavailable?
     # TODO this should be handled somehow
 
-    wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $db/${1}_${2}_eap_config.xml 2>/dev/null
-    commit_changes "added CAT profile for $3"  "${1}_${2}_eap_config.xml"
+    wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $db/${instid}_${2}_eap_config.xml 2>/dev/null
+    commit_changes "added CAT profile for $3"  "${instid}_${2}_eap_config.xml"
   else      # config exists, overwrite it only it if differs
     tmp=$(mktemp)
 
@@ -87,12 +88,12 @@ function download_profile()
     # TODO this should be handled somehow
     wget "${API_url}?action=downloadInstaller&profile=${2}&device=eap-config" -O $tmp 2>/dev/null
 
-    diff -q $tmp $db/${1}_${2}_eap_config.xml &>/dev/null     # diff files
+    diff -q $tmp $db/${instid}_${2}_eap_config.xml &>/dev/null     # diff files
 
     if [[ $? -ne 0 ]]
     then
-      cp $tmp $db/${1}_${2}_eap_config.xml    # copy tmp to dest
-      commit_changes "changed CAT profile for $3"  "${1}_${2}_eap_config.xml"
+      cp $tmp $db/${instid}_${2}_eap_config.xml    # copy tmp to dest
+      commit_changes "changed CAT profile for $3" "${instid}_${2}_eap_config.xml"
     fi
 
     rm $tmp
@@ -115,9 +116,11 @@ function get_profile()
   do
     download_profile $1 $i "$inst_name"
 
-    if [[ "$(grep "\"$1\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
+    if [[ "$(grep "\"$1\"" $db/${instid}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
     then
       profile_id=$i       # this is the correct profile
+      ln -sf "$db/${instid}_${i}_eap_config.xml" "$db/${1}_eap_config.xml"  # link realm profile to correct inst profile
+      commit_changes "CAT profile $i identity matches realm $1" "${1}_eap_config.xml"
     fi
   done
 
@@ -128,18 +131,18 @@ function get_profile()
     # iterate all profiles
     for i in $all_profiles
     do
-      if [[ "$(grep "\"$primary_realm\"" $db/${1}_${i}_eap_config.xml)" != "" ]]    # grep primary realm in config
+      if [[ "$(grep "\"$primary_realm\"" $db/${instid}_${i}_eap_config.xml)" != "" ]]    # grep primary realm in config
       then
         profile_id=$i       # this is the correct profile
         linked=true         # set linked variable for further processing
 
         # link alias to "primary" realm
-        if [[ -e "$db/${primary_realm}_${i}_eap_config.xml" ]]
+        if [[ -e "$db/${primary_realm}_eap_config.xml" ]]
         then
           # TODO - what if the file already exists and is not a link?
-          ln -sf "$db/${primary_realm}_${i}_eap_config.xml" "$db/${1}_${i}_eap_config.xml"
-          commit_changes "linked CAT profile for alias $1 to realm $primary_realm" "${1}_${i}_eap_config.xml"
-          primary_realm_profile="$db/${primary_realm}_${i}_eap_config.xml"
+          ln -sf "$db/${primary_realm}_eap_config.xml" "$db/${1}_eap_config.xml"
+          commit_changes "linked CAT profile for alias $1 to realm $primary_realm" "${1}_eap_config.xml"
+          primary_realm_profile="$db/${primary_realm}_eap_config.xml"
         fi
       fi
     done
@@ -184,7 +187,7 @@ function check_profile()
 
     for i in $all_profiles
     do
-      provider_id=$(echo -n "$db/${1}_${i}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
+      provider_id=$(echo -n "$db/${1}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); id = data.EAPIdentityProvider.get("ID"); print(id)')
 
       profile_out=$profile_out$(
         echo "EAPIdentityProvider ID: \"$provider_id\" for profile $i" ;
@@ -210,7 +213,7 @@ function check_profile()
 
   # check that cert is present in eap_config.xml
   # some EAP methods do not even require cert
-  out=$(echo -n "$db/${1}_${profile_id}_eap_config.xml" | $plugin_path/parse_eap_config.py)
+  out=$(echo -n "$db/${1}_eap_config.xml" | $plugin_path/parse_eap_config.py)
   ret=$?
 
   if [[ $ret -ne 0 ]]

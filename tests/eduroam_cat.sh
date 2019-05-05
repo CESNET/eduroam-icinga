@@ -15,7 +15,7 @@ function get_inst_name()
 {
   mapping=$(grep "\"$1\"" $config | cut -d ":" -f2 | tr -d '", ')
 
-  if [[ "$mapping" != "" && -e "$coverage_files/$mapping" ]]
+  if [[ "$mapping" != "" && -e "$coverage_files/$mapping.json" ]]
   then
     mapping="$coverage_files/$mapping.json"
 

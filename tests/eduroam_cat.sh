@@ -13,28 +13,36 @@
 # =============================================================================
 function get_inst_name()
 {
-  mapping=$(grep "\"$1\"" $config | cut -d ":" -f2 | tr -d '"' | tr -d ',' | tr -d ' ')
+  mapping=$(grep "\"$1\"" $config | cut -d ":" -f2 | tr -d '", ')
 
-  if [[ "$mapping" != "" && -e "$coverage_files/$mapping.json" ]]
+  if [[ "$mapping" != "" && -e "$coverage_files/$mapping" ]]
   then
-    inst_name=$(jq '.inst_name[1].data' "$coverage_files/$mapping.json" | tr -d '"')
-  else        # no mapping available or file does not exist
-    # realm alias does not have a direct mapping, check it
+    mapping="$coverage_files/$mapping.json"
 
-    mapping=$(grep -l "\"$1\"" ${coverage_files}*)  # ldap should always guarantee that any realm or alias is present only for no more than institution
+  else        # no mapping available or file does not exist
+    # realm alias does not have a direct mapping in config, check it directly in all coverage files
+
+    # ldap should always guarantee that any realm or alias is present only for no more than institution
     # so result of this should not me more than one line
+    mapping=$(grep -l "\"$1\"" $coverage_files/*)
 
     if [[ $? -eq 0 && $(echo "$mapping" | wc -l) -eq 1 ]]
     then
-      inst_name=$(jq '.inst_name[1].data' $mapping | tr -d '"')
-      # we also need to determine "primary" realm here, assuming the $1 is only alias for the "primary" realm
-      # TODO - is primary realm always the first?
-      primary_realm=$(jq -c '.inst_realm' $mapping | cut -d "," -f1 | tr -d '[' | tr -d '"' )
+      :       # nothing do do here really
+
     else
       echo "CRITICAL: $1 not found in eduroam CAT"        # not even possible to be in CAT
       exit 2
     fi
   fi
+
+  # determine all the variables needed to further processing
+
+  inst_name=$(jq '.inst_name[1].data' $mapping | tr -d '"')
+  # we also need to determine "primary" realm here, assuming the $1 is only alias for the "primary" realm
+  primary_realm=$(jq -c '.inst_realm' $mapping | cut -d "," -f1 | tr -d '["]')      # primary realm should always be the first one
+  all_realms=$(jq -c '.inst_realm' "$mapping" | tr -d '[]')
+  all_realms_plain=$(echo $all_realms | tr -d '"' | tr "," " ")   # more suitable for iteration
 }
 # =============================================================================
 # find institution by its name in eduroam CAT API

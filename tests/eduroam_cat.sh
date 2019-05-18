@@ -100,6 +100,29 @@ function download_profile()
   fi
 }
 # =============================================================================
+# count exactly matching profiles
+# params:
+# 1) realm
+# =============================================================================
+function count_profiles()
+{
+  matching_profiles=0
+  for i in $all_profiles
+  do
+    if [[ "$(grep "\"$1\"" $db/${instid}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
+    then
+      ((matching_profiles++))
+    fi
+  done
+
+  if [[ $matching_profiles -gt 1 ]]
+  then
+    return 1
+  else
+    return 0
+  fi
+}
+# =============================================================================
 # get institution's CAT profile
 # params:
 # 1) realm
@@ -111,11 +134,23 @@ function get_profile()
 
   all_profiles=$(curl "${API_url}?action=listProfiles&idp=$id" 2>/dev/null | jq '.data[].id' | tr -d '"')
 
-  # iterate all profiles
+  # download all profiles first
   for i in $all_profiles
   do
     download_profile $1 $i "$inst_name"
+  done
 
+  # count matching profiles - there should not be more than one exactly matching
+  count_profiles $1
+
+  if [[ $? -ne 0 ]]
+  then
+    return 0        # stop processing early, error handling is done elsewhere
+  fi
+
+  # determine the correct profile id
+  for i in $all_profiles
+  do
     if [[ "$(grep "\"$1\"" $db/${instid}_${i}_eap_config.xml)" != "" ]]    # grep "realm" in config
     then
       profile_id=$i       # this is the correct profile
@@ -177,8 +212,11 @@ function check_profile()
 
     # This part requires that all realm aliases would be explicitly set in CAT, otherwise it does not make sense
     # Is it even possible to set it in CAT or by hand?
-
-    if [[ "$1" == "$primary_realm" ]]
+    if [[ $matching_profiles -gt 1 ]]
+    then
+      profile_out="found multiple exactly matching profiles for $1\n"
+      return 1
+    elif [[ "$1" == "$primary_realm" ]]
     then
       profile_out="cannot determine profile id for primary realm $1, does it exist?\n"
     else

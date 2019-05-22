@@ -367,7 +367,7 @@ function main()
 config="/home/eduroamdb/eduroam-db/web/coverage/config/realm_to_inst.js"
 coverage_files="/home/eduroamdb/eduroam-db/web/coverage/coverage_files/"
 API_url="https://cat.eduroam.org/user/API.php"
-db="/var/lib/nagios/eap_cert_db"
+db="/var/lib/nagios/CAT_db"
 plugin_path="/usr/lib/nagios/plugins"
 # =============================================================================
 # global variables

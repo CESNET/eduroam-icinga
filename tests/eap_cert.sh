@@ -92,6 +92,8 @@ function run_rad_eap_test()
 # ==============================================================================
 function get_last_modify_time()
 {
+  cd $db
+
   count=$(git rev-list --count master "$1")
 
   if [[ $count -eq 1 ]]
@@ -100,6 +102,8 @@ function get_last_modify_time()
   fi
 
   last_modify_time=$(date -d $(git log -1 --format=%cd --date=iso-strict "$1") "+%s")       # get last modify time from git from speficic file
+
+  cd - &>/dev/null
 }
 # ==============================================================================
 # check changes in certificates based on git repository

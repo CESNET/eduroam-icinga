@@ -67,12 +67,12 @@ function run_rad_eap_test()
   if [[ ! -e "$db/${realm}_${hostname}_eap.pem" ]]    # eap cert does not exist
   then
     write_cert "$(cat $cert)"
-    commit_changes "added EAP certificate for $realm" "${realm}_${hostname}_eap.pem"
+    commit_changes "added EAP certificate for realm $realm for server $hostname" "${realm}_${hostname}_eap.pem"
 
   elif [[ "$(diff -q $cert $db/${realm}_${hostname}_eap.pem)" != "" ]]    # cert differs from current cert
   then
     write_cert "$(cat $cert)"
-    commit_changes "changed EAP certificate for $realm" "${realm}_${hostname}_eap.pem"
+    commit_changes "changed EAP certificate for realm $realm for server $hostname" "${realm}_${hostname}_eap.pem"
   fi
 
   rm $cert      # remove temp file
@@ -164,7 +164,7 @@ function parse_eap_config()
   if [[ ! -e "$db/${realm}_chain.pem" ]]
   then
     write_chain $realm
-    commit_changes "added certificate chain from CAT for $realm" "${realm}_chain.pem"
+    commit_changes "added certificate chain from CAT for realm $realm" "${realm}_chain.pem"
 
   elif [[ $(diff -q <(echo "-----BEGIN CERTIFICATE-----" ; echo $chain ; echo "-----END CERTIFICATE-----" ;) "$db/${realm}_chain.pem") != "" ]]
   then

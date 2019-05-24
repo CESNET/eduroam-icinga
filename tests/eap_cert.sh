@@ -136,7 +136,7 @@ function check_cert_changes()
 # ==============================================================================
 function write_cert()
 {
-  echo "$2" > "$db/${realm}_${hostname}_eap.pem"
+  echo "$1" > "$db/${realm}_${hostname}_eap.pem"
 }
 # ==============================================================================
 # write given chain to "db"

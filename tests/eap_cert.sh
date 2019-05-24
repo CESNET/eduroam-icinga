@@ -3,6 +3,7 @@
 # check eap certificate properties 
 # params:
 # 1) realm
+# 2) hostname
 # 
 # other params:
 # this program internally uses rad_eap_test to get remote RADIUS server certificate
@@ -15,6 +16,8 @@
 function main()
 {
   realm=$1                  # save realm
+  shift                     # shift params
+  hostname=$1               # save hostname
   shift                     # shift params
 
   # check if realm_eap_config.xml exists
@@ -61,20 +64,20 @@ function run_rad_eap_test()
   # this extract just the first certificate in standard format
   sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
 
-  if [[ ! -e "$db/${realm}_eap.pem" ]]    # eap cert does not exist
+  if [[ ! -e "$db/${realm}_${hostname}_eap.pem" ]]    # eap cert does not exist
   then
-    write_cert $realm "$(cat $cert)"
-    commit_changes "added EAP certificate for $realm" "${realm}_eap.pem"
+    write_cert "$(cat $cert)"
+    commit_changes "added EAP certificate for $realm" "${realm}_${hostname}_eap.pem"
 
-  elif [[ "$(diff -q $cert $db/${realm}_eap.pem)" != "" ]]    # cert differs from current cert
+  elif [[ "$(diff -q $cert $db/${realm}_${hostname}_eap.pem)" != "" ]]    # cert differs from current cert
   then
-    write_cert $realm "$(cat $cert)"
-    commit_changes "changed EAP certificate for $realm" "${realm}_eap.pem"
+    write_cert "$(cat $cert)"
+    commit_changes "changed EAP certificate for $realm" "${realm}_${hostname}_eap.pem"
   fi
 
   rm $cert      # remove temp file
 
-  check_cert_changes "$db/${realm}_eap.pem"     # check when the file was last added/changed
+  check_cert_changes "$db/${realm}_${hostname}_eap.pem"     # check when the file was last added/changed
 
   if [[ $? -ne 0 ]]
   then
@@ -82,7 +85,7 @@ function run_rad_eap_test()
     exit 2
   fi
 
-  analyze_cert $db/${realm}_eap.pem
+  analyze_cert $db/${realm}_${hostname}_eap.pem
 }
 # ==============================================================================
 # get last modification time of specified file from git repostitory in seconds
@@ -129,12 +132,11 @@ function check_cert_changes()
 # ==============================================================================
 # write given cert to "db"
 # params:
-# 1) realm
-# 2) cert content
+# 1) cert content
 # ==============================================================================
 function write_cert()
 {
-  echo "$2" > "$db/${1}_eap.pem"
+  echo "$2" > "$db/${realm}_${hostname}_eap.pem"
 }
 # ==============================================================================
 # write given chain to "db"

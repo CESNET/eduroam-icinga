@@ -93,6 +93,7 @@ function run_rad_eap_test()
 function get_last_modify_time()
 {
   cd $db
+  local filename=$(basename "$1")
 
   count=$(git rev-list --count master "$1")
 
@@ -101,7 +102,9 @@ function get_last_modify_time()
     return 0
   fi
 
-  last_modify_time=$(date -d $(git log -1 --format=%cd --date=iso-strict "$1") "+%s")       # get last modify time from git from speficic file
+  last_modify_time=$(git log -1 --format=%cd --date=iso-strict "$filename")        # get last modify time from git for file
+  echo "last_modify_time $last_modify_time"
+  last_modify_time=$(date -d $last_modify_time "+%s")                              # convert to seconds
 
   cd - &>/dev/null
 }

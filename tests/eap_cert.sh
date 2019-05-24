@@ -103,7 +103,6 @@ function get_last_modify_time()
   fi
 
   last_modify_time=$(git log -1 --format=%cd --date=iso-strict "$filename")        # get last modify time from git for file
-  echo "last_modify_time $last_modify_time"
   last_modify_time=$(date -d $last_modify_time "+%s")                              # convert to seconds
 
   cd - &>/dev/null

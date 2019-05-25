@@ -279,6 +279,38 @@ function get_profile_links()
   done
 }
 # =============================================================================
+# query eduroam CAT for realm state
+# =============================================================================
+function query_cat()
+{
+  : # TODO
+}
+# =============================================================================
+# check inst state in local data
+# =============================================================================
+function check_local_data()
+{
+  local status
+  status=$(grep "$inst_name" /var/lib/nagios/eduroam-icinga/tests/cat_data.txt)
+
+  if [[ "$status" != "" ]]      # inst present in data from CAT
+  then
+    status=$(echo "$status" | cut -d "," -f1 | tr -d " ")
+
+    if [[ $status == "" ]]
+    then
+      echo "no profiles configured in CAT"
+      exit 1
+    fi
+
+    if [[ $status == "C" ]]
+    then
+      echo "no installers available in CAT"
+      exit 1
+    fi
+  fi
+}
+# =============================================================================
 # check state of institution's profile in eduroam CAT
 # params:
 # 1) realm
@@ -294,17 +326,6 @@ function check_inst_state()
     get_profile_links $1
     exit 1
   fi
-
-
-  # TODO
-  # C = enough Configuration uploaded to create installers
-  # V = installers are visible on the download page
-  # (nothing) = not enough info in the system to create installers
-
-  # =>
-  # CV - (OK)
-  # C - no installers visible on download page (WARN)
-  # (nothing) = not enough info in the system to create installers (WARN)
 }
 # ======================================================================
 # commit all changes
@@ -358,6 +379,19 @@ function main()
 
     verbose_output
   else                  # NOT found
+    #query_cat $1
+    # TODO
+    # C = enough Configuration uploaded to create installers
+    # V = installers are visible on the download page
+    # (nothing) = not enough info in the system to create installers
+
+    # =>
+    # CV - (OK)
+    # C - no installers visible on download page (WARN)
+    # (nothing) = not enough info in the system to create installers (WARN)
+
+    check_local_data $1       # data stored locally until CAT api is available
+
     echo "CRITICAL: $1 not found in eduroam CAT"
     exit 2
   fi

@@ -366,6 +366,7 @@ function main()
     then
       if [[ -e "$primary_realm_profile" ]]    # config for primary realm is present
       then
+        # TODO - update home realm test via API
         echo "OK: assuming $1 is present eduroam CAT as $primary_realm"
       else      # realm alias is OK, but the config for primary realm is not present
         echo "WARNING: assuming $1 is present eduroam CAT as $primary_realm, but $primary_realm is not present"
@@ -374,6 +375,7 @@ function main()
       fi
 
     else    # primary realm or alias present in CAT
+      # TODO - update home realm test via API
       echo "OK: $1 present in eduroam CAT"
     fi
 

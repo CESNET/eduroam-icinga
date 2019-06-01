@@ -162,8 +162,12 @@ function parse_eap_config()
     return
   fi
 
-  # read server hostname from xml
-  hostname=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); print(data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.ServerID)')
+  # read all server hostnames from xml
+  hostname=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); [ print(i) for i in data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.ServerID ]' | awk '
+    BEGIN { cnt = 0 }
+    { a[cnt++] = $0 }       # save every row to array
+    END { for(i = 0; i < cnt - 1; i++) { printf("%s;", a[i]) } printf("%s", a[cnt - 1]); }      # print all but last in loop separated by ";" then print last
+    ')
 
   # no cert exists
   if [[ ! -e "$db/${realm}_chain.pem" ]]

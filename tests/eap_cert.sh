@@ -17,14 +17,14 @@ function main()
 {
   realm=$1                  # save realm
   shift                     # shift params
-  hostname=$1               # save hostname
+  radius_hostname=$1        # save hostname
   shift                     # shift params
 
   # check if realm_eap_config.xml exists
   if [[ -e "$cat_db/${realm}_eap_config.xml" ]]     # if it exists, then the institution is present in CAT
   then
     parse_eap_config
-    run_rad_eap_test "$@" -x "$hostname" -a "$db/${realm}_chain.pem"   # run rad_eap_test, check cert against CA and EAP server certificate subject
+    run_rad_eap_test "$@" -d "$eap_hostnames" -a "$db/${realm}_chain.pem"   # run rad_eap_test, check cert against CA and EAP server certificate subject
   else
     run_rad_eap_test "$@"     # run rad_eap_test
   fi
@@ -64,20 +64,20 @@ function run_rad_eap_test()
   # this extract just the first certificate in standard format
   sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
 
-  if [[ ! -e "$db/${realm}_${hostname}_eap.pem" ]]    # eap cert does not exist
+  if [[ ! -e "$db/${realm}_${radius_hostname}_eap.pem" ]]    # eap cert does not exist
   then
     write_cert "$(cat $cert)"
-    commit_changes "added EAP certificate for realm $realm for server $hostname" "${realm}_${hostname}_eap.pem"
+    commit_changes "added EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
 
-  elif [[ "$(diff -q $cert $db/${realm}_${hostname}_eap.pem)" != "" ]]    # cert differs from current cert
+  elif [[ "$(diff -q $cert $db/${realm}_${radius_hostname}_eap.pem)" != "" ]]    # cert differs from current cert
   then
     write_cert "$(cat $cert)"
-    commit_changes "changed EAP certificate for realm $realm for server $hostname" "${realm}_${hostname}_eap.pem"
+    commit_changes "changed EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
   fi
 
   rm $cert      # remove temp file
 
-  check_cert_changes "$db/${realm}_${hostname}_eap.pem"     # check when the file was last added/changed
+  check_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"     # check when the file was last added/changed
 
   if [[ $? -ne 0 ]]
   then
@@ -85,7 +85,7 @@ function run_rad_eap_test()
     exit 2
   fi
 
-  analyze_cert $db/${realm}_${hostname}_eap.pem
+  analyze_cert $db/${realm}_${radius_hostname}_eap.pem
 }
 # ==============================================================================
 # get last modification time of specified file from git repostitory in seconds
@@ -136,7 +136,7 @@ function check_cert_changes()
 # ==============================================================================
 function write_cert()
 {
-  echo "$1" > "$db/${realm}_${hostname}_eap.pem"
+  echo "$1" > "$db/${realm}_${radius_hostname}_eap.pem"
 }
 # ==============================================================================
 # write given chain to "db"
@@ -163,7 +163,7 @@ function parse_eap_config()
   fi
 
   # read all server hostnames from xml
-  hostname=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); [ print(i) for i in data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.ServerID ]' | awk '
+  eap_hostnames=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); [ print(i) for i in data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.ServerID ]' | awk '
     BEGIN { cnt = 0 }
     { a[cnt++] = $0 }       # save every row to array
     END { for(i = 0; i < cnt - 1; i++) { printf("%s;", a[i]) } printf("%s", a[cnt - 1]); }      # print all but last in loop separated by ";" then print last

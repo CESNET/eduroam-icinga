@@ -78,12 +78,12 @@ function run_rad_eap_test()
 
   cert=$(mktemp)
 
-  out=$($plugin_path/rad_eap_test "$@" -B $cert)   # dont need this output
+  eapol_test_out=$($plugin_path/rad_eap_test "$@" -B $cert -g)   # write cert to temp file & run in debug
   ret=$?
 
   if [[ $ret -ne 0 ]]       # if rad_eap_test returned any error, display it and exit immediately
   then
-    echo "$out"
+    echo "$eapol_test_out" |& head -1        # extract just the status output
     exit $ret
   fi
 

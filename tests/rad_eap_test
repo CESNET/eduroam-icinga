@@ -161,7 +161,14 @@ function process_cert()
 function print_out()
 {
   echo "$PROG_OUT" # print the output
-  verbose  # add extra verbose output if the user wants it, also process certs if wanted
+
+  if [[ $EXIT_CODE -eq $EXIT_UNKNOWN ]]
+  then
+    :       # do not add extra verbose output when exiting with unknown status
+  else
+    verbose  # add extra verbose output if the user wants it, also process certs if wanted
+  fi
+
   cleanup  # cleanup temp files
 }
 # ===========================================================================================
@@ -200,6 +207,10 @@ function process_auth_result()
     $RET_DOMAIN_MISMATCH)                   # domain mismatch
       EXIT_CODE=$EXIT_CRITICAL;;
 
+    $RET_EAPOL_TEST_FAILED)                 # eapol_test return code was nonzero
+      PROG_OUT="eapol_test returned error: $OUT"
+      EXIT_CODE=$EXIT_UNKNOWN;;
+
     *)                                      # other case is probably error
       PROG_OUT=$(echo "Probably configuration error, examine config in \"$MYTMPDIR\". Return code: " $RETURN_CODE)
       EXIT_CODE=$EXIT_UNKNOWN;;
@@ -210,7 +221,7 @@ function process_auth_result()
   exit $EXIT_CODE       # exit with $EXIT_CODE
 }
 # ===========================================================================================
-# run eapol_test
+# run eapol_test and try to authenticate using the specified configuration
 # ===========================================================================================
 function run_eapol_test()
 {
@@ -218,6 +229,7 @@ function run_eapol_test()
 
   # try to authenticate
   OUT=$($EAPOL_PROG -c "$CONF" -a "$IP" -p "$PORT" -s "$SECRET" -t "$TIMEOUT" -M "$MAC" -C "$CONN_INFO" $EXTRA_EAPOL_ARGS 2>&1)      # save output as a variable
+  EAPOL_PROG_RETCODE=$?     # save the return code in case some error happended
 
   END=$(date +%s.%N)        # end the "timer"
 }
@@ -232,18 +244,21 @@ function get_domain_mismatch_details()
 
     /TLS: Match domain against/,/TLS: Domain match/ {                   # everyting between the two strings
 
-      if (match($0, /^TLS: Match domain against.*/))                    # ignore lines starting with "TLS: Match domain against."
+      if(match($0, /^TLS: Match domain against.*/))                    # ignore lines starting with "TLS: Match domain against."
         next
 
-      if (match($0, /^TLS: None of the dNSName\(s\) matched.*/))        # ignore lines starting with "TLS: None of the dNSName(s) matched."
+      if(match($0, /^TLS: None of the dNSName\(s\) matched.*/))        # ignore lines starting with "TLS: None of the dNSName(s) matched."
         next
 
-      if(match($0, /^TLS: Certificate dNSName.*/) && count == 0) {      # first occurence of domain name, ignore it
+      if(match($0, /^TLS: No CommonName match found*/))                # ignore lines starting with "TLS: No CommonName match found"
+        next
+
+      if((match($0, /^TLS: Certificate dNSName.*/) && count == 0) || (match($0, /^TLS: Certificate commonName.*/) && count == 0)) {      # first occurence of domain name or common name, ignore it
         count++
         next
       }
 
-      if(match($0, /^TLS: Certificate dNSName.*/)) {                    # other dns names, print comma after every domain name
+      if(match($0, /^TLS: Certificate dNSName.*/) || match($0, /TLS: Certificate commonName.*/)) {                    # other dns names or common names, print comma after every domain name
         printf(", ")
         next
       }
@@ -258,9 +273,9 @@ function get_domain_mismatch_details()
   '
 }
 # ===========================================================================================
-# run eapol_test and try to authenticate using the specified configuration
+# determine the return code of this program based on processing the eapol_test output
 # ===========================================================================================
-function authenticate()
+function determine_return_code()
 {
   # constants which define return codes based on eapol_test output
   local eap_fail1='CTRL-EVENT-EAP-FAILURE EAP authentication failed'
@@ -276,6 +291,13 @@ function authenticate()
   local domain_mismatch="err='Domain mismatch'"
 
   run_eapol_test
+
+  # check if there was an error launching eapol_test
+  if [[ $EAPOL_PROG_RETCODE -ne 0 ]]
+  then
+    RETURN_CODE=$RET_EAPOL_TEST_FAILED               # eapol_test failed to execute
+    STATUS_CODE="$OUT"
+  fi
 
   # determine the RETURN_CODE based on specific constants used in eapol_test output
   if [[ "$OUT" =~ $succ1 || "$OUT" =~ $succ2 ]]
@@ -805,6 +827,7 @@ function default_config()
   RET_CERT_CA_MISMATCH=7
   RET_CERT_EXPIRED=8
   RET_DOMAIN_MISMATCH=9
+  RET_EAPOL_TEST_FAILED=10
 
 
   # exit codes
@@ -831,7 +854,7 @@ function main()
   fi
 
   generate_config
-  authenticate
+  determine_return_code
   process_auth_result
 }
 # ===========================================================================================

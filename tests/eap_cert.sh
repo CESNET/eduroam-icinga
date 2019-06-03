@@ -30,6 +30,33 @@ function main()
   fi
 }
 # ==============================================================================
+# analyze eapol_test output
+# ==============================================================================
+function analyze_output()
+{
+  local proposed
+  local unsafe=false
+  declare -A unsafe_methods
+  unsafe_methods["4"]="MD5-Challenge"
+  unsafe_methods["17"]="Cisco-LEAP"
+
+  proposed=$(echo "$eapol_test_out" | grep "CTRL-EVENT-EAP-PROPOSED-METHOD")
+
+  for i in ${!unsafe_methods[@]}
+  do
+    if [[ $(echo "$proposed" | grep "CTRL-EVENT-EAP-PROPOSED-METHOD vendor=0 method=$i") != "" ]]
+    then
+      echo "WARNING: server is offering unsafe method ${unsafe_methods[$i]}"
+      unsafe=true
+    fi
+  done
+
+  if [[ $unsafe == "true" ]]
+  then
+    exit 1
+  fi
+}
+# ==============================================================================
 # analyze server cert
 # ==============================================================================
 function analyze_cert()
@@ -85,6 +112,7 @@ function run_rad_eap_test()
     exit 2
   fi
 
+  analyze_output
   analyze_cert $db/${realm}_${radius_hostname}_eap.pem
 }
 # ==============================================================================

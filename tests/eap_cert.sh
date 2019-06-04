@@ -108,12 +108,34 @@ function run_rad_eap_test()
 
   if [[ $? -ne 0 ]]
   then
-    echo "WARNING: RADIUS server EAP certificate changed recently"
-    exit 2
+    echo "WARNING: RADIUS server EAP certificate changed recently"      # TODO - show the earlier and current cert to the user?
+    show_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"
+    exit 1
   fi
 
   analyze_output
   analyze_cert $db/${realm}_${radius_hostname}_eap.pem
+}
+# ==============================================================================
+# show details about certificate changes
+# params:
+# 1) file
+# ==============================================================================
+function show_cert_changes()
+{
+  cd $db
+  local filename=$(basename "$1")
+
+  echo ""
+  echo "current certificate:"
+  cat "$filename"          # just show the file contents
+
+  echo ""
+  echo "earlier certificate:"
+  rev=$(git log --pretty=oneline "$filename" | head -2 | tail -1 | cut -d ' ' -f1)      # get second newest commit
+  git show ${rev}:"$filename"                                                           # get file contents at specific commit
+
+  cd - &>/dev/null
 }
 # ==============================================================================
 # get last modification time of specified file from git repostitory in seconds
@@ -214,7 +236,8 @@ function parse_eap_config()
   if [[ $? -ne 0 ]]
   then
     echo "WARNING: CA certificate from CAT changed recently"
-    exit 2
+    show_cert_changes "$db/${realm}_chain.pem"
+    exit 1
   fi
 }
 # ======================================================================

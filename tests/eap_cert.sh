@@ -108,7 +108,7 @@ function run_rad_eap_test()
 
   if [[ $? -ne 0 ]]
   then
-    echo "WARNING: RADIUS server EAP certificate changed recently"      # TODO - show the earlier and current cert to the user?
+    echo "WARNING: RADIUS server EAP certificate changed recently"
     show_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"
     exit 1
   fi

@@ -73,7 +73,6 @@ function analyze_cert()
 # ==============================================================================
 function run_rad_eap_test()
 {
-  local out
   local ret
 
   cert=$(mktemp)

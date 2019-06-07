@@ -219,22 +219,37 @@ function write_cert()
 # ==============================================================================
 function write_chain()
 {
-  echo "-----BEGIN CERTIFICATE-----" > "$db/${1}_chain.pem"
-  echo $chain >> "$db/${1}_chain.pem"
-  echo "-----END CERTIFICATE-----" >> "$db/${1}_chain.pem"
+  echo "$chain" > "$db/${1}_chain.pem"
 }
 # ==============================================================================
 # parse eap config
 # ==============================================================================
 function parse_eap_config()
 {
+  local certs
+  # TODO - this should be done specifically for method 25
+  # this just takes the first method and extracts all the certs
+
   # read CA chain from xml
-  chain=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); print(data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.CA)' 2>&1)
+  chain=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); [ print(i) for i in data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.CA ]' 2>&1)
 
   if [[ $? -ne 0 ]]         # no chain was extracted, probably incomplete profile
   then
     return
   fi
+
+  # transform chain to pem format
+  while read line
+  do
+    if [[ -n "$certs" ]]
+    then
+      certs=$(echo -e "$certs\n-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----")
+    else
+      certs=$(echo -e "-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----")
+    fi
+  done <<< "$chain"
+
+  chain=$certs
 
   # read all server hostnames from xml
   eap_hostnames=$(echo -n "$cat_db/${realm}_eap_config.xml" | python3 -c 'import sys; import lxml.objectify; f = sys.stdin.read(); data = lxml.objectify.parse(f).getroot(); [ print(i) for i in data.EAPIdentityProvider.AuthenticationMethods.AuthenticationMethod.ServerSideCredential.ServerID ]' | awk '
@@ -249,7 +264,7 @@ function parse_eap_config()
     write_chain $realm
     commit_changes "added certificate chain from CAT for realm $realm" "${realm}_chain.pem"
 
-  elif [[ $(diff -q <(echo "-----BEGIN CERTIFICATE-----" ; echo $chain ; echo "-----END CERTIFICATE-----" ;) "$db/${realm}_chain.pem") != "" ]]
+  elif [[ $(diff -q <(echo "$chain") "$db/${realm}_chain.pem") != "" ]]
   then
     write_chain $realm
     commit_changes "changed certificate chain from CAT for $realm" "${realm}_chain.pem"

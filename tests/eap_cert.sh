@@ -84,6 +84,27 @@ function run_rad_eap_test()
   eapol_test_out=$($plugin_path/rad_eap_test "$@" -B $cert -g)   # write cert to temp file & run in debug
   ret=$?
 
+  # ==============================================================================
+  # eapol_test extracts certs in strange format, we want to use the standard format
+  # this extract just the first certificate in standard format
+  sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
+
+  if [[ ! -e "$db/${realm}_${radius_hostname}_eap.pem" ]]    # eap cert does not exist
+  then
+    write_cert "$(cat $cert)"
+    commit_changes "added EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
+
+  elif [[ "$(diff -q $cert $db/${realm}_${radius_hostname}_eap.pem)" != "" ]]    # cert differs from current cert
+  then
+    write_cert "$(cat $cert)"
+    commit_changes "changed EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
+  fi
+
+  rm $cert      # remove temp file
+
+  # ==============================================================================
+
+  # check eapol_test return code and output
   if [[ $ret -ne 0 ]]       # if rad_eap_test returned any error, display it and exit immediately
   then
 
@@ -106,23 +127,6 @@ function run_rad_eap_test()
     echo -e "$out"
     exit $ret
   fi
-
-  # eapol_test extracts certs in strange format, we want to use the standard format
-  # this extract just the first certificate in standard format
-  sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
-
-  if [[ ! -e "$db/${realm}_${radius_hostname}_eap.pem" ]]    # eap cert does not exist
-  then
-    write_cert "$(cat $cert)"
-    commit_changes "added EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
-
-  elif [[ "$(diff -q $cert $db/${realm}_${radius_hostname}_eap.pem)" != "" ]]    # cert differs from current cert
-  then
-    write_cert "$(cat $cert)"
-    commit_changes "changed EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
-  fi
-
-  rm $cert      # remove temp file
 
   check_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"     # check when the file was last added/changed
 

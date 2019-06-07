@@ -74,6 +74,10 @@ function analyze_cert()
 function run_rad_eap_test()
 {
   local ret
+  local out
+  local linenum=1
+  local first_line
+  local second_line
 
   cert=$(mktemp)
 
@@ -82,7 +86,24 @@ function run_rad_eap_test()
 
   if [[ $ret -ne 0 ]]       # if rad_eap_test returned any error, display it and exit immediately
   then
-    echo "$eapol_test_out" |& head -1        # extract just the status output
+
+    # extract just the status output with potential errors
+    # read two lines at once in one iteration, increment linenum by 1 in next iteration
+    while :
+    do
+      first_line=$(sed -n "$linenum,${linenum}p; $((linenum + 1))q" <<< "$eapol_test_out")
+      ((linenum++))
+      second_line=$(sed -n "$linenum,${linenum}p; $((linenum + 1))q" <<< "$eapol_test_out")
+
+      if [[ $first_line =~ ^$ && "$second_line" =~ ^"Reading configuration file".* ]]
+      then
+        break
+      fi
+
+      out="${out}\n${first_line}"
+    done
+
+    echo -e "$out"
     exit $ret
   fi
 

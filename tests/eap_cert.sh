@@ -172,7 +172,7 @@ function get_last_modify_time()
   cd $db
   local filename=$(basename "$1")
 
-  count=$(git rev-list --count master "$1")
+  count=$(git rev-list --count master "$filename")
 
   if [[ $count -eq 1 ]]
   then

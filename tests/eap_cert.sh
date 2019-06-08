@@ -176,6 +176,7 @@ function get_last_modify_time()
 
   if [[ $count -eq 1 ]]
   then
+    cd - &>/dev/null        # restore original directory
     return 0
   fi
 

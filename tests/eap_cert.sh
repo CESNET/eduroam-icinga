@@ -19,15 +19,18 @@ function main()
   shift                     # shift params
   radius_hostname=$1        # save hostname
   shift                     # shift params
+  local additional_params
 
   # check if realm_eap_config.xml exists
   if [[ -e "$cat_db/${realm}_eap_config.xml" ]]     # if it exists, then the institution is present in CAT
   then
     parse_eap_config
-    run_rad_eap_test "$@" -d "$eap_hostnames" -a "$db/${realm}_chain.pem"   # run rad_eap_test, check cert against CA and EAP server certificate subject
-  else
-    run_rad_eap_test "$@"     # run rad_eap_test
+    if [[ -n "$eap_hostnames" && -e "$db/${realm}_chain.pem" ]]
+    then
+      additional_params="-d $eap_hostnames -a $db/${realm}_chain.pem"
+    fi
   fi
+  run_rad_eap_test "$@" $additional_params    # run rad_eap_test
 }
 # ==============================================================================
 # analyze eapol_test output
@@ -57,16 +60,108 @@ function analyze_output()
   fi
 }
 # ==============================================================================
+# count number of certificates in speficied file
+# params:
+# 1) certificate file
+# ==============================================================================
+function count_certs()
+{
+  local count
+  local certs
+
+  count=$(cat "$1" | grep -- '-----BEGIN CERTIFICATE-----' | wc -l)
+
+  if [[ $count -gt 1 ]]
+  then
+    echo "WARNING: server is sending unnecessary certificates"
+    echo ""
+
+    # one cert on each line
+    certs=$(cat "$1" | tr -d "\n" |\
+            sed 's/^-----BEGIN CERTIFICATE-----//g; s/-----END CERTIFICATE----------BEGIN CERTIFICATE-----/\n/g; s/-----END CERTIFICATE-----$//g')
+
+    while read line
+    do
+      ( echo -e "-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----" ) | openssl x509 -nameopt utf8 -noout -subject
+    done <<< "$certs"
+
+    exit 1
+  fi
+}
+# ==============================================================================
 # analyze server cert
+# params:
+# 1) certificate file
 # ==============================================================================
 function analyze_cert()
 {
-  #do regular cert checks
-  cert_info=$(openssl x509 -nameopt utf8 -in $1 -text -noout)
-  echo "$cert_info"
+  # do regular cert checks
+  count_certs "$1"
+
+  #cert_info=$(openssl x509 -nameopt utf8 -in $1 -text -noout)
+  #echo "$cert_info"
+}
+# ==============================================================================
+# eapol_test extracts certs in strange format, we want to use the standard format
+# this extract just the first certificate in standard format
+#
+# for some reason (maybe a bug?) eapol_test can write some of the server certs in
+# the specified file duplicated. To overcome this, we need to extract just unique certs
+#
+# When using cert validation against CA in eapol_test, the CA cert is also written
+# to eapol_test output, we also want to remove this cert.
+# But the server may also be sending part of the chain along with it's cert that is validated
+# against specified CA. When this happens, there is no real way to tell what the server sent and
+# what was used to as CA from file contents. This SHOULD be fixed in eapol_test.
+# To overcome this problem, we will try to extract recieved cert info directly from eapol_test output.
+# ==============================================================================
+function save_cert()
+{
+  #local tmp
+  #local certs
+
+  #sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
+
+  ## one unique cert per line, without "header" and "footer"
+  #tmp=$(cat $cert | tr -d "\n" | sed 's/^-----BEGIN CERTIFICATE-----//g; s/-----END CERTIFICATE----------BEGIN CERTIFICATE-----/\n/g; s/-----END CERTIFICATE-----$//g' | sort | uniq)
 
 
-  # TODO
+  ## TODO - this does not make really sense - if the server is sending the chain together with it's cert, we strip it here !!
+
+
+  ## remove CA certs if present
+  ## diff list of unique certs with raw CA chain, remove common lines
+  #tmp=$(diff --suppress-common-lines <(echo "$tmp") <(echo "$raw_chain") | grep '<' | awk '{ print $2 }')
+  #
+  ## restore original form
+  #for i in $tmp
+  #do
+  #  if [[ -n "$certs" ]]
+  #  then
+  #    certs="$certs\n-----BEGIN CERTIFICATE-----\n$i\n-----END CERTIFICATE-----"
+  #  else
+  #    certs="-----BEGIN CERTIFICATE-----\n$i\n-----END CERTIFICATE-----"
+  #  fi
+  #done
+
+  ## TODO
+
+
+
+
+  # write certs to "db"
+  if [[ ! -e "$db/${realm}_${radius_hostname}_eap.pem" ]]    # eap cert does not exist
+  then
+    write_cert "$(cat $cert)"
+    commit_changes "added EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
+
+  elif [[ "$(diff -q $cert $db/${realm}_${radius_hostname}_eap.pem)" != "" ]]    # cert differs from current cert
+  then
+    write_cert "$(cat $cert)"
+    commit_changes "changed EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
+  fi
+
+  rm $cert      # remove temp file
 }
 # ==============================================================================
 # run rad_eap_test
@@ -81,26 +176,11 @@ function run_rad_eap_test()
 
   cert=$(mktemp)
 
-  eapol_test_out=$($plugin_path/rad_eap_test "$@" -B $cert -g)   # write cert to temp file & run in debug
+  #eapol_test_out=$($plugin_path/rad_eap_test -B $cert -g "$@" 2>&1)   # write cert to temp file & run in debug
+  eapol_test_out=$(/tmp/rad_eap_test -B $cert -g "$@"  2>&1)   # write cert to temp file & run in debug
   ret=$?
 
-  # ==============================================================================
-  # eapol_test extracts certs in strange format, we want to use the standard format
-  # this extract just the first certificate in standard format
-  sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
-
-  if [[ ! -e "$db/${realm}_${radius_hostname}_eap.pem" ]]    # eap cert does not exist
-  then
-    write_cert "$(cat $cert)"
-    commit_changes "added EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
-
-  elif [[ "$(diff -q $cert $db/${realm}_${radius_hostname}_eap.pem)" != "" ]]    # cert differs from current cert
-  then
-    write_cert "$(cat $cert)"
-    commit_changes "changed EAP certificate for realm $realm for server $radius_hostname" "${realm}_${radius_hostname}_eap.pem"
-  fi
-
-  rm $cert      # remove temp file
+  save_cert
 
   # ==============================================================================
 
@@ -211,7 +291,7 @@ function check_cert_changes()
 # ==============================================================================
 function write_cert()
 {
-  echo "$1" > "$db/${realm}_${radius_hostname}_eap.pem"
+  echo -e "$1" > "$db/${realm}_${radius_hostname}_eap.pem"
 }
 # ==============================================================================
 # write given chain to "db"

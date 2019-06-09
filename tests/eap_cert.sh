@@ -102,53 +102,10 @@ function analyze_cert()
   #echo "$cert_info"
 }
 # ==============================================================================
-# eapol_test extracts certs in strange format, we want to use the standard format
-# this extract just the first certificate in standard format
-#
-# for some reason (maybe a bug?) eapol_test can write some of the server certs in
-# the specified file duplicated. To overcome this, we need to extract just unique certs
-#
-# When using cert validation against CA in eapol_test, the CA cert is also written
-# to eapol_test output, we also want to remove this cert.
-# But the server may also be sending part of the chain along with it's cert that is validated
-# against specified CA. When this happens, there is no real way to tell what the server sent and
-# what was used to as CA from file contents. This SHOULD be fixed in eapol_test.
-# To overcome this problem, we will try to extract recieved cert info directly from eapol_test output.
+# save the certificate to local git "database"
 # ==============================================================================
 function save_cert()
 {
-  #local tmp
-  #local certs
-
-  #sed -n -i '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' $cert
-
-  ## one unique cert per line, without "header" and "footer"
-  #tmp=$(cat $cert | tr -d "\n" | sed 's/^-----BEGIN CERTIFICATE-----//g; s/-----END CERTIFICATE----------BEGIN CERTIFICATE-----/\n/g; s/-----END CERTIFICATE-----$//g' | sort | uniq)
-
-
-  ## TODO - this does not make really sense - if the server is sending the chain together with it's cert, we strip it here !!
-
-
-  ## remove CA certs if present
-  ## diff list of unique certs with raw CA chain, remove common lines
-  #tmp=$(diff --suppress-common-lines <(echo "$tmp") <(echo "$raw_chain") | grep '<' | awk '{ print $2 }')
-  #
-  ## restore original form
-  #for i in $tmp
-  #do
-  #  if [[ -n "$certs" ]]
-  #  then
-  #    certs="$certs\n-----BEGIN CERTIFICATE-----\n$i\n-----END CERTIFICATE-----"
-  #  else
-  #    certs="-----BEGIN CERTIFICATE-----\n$i\n-----END CERTIFICATE-----"
-  #  fi
-  #done
-
-  ## TODO
-
-
-
-
   # write certs to "db"
   if [[ ! -e "$db/${realm}_${radius_hostname}_eap.pem" ]]    # eap cert does not exist
   then

@@ -98,8 +98,12 @@ function analyze_cert()
   # do regular cert checks
   count_certs "$1"
 
-  #cert_info=$(openssl x509 -nameopt utf8 -in $1 -text -noout)
-  #echo "$cert_info"
+  # TODO
+  # further checks from CAT?
+
+  # no other error detected
+  echo "OK: no problems with server certificate detected"
+  exit 0
 }
 # ==============================================================================
 # save the certificate to local git "database"

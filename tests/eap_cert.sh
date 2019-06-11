@@ -137,8 +137,7 @@ function run_rad_eap_test()
 
   cert=$(mktemp)
 
-  #eapol_test_out=$($plugin_path/rad_eap_test -B $cert -g "$@" 2>&1)   # write cert to temp file & run in debug
-  eapol_test_out=$(/tmp/rad_eap_test -B $cert -g "$@"  2>&1)   # write cert to temp file & run in debug
+  eapol_test_out=$($plugin_path/rad_eap_test -B $cert -g "$@" 2>&1)   # write cert to temp file & run in debug
   ret=$?
 
   save_cert

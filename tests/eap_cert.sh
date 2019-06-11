@@ -85,7 +85,7 @@ function count_certs()
       ( echo -e "-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----" ) | openssl x509 -nameopt utf8 -noout -subject
     done <<< "$certs"
 
-    exit 1
+    exit 0
   fi
 }
 # ==============================================================================

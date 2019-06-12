@@ -60,35 +60,6 @@ function analyze_output()
   fi
 }
 # ==============================================================================
-# count number of certificates in speficied file
-# params:
-# 1) certificate file
-# ==============================================================================
-function count_certs()
-{
-  local count
-  local certs
-
-  count=$(cat "$1" | grep -- '-----BEGIN CERTIFICATE-----' | wc -l)
-
-  if [[ $count -gt 1 ]]
-  then
-    echo "WARNING: server is sending unnecessary certificates"
-    echo ""
-
-    # one cert on each line
-    certs=$(cat "$1" | tr -d "\n" |\
-            sed 's/^-----BEGIN CERTIFICATE-----//g; s/-----END CERTIFICATE----------BEGIN CERTIFICATE-----/\n/g; s/-----END CERTIFICATE-----$//g')
-
-    while read line
-    do
-      ( echo -e "-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----" ) | openssl x509 -nameopt utf8 -noout -subject
-    done <<< "$certs"
-
-    exit 0
-  fi
-}
-# ==============================================================================
 # analyze server cert
 # params:
 # 1) certificate file
@@ -96,7 +67,6 @@ function count_certs()
 function analyze_cert()
 {
   # do regular cert checks
-  count_certs "$1"
 
   # TODO
   # further checks from CAT?

@@ -60,6 +60,31 @@ function analyze_output()
   fi
 }
 # ==============================================================================
+# check if the server is sending root certificate
+# ==============================================================================
+function check_root()
+{
+  local certs
+  local subj
+  local issuer
+
+  # one cert on each line
+  certs=$(cat "$1" | tr -d "\n" |\
+          sed 's/^-----BEGIN CERTIFICATE-----//g; s/-----END CERTIFICATE----------BEGIN CERTIFICATE-----/\n/g; s/-----END CERTIFICATE-----$//g')
+
+  while read line
+  do
+    subj=$(( echo -e "-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----" ) | openssl x509 -nameopt utf8 -noout -subject)
+    issuer=$(( echo -e "-----BEGIN CERTIFICATE-----\n$line\n-----END CERTIFICATE-----" ) | openssl x509 -nameopt utf8 -noout -issuer)
+
+    if [[ "${subj##subject=}" == "${issuer##issuer=}" ]]
+    then
+      echo "WARNING: server is sending root certificate $subj"
+      exit 1
+    fi
+  done <<< "$certs"
+}
+# ==============================================================================
 # analyze server cert
 # params:
 # 1) certificate file
@@ -67,6 +92,7 @@ function analyze_output()
 function analyze_cert()
 {
   # do regular cert checks
+  check_root "$1"
 
   # TODO
   # further checks from CAT?

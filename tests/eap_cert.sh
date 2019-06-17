@@ -136,7 +136,10 @@ function run_rad_eap_test()
   eapol_test_out=$($plugin_path/rad_eap_test -B $cert -g "$@" 2>&1)   # write cert to temp file & run in debug
   ret=$?
 
-  save_cert
+  if [[ -s "$cert" ]]       # save cert only if it was written to file by eapol_test
+  then
+    save_cert
+  fi
 
   # ==============================================================================
 

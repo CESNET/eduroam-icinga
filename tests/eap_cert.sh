@@ -97,6 +97,13 @@ function analyze_cert()
   # TODO
   # further checks from CAT?
 
+  # exit with warning because eap cert changed recently
+  if [[ -n "$exit_status" ]]
+  then
+    echo "$exit_out"
+    exit $exit_status
+  fi
+
   # no other error detected
   echo "OK: no problems with server certificate detected"
   exit 0
@@ -171,13 +178,31 @@ function run_rad_eap_test()
 
   if [[ $? -ne 0 ]]
   then
-    echo "WARNING: RADIUS server EAP certificate changed recently"
-    show_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"
-    exit 1
+    exit_status=1
+    exit_out=$(echo "WARNING: RADIUS server EAP certificate changed recently"
+    show_cert_changes "$db/${realm}_${radius_hostname}_eap.pem")
   fi
 
   analyze_output
   analyze_cert $db/${realm}_${radius_hostname}_eap.pem
+}
+# ==============================================================================
+# show details for all certs in the speficied file
+# params:
+# 1) contents of the certificate file
+# ==============================================================================
+function show_cert_details()
+{
+  local certs
+  if [[ -n "$1" ]]
+  then
+    certs=$(echo "$1" | tr -d "\n" | sed 's/^-----BEGIN CERTIFICATE-----//g; s/-----END CERTIFICATE----------BEGIN CERTIFICATE-----/\n/g; s/-----END CERTIFICATE-----$//g')
+
+    while read line
+    do
+      ( echo "-----BEGIN CERTIFICATE-----" ; echo "$line" ; echo "-----END CERTIFICATE-----" ; ) | openssl x509 -subject -issuer -startdate -enddate
+    done <<< "$certs"
+  fi
 }
 # ==============================================================================
 # show details about certificate changes
@@ -191,12 +216,12 @@ function show_cert_changes()
 
   echo ""
   echo "current certificate:"
-  cat "$filename"          # just show the file contents
+  show_cert_details "$(cat $1)"
 
   echo ""
   echo "earlier certificate:"
   rev=$(git log --pretty=oneline "$filename" | head -2 | tail -1 | cut -d ' ' -f1)      # get second newest commit
-  git show ${rev}:"$filename"                                                           # get file contents at specific commit
+  show_cert_details "$(git show ${rev}:"$filename")"                                    # get file contents at specific commit
 
   cd - &>/dev/null
 }

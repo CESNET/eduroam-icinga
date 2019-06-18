@@ -97,16 +97,6 @@ function analyze_cert()
   # TODO
   # further checks from CAT?
 
-  # exit with warning because eap cert changed recently
-  if [[ -n "$exit_status" ]]
-  then
-    echo "$exit_out"
-    exit $exit_status
-  fi
-
-  # no other error detected
-  echo "OK: no problems with server certificate detected"
-  exit 0
 }
 # ==============================================================================
 # save the certificate to local git "database"
@@ -126,6 +116,27 @@ function save_cert()
   fi
 
   rm $cert      # remove temp file
+}
+# ==============================================================================
+# perfrom cert checks
+# ==============================================================================
+function cert_checks()
+{
+  analyze_output
+  analyze_cert $db/${realm}_${radius_hostname}_eap.pem
+
+  check_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"     # check when the file was last added/changed
+
+  if [[ $? -ne 0 ]]
+  then
+    echo "WARNING: RADIUS server EAP certificate changed recently"
+    show_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"
+    exit 1
+  fi
+
+  # no other error detected
+  echo "OK: no problems with server certificate detected"
+  exit 0
 }
 # ==============================================================================
 # run rad_eap_test
@@ -174,17 +185,7 @@ function run_rad_eap_test()
     exit $ret
   fi
 
-  check_cert_changes "$db/${realm}_${radius_hostname}_eap.pem"     # check when the file was last added/changed
-
-  if [[ $? -ne 0 ]]
-  then
-    exit_status=1
-    exit_out=$(echo "WARNING: RADIUS server EAP certificate changed recently"
-    show_cert_changes "$db/${realm}_${radius_hostname}_eap.pem")
-  fi
-
-  analyze_output
-  analyze_cert $db/${realm}_${radius_hostname}_eap.pem
+  cert_checks
 }
 # ==============================================================================
 # show details for all certs in the speficied file

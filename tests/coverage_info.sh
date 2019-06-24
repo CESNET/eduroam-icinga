@@ -30,6 +30,7 @@ function main()
   if [[ $? -ne 0 ]]
   then
     echo "CRITICAL: Nespravne informacni URL $bad_url"
+    echo "opravte URL na adrese https://pokryti.eduroam.cz/$1"
     exit 2
   fi
 

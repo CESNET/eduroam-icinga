@@ -201,7 +201,7 @@ function show_cert_details()
 
     while read line
     do
-      ( echo "-----BEGIN CERTIFICATE-----" ; echo "$line" ; echo "-----END CERTIFICATE-----" ; ) | openssl x509 -subject -issuer -startdate -enddate
+      ( echo "-----BEGIN CERTIFICATE-----" ; echo "$line" ; echo "-----END CERTIFICATE-----" ; ) | openssl x509 -nameopt utf8 -subject -issuer -startdate -enddate
     done <<< "$certs"
   fi
 }

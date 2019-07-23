@@ -258,7 +258,7 @@ function get_last_modify_time()
 function check_cert_changes()
 {
   local curr_date=$(date "+%s")
-  local time_since_last_change=259200       # 3 days in seconds
+  local time_since_last_change=86400       # 1 day in seconds
 
   get_last_modify_time "$1"
 

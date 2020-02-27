@@ -92,6 +92,8 @@ It checks all the ping services using `icingacli`.
 If there are some services which report the error message mentioned above,
 the script notifies administrators about this.
 
+DNS failure checking is currently disabled due to change ping parameters - IP address is used instead of DNS hostname.
+
 ### import source for realms
 
 This import source defines source data for synchronization of hostgroups and servicegroups.
@@ -356,6 +358,18 @@ template Service "eduroam cat template" {
 }
 ```
 
+### EAP-CERTIFICATE
+```
+template Service "eap certificate template" {
+    check_command = "check_eap_cert"
+    max_check_attempts = "3"
+    check_interval = 2h
+    retry_interval = 2h
+    command_endpoint = null
+}
+```
+
+
 ## Service groups
 
 Most of the service groups are defined in [groups.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/groups.conf).
@@ -482,6 +496,23 @@ object CheckCommand "check_concurrent" {
 }
 ```
 
+### COVERAGE-INFO
+```
+object CheckCommand "check_coverage_info" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/coverage_info.sh" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$service.vars.realm$"
+        }
+    }
+}
+```
+
+
 ### CALLING-STATION-ID
 ```
 object CheckCommand "check_csi" {
@@ -571,6 +602,90 @@ object CheckCommand "check_cve_2017_9148" {
     }
 }
 ```
+
+### EAP-CERTIFICATE
+```
+object CheckCommand "check_eap_cert" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/eap_cert.sh" ]
+    timeout = 1m
+    arguments += {
+        "(no key)" = {
+            order = -5
+            required = true
+            skip_key = true
+            value = "$service.vars.mon_realm$"
+        }
+        "(no key.2)" = {
+            order = -4
+            required = true
+            skip_key = true
+            value = "$host.name$"
+        }
+        "-H" = {
+            required = true
+            value = "$host.vars.radius_ip$"
+        }
+        "-M" = {
+            required = true
+            value = "$service.vars.mac_address$"
+        }
+        "-P" = {
+            required = true
+            value = "1812"
+        }
+        "-S" = {
+            required = true
+            value = "$host.vars.mon_radius_secret$"
+        }
+        "-X" = "14"
+        "-e" = {
+            required = true
+            value = "PEAP"
+        }
+        "-f" = {
+            set_if = "$service.vars.require_fragmented$"
+        }
+        "-i" = {
+            required = false
+            value = "$service.vars.info$"
+        }
+        "-m" = {
+            required = true
+            value = "WPA-EAP"
+        }
+        "-p" = {
+            required = true
+            value = "$service.vars.testing_password$"
+        }
+        "-t" = {
+            required = true
+            value = "50"
+        }
+        "-u" = {
+            required = true
+            value = "$service.vars.testing_id$"
+        }
+    }
+}
+```
+
+### EDUROAM-CAT
+```
+object CheckCommand "check_eduroam_cat" {
+    import "plugin-check-command"
+    command = [ PluginDir + "/eduroam_cat.sh" ]
+    arguments += {
+        "(no key)" = {
+            order = 1
+            required = true
+            skip_key = true
+            value = "$service.vars.realm$"
+        }
+    }
+}
+```
+
 
 ### FAKE-UID
 ```

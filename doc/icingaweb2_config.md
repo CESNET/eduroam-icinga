@@ -86,4 +86,6 @@ Created dashboards are working fine but there still were default dashroard which
 These [lines](https://github.com/Icinga/icingaweb2/blob/master/modules/monitoring/configuration.php#L290-L369) need to be commented out.
 Using this approach means that anytime the icingaweb2 package is upgraded this breaks down and default dashboards will be displayed again.
 
+Creating custom dashboards is currently disabled due to major change of authentication.
+
 Use of custom dashboards is totally optional.

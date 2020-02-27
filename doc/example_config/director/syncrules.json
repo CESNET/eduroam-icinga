@@ -140,23 +140,39 @@
             {
                 "source_expression": "${member_type}",
                 "destination_field": "vars.type",
-                "priority": "11",
-                "filter_expression": null,
-                "merge_policy": "merge",
+                "priority": "12",
+                "filter_expression": "member_type=SP",
+                "merge_policy": "override",
                 "source": "ldap_to_icinga - monitored servers"
             },
             {
                 "source_expression": "${member_type}",
                 "destination_field": "vars.type",
-                "priority": "12",
-                "filter_expression": null,
-                "merge_policy": "merge",
+                "priority": "13",
+                "filter_expression": "member_type=SP",
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - infrastructure servers"
+            },
+            {
+                "source_expression": "${member_type}",
+                "destination_field": "vars.type",
+                "priority": "15",
+                "filter_expression": "member_type=IdPSP",
+                "merge_policy": "override",
+                "source": "ldap_to_icinga - monitored servers"
+            },
+            {
+                "source_expression": "${member_type}",
+                "destination_field": "vars.type",
+                "priority": "16",
+                "filter_expression": "member_type=IdPSP",
+                "merge_policy": "override",
                 "source": "ldap_to_icinga - infrastructure servers"
             },
             {
                 "source_expression": "${radius_ip}",
                 "destination_field": "vars.radius_ip",
-                "priority": "13",
+                "priority": "17",
                 "filter_expression": null,
                 "merge_policy": "override",
                 "source": "ldap_to_icinga - monitored servers"
@@ -164,7 +180,7 @@
             {
                 "source_expression": "${operator_names}",
                 "destination_field": "vars.all_realms",
-                "priority": "14",
+                "priority": "18",
                 "filter_expression": null,
                 "merge_policy": "merge",
                 "source": "ldap_to_icinga - monitored servers"

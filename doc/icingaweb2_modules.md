@@ -9,7 +9,7 @@ For our setup two additional Icinga Web 2 modules are used:
 This module enables configuration management through web browser.
 The main functionality we use is synchronization from database sources.
 
-This module is cloned directly from git repository. Revision used is `ef2d1983282bc18bb4b1a6829398404eecbb76c6`.
+This module is cloned directly from git repository. The revision used is `3c02f7499fe06299af083cb723be236555efaf93`.
 
 For installation see official [instructions](https://github.com/Icinga/icingaweb2-module-director/blob/master/doc/02-Installation.md)
 

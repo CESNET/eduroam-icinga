@@ -108,82 +108,81 @@ With the configuration below, Icinga Web 2 is available at url /.
 
 ```
 <VirtualHost *:80>
-        ServerAdmin machv@cesnet.cz
-        ServerName ermon.cesnet.cz
-        Redirect permanent "/" "https://ermon.cesnet.cz/"
+	ServerAdmin info@eduroam.cz
+	ServerName ermon2.cesnet.cz
+	ServerName ermon.cesnet.cz
+	Redirect permanent "/" "https://ermon.cesnet.cz/"
 </VirtualHost>
 
 <IfModule mod_ssl.c>
-        <VirtualHost _default_:443>
-                ServerAdmin machv@cesnet.cz
-                ServerName ermon.cesnet.cz
-                DocumentRoot "/usr/share/icingaweb2/public"
+	<VirtualHost _default_:443>
+		ServerAdmin info@eduroam.cz
+		ServerName ermon2.cesnet.cz
+		ServerName ermon.cesnet.cz
+		DocumentRoot "/usr/share/icingaweb2/public"
 
-                ErrorLog ${APACHE_LOG_DIR}/ermon_error.log
-                CustomLog ${APACHE_LOG_DIR}/ermon_access.log combined
-                SSLEngine on
+		ErrorLog ${APACHE_LOG_DIR}/ermon_error.log
+		CustomLog ${APACHE_LOG_DIR}/ermon_access.log combined
+		SSLEngine on
 
-                SSLProtocol All -SSLv2 -SSLv3
-                SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
-                SSLCertificateFile      /etc/ssl/certs/ermon.cesnet.cz.crt.pem
-                SSLCertificateKeyFile /etc/ssl/private/ermon.cesnet.cz.key.pem
+		SSLCertificateFile	/etc/ssl/certs/...
+		SSLCertificateKeyFile /etc/ssl/private/...
 
-                BrowserMatch "MSIE [2-6]" \
-                                nokeepalive ssl-unclean-shutdown \
-                                downgrade-1.0 force-response-1.0
-                # MSIE 7 and newer should be able to use keepalive
-                BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+		BrowserMatch "MSIE [2-6]" \
+				nokeepalive ssl-unclean-shutdown \
+				downgrade-1.0 force-response-1.0
+		# MSIE 7 and newer should be able to use keepalive
+		BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 
-                # HSTS
-                Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
+		# HSTS
+		Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
 
-                ## PHP
-                #<FilesMatch "\.(cgi|shtml|phtml|php)$">
-                #               SSLOptions +StdEnvVars
-                #</FilesMatch>
+		## PHP
+		#<FilesMatch "\.(cgi|shtml|phtml|php)$">
+		#		SSLOptions +StdEnvVars
+		#</FilesMatch>
 
-                <Directory "/usr/share/icingaweb2/public">
-                    Options SymLinksIfOwnerMatch
-                    AllowOverride None
+        <Directory "/usr/share/icingaweb2/public">
+            Options +SymLinksIfOwnerMatch +FollowSymLinks
+            AllowOverride None
 
-                    SetEnv ICINGAWEB_CONFIGDIR "/etc/icingaweb2"
+            SetEnv ICINGAWEB_CONFIGDIR "/etc/icingaweb2"
 
-                    EnableSendfile Off
+            EnableSendfile Off
 
-                    <IfModule mod_rewrite.c>
-                        RewriteEngine on
-                        RewriteBase /
-                        RewriteCond %{REQUEST_FILENAME} -s [OR]
-                        RewriteCond %{REQUEST_FILENAME} -l [OR]
-                        RewriteCond %{REQUEST_FILENAME} -d
-                        RewriteRule ^.*$ - [NC,L]
-                        RewriteRule ^.*$ index.php [NC,L]
-                    </IfModule>
+            <IfModule mod_rewrite.c>
+                RewriteEngine on
+                RewriteBase /
+                RewriteCond %{REQUEST_FILENAME} -s [OR]
+                RewriteCond %{REQUEST_FILENAME} -l [OR]
+                RewriteCond %{REQUEST_FILENAME} -d
+                RewriteRule ^.*$ - [NC,L]
+                RewriteRule ^.*$ index.php [NC,L]
+            </IfModule>
 
-                    <IfModule !mod_rewrite.c>
-                        DirectoryIndex error_norewrite.html
-                        ErrorDocument 404 /error_norewrite.html
-                    </IfModule>
-                </Directory>
+            <IfModule !mod_rewrite.c>
+                DirectoryIndex error_norewrite.html
+                ErrorDocument 404 /error_norewrite.html
+            </IfModule>
+        </Directory>
 
-                # external auth
-                <Location />
-                  <RequireAll>
-                    AuthType shibboleth
-                    Require shibboleth
-                    ShibRequestSetting requireSession 1
-                    Require shib-attr perunUniqueGroupName cesnet:members eduroam:eduroam-admin
-                  </RequireAll>
-                  ErrorDocument 401 /unauthorized.html
-                </Location>
+        # external auth
+        <Location "/">
+            <RequireAll>
+                AuthType shibboleth
+                Require shibboleth
+                ShibRequestSetting requireSession 1
+                Require shib-attr entitlement urn:geant:cesnet.cz:group:cesnet#perun.cesnet.cz urn:geant:cesnet.cz:group:einfra:eduroam-admins#perun.cesnet.cz urn:geant:cesnet.cz:group:einfra:eduroamAdmins#perun.cesnet.cz 
+            </RequireAll>
+            ErrorDocument 401 /unauthorized.html
+        </Location>
 
-              # auth expcetion for error document
-              <Location "/unauthorized.html">
-                  Require all granted
-              </Location>
-        </VirtualHost>
+        # vyjimka z autentizace pro error document
+		<Location "/unauthorized.html">
+            Require all granted
+		</Location>
+	</VirtualHost>
 </IfModule>
-
 ```
 
 Sbibboleth module is used to handle authentication to Icinga Web 2.
@@ -192,15 +191,16 @@ Sbibboleth setup is not covered in this guide.
 It is required that only specific users can access Icinga Web 2.
 This is done by part of the configuration also mentioned above:
 ```
-                  <RequireAll>
-                    Require shibboleth
-                    ShibRequestSetting requireSession 1
-                    Require shib-attr perunUniqueGroupName cesnet:members eduroam:eduroam-admin einfra:eduroamAdmins
-                  </RequireAll>
+            <RequireAll>
+                AuthType shibboleth
+                Require shibboleth
+                ShibRequestSetting requireSession 1
+                Require shib-attr entitlement urn:geant:cesnet.cz:group:cesnet#perun.cesnet.cz urn:geant:cesnet.cz:group:einfra:eduroam-admins#perun.cesnet.cz urn:geant:cesnet.cz:group:einfra:eduroamAdmins#perun.cesnet.cz 
+            </RequireAll>
 ```
 
 This configuration sets up authorization in a way, that only users which provide sbibboleth attribute
-perunUniqueGroupName with value `cesnet:members`, `eduroam:eduroam-admin` or `einfra:eduroamAdmins` are allowed in.
+entitlement with value `urn:geant:cesnet.cz:group:cesnet#perun.cesnet.cz`, `urn:geant:cesnet.cz:group:einfra:eduroam-admins#perun.cesnet.cz` or `urn:geant:cesnet.cz:group:einfra:eduroamAdmins#perun.cesnet.cz` are allowed in.
 
 #### Icinga Web 2 setup
 

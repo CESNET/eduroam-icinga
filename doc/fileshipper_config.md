@@ -21,7 +21,7 @@ It should only be modified by hand a it should not be necessary.
 
 The second part of the static configuration is file `/etc/icingaweb2/modules/fileshipper/mac_address.conf`
 This file only exists to ease assignment of mac address variables to services.
-The file contains 65536 hex strings in range from `70:6f:6c:69:00:00` to `70:6f:6c:69:ff:ff`.
+The file contains 65536 hex strings in range from `70:6f:6c:69:00:00` to `70:6f:6c:6c:d0:8d`.
 
 `/etc/icingaweb2/modules/fileshipper/mac_address.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/mac_address.conf)
 

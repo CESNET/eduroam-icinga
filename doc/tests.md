@@ -844,6 +844,40 @@ Notifications are disabled for this test because institution.xml data are not su
 # ==========================================================================================================================================
 -->
 
+## COVERAGE-INFO
+
+This test does some basic checks on coverage information of eduroam of the institution.
+The institution fills in required coverage information using the application [pokryti.eduroam.cz](https://pokryti.eduroam.cz).
+
+This test is done by [coverage_info.sh](https://github.com/CESNET/eduroam-icinga/blob/master/tests/coverage_info.sh).
+
+### parameters
+
+The script takes one parameter:
+- realm
+
+### dependencies
+
+- None
+
+### assign rule
+
+This service is assigned to every first server (or the only one) which is set as monitoring server in our evidence for one or more realms.
+
+### definition
+
+This service is defined in [static_config.conf](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/fileshipper/static_config.conf#L17).
+
+### notifications
+
+Notifications for this test are enabled.
+Notification interval it set to 24 hours.
+
+<!--
+# ==========================================================================================================================================
+-->
+
+
 ## notification settings
 
 Notification are sent for all bad states (WARNING, CRITICAL, UNKNOWN), they are also sent for service recovery.

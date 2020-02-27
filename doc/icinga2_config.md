@@ -248,6 +248,22 @@ object ServiceGroup "OPERATOR-NAME" {
 object ServiceGroup "CVE-2017-9148" {
   display_name = "CVE-2017-9148"
 }
+
+object ServiceGroup "MISSING-NAS-PORT-TYPE" {
+  display_name = "MISSING-NAS-PORT-TYPE"
+}
+
+object ServiceGroup "COVERAGE-INFO" {
+  display_name = "COVERAGE-INFO"
+}
+
+object ServiceGroup "CAT" {
+  display_name = "CAT"
+}
+
+object ServiceGroup "EAP-CERTIFICATE" {
+  display_name = "EAP-CERTIFICATE"
+}
 ```
 
 `/etc/icingaweb2/modules/icinga2/groups.conf` contents [here](https://github.com/CESNET/eduroam-icinga/blob/master/doc/example_config/icinga2/groups.conf)
@@ -325,7 +341,7 @@ object NotificationCommand "mail-service-notification" {
     notification_servicedisplayname = "$service.display_name$"
     notification_icingaweb2url = "https://" + NodeName
     notification_docurl = "$service.vars.doc_url$"
-    notification_from = "nagios@" + NodeName
+    notification_from = "icinga@" + NodeName
   }
 }
 ```

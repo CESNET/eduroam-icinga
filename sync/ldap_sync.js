@@ -122,11 +122,11 @@ function fix_missing_radius_admins(radius_servers, admins, callback)
     }
     else {
       if(!(radius_servers[i].manager.toLowerCase() in admins))
-        radius_servers[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];        // subtitute dead admin
+        radius_servers[i].manager = [ 'uid=818c0a,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz', 'uid=ee4208,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz' ];        // subtitute dead admin
     }
 
     if(radius_servers[i].manager.length == 0)   // check if any admins are left
-      radius_servers[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];        // no admins left, set CESNET admins
+      radius_servers[i].manager = [ 'uid=818c0a,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz', 'uid=ee4208,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz' ];        // no admins left, set CESNET admins
   }
 
   callback();
@@ -140,12 +140,12 @@ function fix_missing_realm_admins(realms, admins, callback)
     if(typeof(realms[i].manager) === 'object') {
       for(var j in realms[i].manager) {
         if(realms[i].manager[j] !== undefined && !(realms[i].manager[j].toLowerCase() in admins))
-          realms[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];      // subtitute dead admins
+          realms[i].manager = [ 'uid=818c0a,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz', 'uid=ee4208,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz' ];      // subtitute dead admins
       }
     }
     else {
       if(!(realms[i].manager.toLowerCase() in admins))
-        realms[i].manager = [ 'uid=semik,ou=People,dc=cesnet,dc=cz', 'uid=machv,ou=People,dc=cesnet,dc=cz' ];        // subtitute dead admins
+        realms[i].manager = [ 'uid=818c0a,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz', 'uid=ee4208,ou=People,o=eduroam,o=apps,dc=cesnet,dc=cz' ];        // subtitute dead admins
     }
   }
 
@@ -665,12 +665,12 @@ function print_admins(data, callback)
 
     if(data[item].mail) {               // mail is defined
       if(typeof(data[item].mail) === 'object')
-        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail[0] + "', '" + data[item].uid + "')";  // first mail
+        out = "('" + data[item].dn + "', '" + data[item]['cn'] + "', '" + data[item].mail[0] + "', '" + data[item].uid + "')";  // first mail
       else
-        out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '" + data[item].mail + "', '" + data[item].uid + "')";  // the only mail
+        out = "('" + data[item].dn + "', '" + data[item]['cn'] + "', '" + data[item].mail + "', '" + data[item].uid + "')";  // the only mail
     }
     else {
-      out = "('" + data[item].dn + "', '" + data[item]['cn;lang-en'] + "', '', '" + data[item].uid + "')";  // no mail available, set it to empty string
+      out = "('" + data[item].dn + "', '" + data[item]['cn'] + "', '', '" + data[item].uid + "')";  // no mail available, set it to empty string
     }
 
     if(Object.keys(data).indexOf(item) == Object.keys(data).length - 1) // last item

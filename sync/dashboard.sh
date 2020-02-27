@@ -60,15 +60,15 @@ url = "/monitoring/list/hosts?' #(host=radius1.cesnet.cz|host=radius2.cesnet.cz)
     fi
 
     # also check the content of the file
-    if [[ -d "$path/${admins_uids[$i]}@cesnet.cz" && -e "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini" && $(cat "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini") == "$out" ]]
+    if [[ -d "$path/${admins_uids[$i]}@einfra.cesnet.cz" && -e "$path/${admins_uids[$i]}@einfra.cesnet.cz/dashboard.ini" && $(cat "$path/${admins_uids[$i]}@einfra.cesnet.cz/dashboard.ini") == "$out" ]]
     then
       :     # preferences exist and have correct content, do nothing
     else
 
-      mkdir "$path/${admins_uids[$i]}@cesnet.cz"
-      chmod 2770 "$path/${admins_uids[$i]}@cesnet.cz"
-      echo -e "$out" > "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini"
-      chmod 0660 "$path/${admins_uids[$i]}@cesnet.cz/dashboard.ini"
+      mkdir "$path/${admins_uids[$i]}@einfra.cesnet.cz"
+      chmod 2770 "$path/${admins_uids[$i]}@einfra.cesnet.cz"
+      echo -e "$out" > "$path/${admins_uids[$i]}@einfra.cesnet.cz/dashboard.ini"
+      chmod 0660 "$path/${admins_uids[$i]}@einfra.cesnet.cz/dashboard.ini"
     fi
   done
 }

@@ -30,38 +30,38 @@ function deploy_config
 
   echo $(date) > /dev/null # just for debug
 
-  # wait for deploy to finish - 270 seconds max
-  while [[ $count -le 270 ]]
-  do
-    # TODO - maybe icinga2 daemon -C will be better than extracting the data directly from db?
+  ## wait for deploy to finish - 270 seconds max
+  #while [[ $count -le 270 ]]
+  #do
+  #  # TODO - maybe icinga2 daemon -C will be better than extracting the data directly from db?
 
-    # get deployed config state
-    status=$(mysql -u $db_user -e 'select id,startup_succeeded from director_deployment_log order by id desc limit 1;' --password="$db_pass" director)
+  #  # get deployed config state
+  #  status=$(mysql -u $db_user -e 'select id,startup_succeeded from director_deployment_log order by id desc limit 1;' --password="$db_pass" director)
 
-    id=$(echo "$status" | tail -1 | awk '{ print $1 }')
-    success=$(echo "$status" | tail -1 | awk '{ print $2 }')
+  #  id=$(echo "$status" | tail -1 | awk '{ print $1 }')
+  #  success=$(echo "$status" | tail -1 | awk '{ print $2 }')
 
-    if [[ "$success" != "NULL" ]]
-    then
-      break
-    fi
+  #  if [[ "$success" != "NULL" ]]
+  #  then
+  #    break
+  #  fi
 
-    sleep 1
-    ((count++))
-  done
+  #  sleep 1
+  #  ((count++))
+  #done
 
-  deploy=$(mysql -u $db_user -e "select startup_log from director_deployment_log where id=$id;" --password="$db_pass" director)
+  #deploy=$(mysql -u $db_user -e "select startup_log from director_deployment_log where id=$id;" --password="$db_pass" director)
 
-  if [[ "$success" != "y" ]]
-  then
-    notify "Failed deploy:\n$deploy"
-    exit 1
-  fi
+  #if [[ "$success" != "y" ]]
+  #then
+  #  notify "Failed deploy:\n$deploy"
+  #  exit 1
+  #fi
 
-  if [[ $(echo "$deploy" | grep "warning") != "" ]]
-  then
-    notify "configuration warnings:\n$deploy"
-  fi
+  #if [[ $(echo "$deploy" | grep "warning") != "" ]]
+  #then
+  #  notify "configuration warnings:\n$deploy"
+  #fi
 }
 # ===============================================================
 # sync director import sources & sync rules

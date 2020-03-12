@@ -609,7 +609,7 @@ function search_admins(client, data, search_base, done)
 function save_admins(client, input, data, done)
 {
   var opts = {
-    filter: '(objectClass=*)',
+    filter: '(objectClass=eduroamAdmin)',
     scope: 'sub',
     attributes: [ 'dn', 'eduPersonPrincipalNames', 'cn', 'mail', 'uid' ]                // TODO - EPPN
   };
@@ -620,31 +620,26 @@ function save_admins(client, input, data, done)
   for(var i in input) {
     if(typeof(input[i]) === 'object') {
       for(var j in input[i])
-      admins[input[i][j]] = "a";           // use dummy value here, only the key is usefull
+        admins[input[i][j]] = "a";           // use dummy value here, only the key is usefull
     }
     else
       admins[input[i]] = "a";           // use dummy value here, only the key is usefull
   }
 
-  // do ldap search
-  async.forEachOf(admins, function(value, key, callback) {
-    client.search(key, opts, function(err, res) {
-      assert.ifError(err);
+  client.search(config.search_base_admins, opts, function(err, res) {
+    assert.ifError(err);
 
-      res.on('searchEntry', function(entry) {
-        data[entry.object.dn.toLowerCase()] = entry.object;     // normalize key
-      });
-
-      res.on('error', function(err) {
-        console.error('error: ' + err.message);
-      });
-
-      res.on('end', function(result) {
-        callback();
-      });
+    res.on('searchEntry', function(entry) {
+      data[entry.object.dn.toLowerCase()] = entry.object;     // normalize key
     });
-  }, function(err) {
-    done();
+
+    res.on('error', function(err) {
+      console.error('error: ' + err.message);
+    });
+
+    res.on('end', function(result) {
+      done();
+    });
   });
 }
 // --------------------------------------------------------------------------------------

@@ -6,3 +6,5 @@
 sync_rules="15 14 16 17 19"
 # admin mail
 admin="root"
+# ldap bind dn
+bind_dn='uid=pokryti.eduroam.cz,ou=Special Users,dc=cesnet,dc=cz'

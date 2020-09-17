@@ -112,6 +112,8 @@ function ldap_sync
     exit 1
   fi
 
+  /usr/bin/cstocs -i utf8 ascii /tmp/ldap_sync
+
   # sync db only when output is non empty
   if [[ -s /tmp/ldap_sync ]]
   then

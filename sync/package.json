@@ -4,7 +4,7 @@
   "description": "sync ulitily for eduroam.cz monitoring",
   "main": "main.sh",
   "dependencies": {
-    "async": "^2.6.2",
+    "async": "^3.2.2",
     "ldap2date": "^1.0.0",
     "ldapjs": "^1.0.2",
     "mysql": "^2.15.0"
